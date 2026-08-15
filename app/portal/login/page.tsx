@@ -16,15 +16,24 @@ export default function PartnerLoginPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (signInError) {
-      setError("Incorrect email or password.");
-      return;
+    try {
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) {
+        setError("Incorrect email or password.");
+        return;
+      }
+      router.push("/portal");
+      router.refresh();
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? `Sign-in failed: ${err.message}`
+          : "Sign-in failed unexpectedly. Please try again.",
+      );
+    } finally {
+      setLoading(false);
     }
-    router.push("/portal");
-    router.refresh();
   };
 
   return (

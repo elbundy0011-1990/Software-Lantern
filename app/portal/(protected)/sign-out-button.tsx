@@ -8,10 +8,13 @@ export function PortalSignOutButton() {
   return (
     <button
       onClick={async () => {
-        const supabase = createClient();
-        await supabase.auth.signOut();
-        router.push("/portal/login");
-        router.refresh();
+        try {
+          const supabase = createClient();
+          await supabase.auth.signOut();
+        } finally {
+          router.push("/portal/login");
+          router.refresh();
+        }
       }}
       className="border border-[#0d1117]/[0.12] rounded-full px-[18px] py-[9px] font-sans font-semibold text-[14px] text-[#3d4653] hover:bg-[#0d1117]/[0.05]"
     >

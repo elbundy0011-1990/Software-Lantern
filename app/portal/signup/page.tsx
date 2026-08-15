@@ -20,25 +20,33 @@ export default function PartnerSignupPage() {
     setError(null);
     setNotice(null);
 
-    const supabase = createClient();
-    const { data, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { company_name: companyName } },
-    });
+    try {
+      const supabase = createClient();
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { company_name: companyName } },
+      });
 
-    setLoading(false);
+      if (signUpError) {
+        setError(signUpError.message);
+        return;
+      }
 
-    if (signUpError) {
-      setError(signUpError.message);
-      return;
-    }
-
-    if (data.session) {
-      router.push("/portal");
-      router.refresh();
-    } else {
-      setNotice("Check your email to confirm your account, then sign in.");
+      if (data.session) {
+        router.push("/portal");
+        router.refresh();
+      } else {
+        setNotice("Check your email to confirm your account, then sign in.");
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? `Sign-up failed: ${err.message}`
+          : "Sign-up failed unexpectedly. Please try again.",
+      );
+    } finally {
+      setLoading(false);
     }
   };
 

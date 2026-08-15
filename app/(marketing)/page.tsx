@@ -1,10 +1,17 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
 
 const heroCategories = [
-  { label: "EUDR Software", href: "/finder?category=" + encodeURIComponent("EUDR Software") },
+  { label: "EUDR Software", href: "/eudr" },
   { label: "Product Lifecycle Management (PLM)", href: "/plm" },
-  { label: "Digital Battery Passport (DBP)", href: "/finder?category=" + encodeURIComponent("Digital Battery Passport (DBP)") },
+  { label: "Digital Battery Passport (DBP)", href: "/battery-passport" },
 ];
 
 export default function HomePage() {
@@ -141,7 +148,7 @@ export default function HomePage() {
                 statements, risk assessment and traceability.
               </p>
               <Link
-                href={`/finder?category=${encodeURIComponent("EUDR Software")}`}
+                href="/eudr"
                 className="mt-auto self-stretch text-center border border-[#0d1117]/[0.14] rounded-full px-5 py-[13px] font-sans font-semibold text-[15px] text-[#0d1117] hover:bg-[#4f46e5]/[0.08] hover:border-[#4f46e5]"
               >
                 Find EUDR software →
@@ -149,10 +156,10 @@ export default function HomePage() {
             </div>
             <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl px-[30px] pt-8 pb-[30px] flex flex-col">
               <span className="w-11 h-11 rounded-full bg-[#10b981]/[0.10] block mb-6" />
-              <h3 className="font-sans font-semibold text-[27px] leading-[1.12] mb-3">Product Lifecycle Management</h3>
+              <h3 className="font-sans font-semibold text-[27px] leading-[1.12] mb-3">Fashion PLM Software</h3>
               <p className="mb-[26px] text-[16px] text-[#5c6573]">
-                PLM for fashion, footwear, automotive, aerospace, medical devices and other product-driven
-                businesses.
+                PLM for fashion brands, apparel manufacturers, footwear and accessories companies managing
+                growing collections and supplier networks.
               </p>
               <Link
                 href="/plm"
@@ -171,7 +178,7 @@ export default function HomePage() {
                 data, compliance reporting and the QR-linked passport itself.
               </p>
               <Link
-                href={`/finder?category=${encodeURIComponent("Digital Battery Passport (DBP)")}`}
+                href="/battery-passport"
                 className="mt-auto self-stretch text-center border border-[#0d1117]/[0.14] rounded-full px-5 py-[13px] font-sans font-semibold text-[15px] text-[#0d1117] hover:bg-[#4f46e5]/[0.08] hover:border-[#4f46e5]"
               >
                 Find DBP software →

@@ -16,15 +16,12 @@ export function SiteFooter() {
           <div className="grid gap-2 text-[15px]">
             <Link href="/finder" className="text-[#4f46e5] hover:text-[#4338ca]">Find my software</Link>
             <Link href="/#how-it-works" className="text-[#4f46e5] hover:text-[#4338ca]">How it works</Link>
-            <Link href="/plm" className="text-[#4f46e5] hover:text-[#4338ca]">PLM software</Link>
-            <Link href={`/finder?category=${encodeURIComponent("EUDR Software")}`} className="text-[#4f46e5] hover:text-[#4338ca]">
+            <Link href="/plm" className="text-[#4f46e5] hover:text-[#4338ca]">Fashion PLM software</Link>
+            <Link href="/eudr" className="text-[#4f46e5] hover:text-[#4338ca]">
               EUDR software
             </Link>
-            <Link
-              href={`/finder?category=${encodeURIComponent("Digital Battery Passport (DBP)")}`}
-              className="text-[#4f46e5] hover:text-[#4338ca]"
-            >
-              Digital Battery Passport software
+            <Link href="/battery-passport" className="text-[#4f46e5] hover:text-[#4338ca]">
+              Battery Passport software
             </Link>
           </div>
         </div>
@@ -39,10 +36,7 @@ export function SiteFooter() {
         <div>
           <p className="mb-3 text-[12px] font-bold tracking-[0.09em] uppercase text-[#4f46e5]">Company</p>
           <div className="grid gap-2 text-[15px]">
-            <Link href="/" className="text-[#4f46e5] hover:text-[#4338ca]">About</Link>
-            <Link href="/" className="text-[#4f46e5] hover:text-[#4338ca]">Resources</Link>
             <a href="mailto:hello@softwarelantern.com" className="text-[#4f46e5] hover:text-[#4338ca]">Contact</a>
-            <Link href="/" className="text-[#4f46e5] hover:text-[#4338ca]">Privacy</Link>
           </div>
         </div>
       </div>

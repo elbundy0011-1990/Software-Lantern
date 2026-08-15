@@ -8,7 +8,7 @@ const NAV_CATEGORIES = [
   {
     label: "EUDR Software",
     blurb: "Deforestation due diligence, geolocation and compliance reporting",
-    href: "/finder?category=" + encodeURIComponent("EUDR Software"),
+    href: "/eudr",
   },
   {
     label: "Product Lifecycle Management (PLM)",
@@ -18,7 +18,7 @@ const NAV_CATEGORIES = [
   {
     label: "Digital Battery Passport (DBP)",
     blurb: "Traceability, carbon data and the QR-linked passport",
-    href: "/finder?category=" + encodeURIComponent("Digital Battery Passport (DBP)"),
+    href: "/battery-passport",
   },
 ];
 
@@ -26,12 +26,12 @@ const REGULATIONS = [
   {
     label: "EUDR",
     blurb: "EU Deforestation Regulation: due diligence and geolocation",
-    href: "/finder?category=" + encodeURIComponent("EUDR Software"),
+    href: "/eudr",
   },
   {
     label: "EU Battery Regulation",
     blurb: "Digital battery passport, carbon footprint and due diligence",
-    href: "/finder?category=" + encodeURIComponent("Digital Battery Passport (DBP)"),
+    href: "/battery-passport",
   },
   {
     label: "ESPR",

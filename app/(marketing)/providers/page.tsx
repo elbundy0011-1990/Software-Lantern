@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "Become a Provider | Software Lantern",
   description:
     "Talk to buyers who have already written down what they need. Apply as a Software Lantern provider.",
+  alternates: {
+    canonical: "/providers",
+  },
 };
 
 export default function ProvidersPage() {

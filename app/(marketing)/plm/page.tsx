@@ -2,9 +2,18 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "PLM Software | Software Lantern",
+  title: "Fashion PLM Software | Compare Providers & Get Matched",
   description:
-    "Looking for PLM software? Tell us about your business and requirements. We'll connect you with up to 3 PLM providers that believe they can help.",
+    "Looking for fashion PLM software? Tell us about your brand, products and requirements — we'll connect you with up to 3 fashion PLM providers that believe they can help.",
+  alternates: {
+    canonical: "/plm",
+  },
+  openGraph: {
+    title: "Fashion PLM Software | Compare Providers & Get Matched",
+    description:
+      "Tell us about your brand, products and requirements — we'll connect you with up to 3 fashion PLM providers that believe they can help.",
+    url: "/plm",
+  },
 };
 
 const plmHref = `/finder?category=${encodeURIComponent("Product Lifecycle Management (PLM)")}`;
@@ -25,15 +34,15 @@ export default function PlmPage() {
           <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-[72px] items-start">
             <div>
               <h1 className="font-sans font-semibold text-[clamp(34px,5.6vw,58px)] leading-[1.06] tracking-[-0.035em] mb-[22px] text-pretty">
-                Looking for PLM software?
+                Looking for fashion PLM software?
               </h1>
               <p className="text-[20px] leading-[1.5] text-[#3d4653] mb-4 max-w-[40ch]">
-                Tell us about your business and requirements. We&apos;ll connect you with up to 3 PLM
+                Tell us about your brand and requirements. We&apos;ll connect you with up to 3 fashion PLM
                 providers that believe they can help.
               </p>
               <p className="text-[17px] text-[#5c6573] mb-[34px] max-w-[48ch]">
-                Fashion, footwear, automotive, aerospace, medical devices, consumer goods: PLM means
-                something different in each, so we match on your industry, not a generic feature list.
+                Fashion, footwear, and accessories: PLM means something different in each, so we match on
+                your industry and product complexity, not a generic feature list.
               </p>
               <Link
                 href={plmHref}
@@ -53,9 +62,8 @@ export default function PlmPage() {
                 {[
                   "Fashion & apparel PLM",
                   "Footwear PLM",
-                  "Automotive PLM",
-                  "Aerospace PLM",
-                  "Medical device PLM",
+                  "Accessories PLM",
+                  "Fashion retail PLM",
                 ].map((label, i, arr) => (
                   <Link
                     key={label}
@@ -69,6 +77,25 @@ export default function PlmPage() {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-[#0d1117]/[0.07]">
+        <div className="max-w-[1160px] mx-auto px-5 sm:px-8 py-21">
+          <div className="max-w-[860px]">
+            <h2 className="font-sans font-semibold text-[clamp(28px,3.8vw,40px)] leading-[1.1] tracking-[-0.03em] mb-4">
+              What is fashion PLM software?
+            </h2>
+            <p className="text-[17px] leading-[1.6] text-[#3d4653]">
+              Fashion PLM (Product Lifecycle Management) software is the system fashion and apparel
+              companies use to manage a product from first sketch to shipped order: tech packs, bills of
+              materials, sampling, supplier collaboration, costing, and collection calendars, all in one
+              place instead of spreadsheets and email. It differs meaningfully from generic PLM used in
+              industries like automotive or industrial manufacturing — fashion-specific platforms are
+              built around seasons, colourways, sizing, and fast-moving supplier networks rather than
+              long, fixed product cycles.
+            </p>
           </div>
         </div>
       </section>

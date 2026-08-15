@@ -52,7 +52,53 @@ const CONTACT_STEP: FinderStep = {
   help: "All fields are required. Please use your work email so we can match you to a company.",
 };
 
-export function getSteps(category: string | null, catPreset: boolean): FinderStep[] {
+function usingSoftwareStep(help: string): FinderStep {
+  return {
+    id: "usingSoftware",
+    kind: "single",
+    title: "Are you currently using software for this?",
+    help,
+    options: ["Yes", "No"],
+  };
+}
+
+function vendorStep(placeholder: string): FinderStep {
+  return {
+    id: "vendor",
+    kind: "text",
+    title: "Which vendor?",
+    help: "The name of the system or provider you use today.",
+    placeholder,
+  };
+}
+
+const CONTRACT_END_STEP: FinderStep = {
+  id: "contractEnd",
+  kind: "single",
+  title: "When does your current contract or partnership end?",
+  help: "A rough timeframe is fine.",
+  options: ["Less than 3 months", "3–6 months", "6–12 months", "More than 12 months", "Not sure"],
+};
+
+// If they said they're currently using software, ask which vendor and when
+// that contract/partnership ends; otherwise skip straight past both.
+function currentSoftwareSteps(
+  usingSoftwareAnswer: string | undefined,
+  helpText: string,
+  vendorPlaceholder: string,
+): FinderStep[] {
+  const steps: FinderStep[] = [usingSoftwareStep(helpText)];
+  if (usingSoftwareAnswer === "Yes") {
+    steps.push(vendorStep(vendorPlaceholder), CONTRACT_END_STEP);
+  }
+  return steps;
+}
+
+export function getSteps(
+  category: string | null,
+  catPreset: boolean,
+  usingSoftwareAnswer?: string,
+): FinderStep[] {
   const cat = category || "";
   const isEudr = cat.indexOf("EUDR") > -1;
   const isDbp = cat.indexOf("Battery") > -1;
@@ -110,13 +156,11 @@ export function getSteps(category: string | null, catPreset: boolean): FinderSte
         help: "Polygons or coordinates for the plots of land your goods come from.",
         options: ["Yes, for most suppliers", "For some suppliers", "Not yet", "Not sure"],
       },
-      {
-        id: "current",
-        kind: "text",
-        title: "What ERP or procurement system do you run?",
-        help: "Providers will tell you what they integrate with.",
-        placeholder: "e.g. SAP S/4HANA and Coupa",
-      },
+      ...currentSoftwareSteps(
+        usingSoftwareAnswer,
+        "This helps providers understand what they'd be replacing or integrating with.",
+        "e.g. your ERP or procurement system provider",
+      ),
       {
         id: "missing",
         kind: "text",
@@ -206,9 +250,7 @@ export function getSteps(category: string | null, catPreset: boolean): FinderSte
     };
   }
 
-  const currentPlaceholder = isDbp
-    ? "e.g. ERP data plus manual supplier questionnaires"
-    : "e.g. Excel and shared drives, plus a PDM we outgrew";
+  const vendorPlaceholder = isDbp ? "e.g. your current DBP provider" : "e.g. your current PLM provider";
   const missingPlaceholder = isDbp
     ? "e.g. no way to collect upstream material data"
     : "e.g. no supplier collaboration, tech packs live in email";
@@ -216,17 +258,15 @@ export function getSteps(category: string | null, catPreset: boolean): FinderSte
   const questions: FinderStep[] = [
     profile,
     scope,
-    {
-      id: "current",
-      kind: "text",
-      title: "What are you using today?",
-      help: "Spreadsheets, a legacy system, nothing yet: all useful to know.",
-      placeholder: currentPlaceholder,
-    },
+    ...currentSoftwareSteps(
+      usingSoftwareAnswer,
+      "Helps providers understand what they'd be replacing or working alongside.",
+      vendorPlaceholder,
+    ),
     {
       id: "missing",
       kind: "text",
-      title: "What's missing from it?",
+      title: "What's the hardest part right now?",
       help: "The single most useful thing you can tell a provider.",
       placeholder: missingPlaceholder,
     },
@@ -346,6 +386,14 @@ export function leadDetailRows(
     if (Array.isArray(v)) return v.length ? v.join(", ") : "Not given";
     return v && String(v).trim() ? v : "Not given";
   };
+  const currentSoftwareRows = (): { label: string; value: string }[] => {
+    const rows = [{ label: "Currently using software", value: val(answers.usingSoftware) }];
+    if (answers.usingSoftware === "Yes") {
+      rows.push({ label: "Vendor", value: val(answers.vendor) });
+      rows.push({ label: "Contract/partnership ends", value: val(answers.contractEnd) });
+    }
+    return rows;
+  };
   const cat = category || "";
   if (cat.indexOf("EUDR") > -1) {
     return [
@@ -355,7 +403,7 @@ export function leadDetailRows(
       { label: "SKUs in scope", value: val(answers.skus) },
       { label: "Sourcing regions", value: val(answers.regions) },
       { label: "Geolocation data", value: val(answers.geo) },
-      { label: "ERP / procurement", value: val(answers.current) },
+      ...currentSoftwareRows(),
       { label: "Hardest part", value: val(answers.missing) },
       { label: "Compliance deadline", value: val(answers.timing) },
     ];
@@ -364,7 +412,7 @@ export function leadDetailRows(
   return [
     { label: isDbp ? "Position in chain" : "Company type", value: val(answers.industry) },
     { label: isDbp ? "Passport must carry" : "Needs to manage", value: val(answers.manage) },
-    { label: "Using today", value: val(answers.current) },
+    ...currentSoftwareRows(),
     { label: "What's missing", value: val(answers.missing) },
     { label: "Users", value: val(answers.users) },
     { label: "Timeline", value: val(answers.timing) },

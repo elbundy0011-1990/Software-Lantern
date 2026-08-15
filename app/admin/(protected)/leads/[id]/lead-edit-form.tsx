@@ -10,11 +10,17 @@ function Field({
   value,
   onChange,
   textarea,
+  type = "text",
+  min,
+  step,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   textarea?: boolean;
+  type?: "text" | "number";
+  min?: number;
+  step?: number;
 }) {
   const cls =
     "w-full bg-[#f6f7fb] border border-[#0d1117]/[0.12] rounded-xl px-4 py-[10px] text-[15px] outline-none focus:border-[#4f46e5]";
@@ -24,7 +30,7 @@ function Field({
       {textarea ? (
         <textarea rows={3} value={value} onChange={(e) => onChange(e.target.value)} className={cls} />
       ) : (
-        <input value={value} onChange={(e) => onChange(e.target.value)} className={cls} />
+        <input type={type} min={min} step={step} value={value} onChange={(e) => onChange(e.target.value)} className={cls} />
       )}
     </label>
   );
@@ -117,8 +123,22 @@ export function LeadEditForm({ lead }: { lead: Lead }) {
         <Field label="Current vendor" value={fields.current_vendor} onChange={set("current_vendor")} />
         <Field label="Budget range" value={fields.budget_range} onChange={set("budget_range")} />
         <Field label="Timeline" value={fields.timeline} onChange={set("timeline")} />
-        <Field label="Price per unlock (EUR)" value={fields.price_per_unlock} onChange={set("price_per_unlock")} />
-        <Field label="Max unlocks" value={fields.max_unlocks} onChange={set("max_unlocks")} />
+        <Field
+          label="Price per unlock (EUR)"
+          value={fields.price_per_unlock}
+          onChange={set("price_per_unlock")}
+          type="number"
+          min={0}
+          step={0.01}
+        />
+        <Field
+          label="Max unlocks"
+          value={fields.max_unlocks}
+          onChange={set("max_unlocks")}
+          type="number"
+          min={1}
+          step={1}
+        />
         <div className="sm:col-span-2">
           <Field label="Software need" value={fields.software_need} onChange={set("software_need")} textarea />
         </div>

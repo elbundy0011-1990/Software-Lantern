@@ -17,6 +17,13 @@ function summaryRows(category: string | null, answers: StepAnswers, contact: Con
     if (Array.isArray(v)) return v.length ? v.join(", ") : "Not given";
     return v && String(v).trim() ? v : "Not given";
   };
+  const currentSoftwareRows = (): { label: string; value: string }[] => {
+    const rows = [{ label: "Currently using software", value: val(answers.usingSoftware) }];
+    if (answers.usingSoftware === "Yes") {
+      rows.push({ label: "Vendor", value: val(answers.vendor) });
+    }
+    return rows;
+  };
   const isEudr = (category || "").indexOf("EUDR") > -1;
   if (isEudr) {
     return [
@@ -25,6 +32,7 @@ function summaryRows(category: string | null, answers: StepAnswers, contact: Con
       { label: "Suppliers", value: val(answers.manage) },
       { label: "Sourcing regions", value: val(answers.regions) },
       { label: "Geolocation data", value: val(answers.geo) },
+      ...currentSoftwareRows(),
       { label: "Compliance deadline", value: val(answers.timing) },
       { label: "Send matches to", value: val(contact.email) },
     ];
@@ -32,7 +40,7 @@ function summaryRows(category: string | null, answers: StepAnswers, contact: Con
   return [
     { label: "Company type", value: val(answers.industry) },
     { label: "Needs to manage", value: val(answers.manage) },
-    { label: "Using today", value: val(answers.current) },
+    ...currentSoftwareRows(),
     { label: "Users", value: val(answers.users) },
     { label: "Timeline", value: val(answers.timing) },
     { label: "Send matches to", value: val(contact.email) },
@@ -54,7 +62,11 @@ export function FinderWizard() {
   const [website, setWebsite] = useState(""); // honeypot
   const [turnstileToken, setTurnstileToken] = useState("");
 
-  const steps = useMemo(() => getSteps(category, catPreset), [category, catPreset]);
+  const usingSoftwareAnswer = answers.usingSoftware as string | undefined;
+  const steps = useMemo(
+    () => getSteps(category, catPreset, usingSoftwareAnswer),
+    [category, catPreset, usingSoftwareAnswer],
+  );
   const i = Math.min(step, steps.length - 1);
   const currentStep = steps[i];
 

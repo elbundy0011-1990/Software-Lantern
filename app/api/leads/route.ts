@@ -54,7 +54,8 @@ export async function POST(request: Request) {
     (typeof answers.missing === "string" && answers.missing) ||
     (typeof answers.industry !== "undefined" ? String(answers.industry) : "") ||
     "";
-  const currentVendor = typeof answers.current === "string" ? answers.current : null;
+  const currentVendor =
+    answers.usingSoftware === "Yes" && typeof answers.vendor === "string" ? answers.vendor : null;
   const timeline = typeof answers.timing === "string" ? answers.timing : null;
 
   const supabase = await createClient();

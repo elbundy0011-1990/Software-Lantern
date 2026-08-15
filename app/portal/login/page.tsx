@@ -1,15 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function PartnerLoginPage() {
+const URL_ERROR_MESSAGES: Record<string, string> = {
+  confirmation_failed: "That confirmation link didn't work — it may have expired. Try signing in, or sign up again.",
+};
+
+function PartnerLoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlError = searchParams.get("error");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    urlError ? URL_ERROR_MESSAGES[urlError] || "Something went wrong. Please try again." : null,
+  );
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -85,5 +94,13 @@ export default function PartnerLoginPage() {
         </p>
       </form>
     </main>
+  );
+}
+
+export default function PartnerLoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <PartnerLoginForm />
+    </Suspense>
   );
 }

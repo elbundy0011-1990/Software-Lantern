@@ -25,7 +25,10 @@ export default function PartnerSignupPage() {
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { company_name: companyName } },
+        options: {
+          data: { company_name: companyName },
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/portal`,
+        },
       });
 
       if (signUpError) {

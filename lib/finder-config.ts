@@ -323,6 +323,21 @@ export function shortCategoryLabel(category: string | null): string {
 
 export const MATCH_COUNT = 3;
 
+// Dedicated landing pages that exist per category. Categories without one
+// here fall back to the generic "how it works" section rather than linking
+// to a page that doesn't exist (or worse, always linking to /plm regardless
+// of category). Add an entry here as each category's page ships.
+const CATEGORY_INFO_PAGES: Record<string, { label: string; href: string }> = {
+  "Product Lifecycle Management (PLM)": { label: "Read about PLM matching", href: "/plm" },
+};
+
+const GENERIC_INFO_LINK = { label: "Read about how matching works", href: "/#how-it-works" };
+
+export function categoryInfoLink(category: string | null): { label: string; href: string } {
+  if (!category) return GENERIC_INFO_LINK;
+  return CATEGORY_INFO_PAGES[category] || GENERIC_INFO_LINK;
+}
+
 export function leadDetailRows(
   category: string | null,
   answers: Record<string, string | string[] | undefined>,

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { categoryInfoLink } from "@/lib/finder-config";
 
 interface DoneState {
   category: string | null;
@@ -29,6 +30,7 @@ export default function FinderDonePage() {
 
   const doneCategory = state?.category || "software";
   const summary = state?.summary || [];
+  const infoLink = categoryInfoLink(state?.category ?? null);
 
   return (
     <main
@@ -69,10 +71,10 @@ export default function FinderDonePage() {
           Back to homepage
         </Link>
         <Link
-          href="/plm"
+          href={infoLink.href}
           className="border border-[#0d1117]/[0.14] rounded-full px-[26px] py-[14px] font-sans font-semibold text-[16px] text-[#0d1117] hover:bg-[#0d1117]/[0.05]"
         >
-          Read about PLM matching
+          {infoLink.label}
         </Link>
       </div>
     </main>

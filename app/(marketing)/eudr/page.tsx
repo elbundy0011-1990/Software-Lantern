@@ -64,7 +64,7 @@ export default function EudrPage() {
                 By commodity
               </p>
               <div className="grid">
-                {["Timber & wood products", "Coffee", "Cocoa", "Furniture"].map((label, i, arr) => (
+                {["Cattle", "Cocoa", "Coffee", "Oil palm", "Rubber", "Soya", "Wood"].map((label, i, arr) => (
                   <Link
                     key={label}
                     href={eudrHref}

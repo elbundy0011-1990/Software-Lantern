@@ -25,7 +25,10 @@ const ROLE_OPTIONS: { value: Role; label: string }[] = [
   { value: "none", label: "None of these" },
 ];
 
-const COMMODITIES = ["Cattle", "Cocoa", "Coffee", "Palm oil", "Rubber", "Soy", "Wood"];
+// Matches the hero "By commodity" list and the "Commodity coverage" comparison
+// framework prose on this page exactly — same 7 official EUDR commodities,
+// same names, same order, so there's no drift across the page.
+const COMMODITIES = ["Cattle", "Cocoa", "Coffee", "Oil palm", "Rubber", "Soya", "Wood"];
 
 const SIZE_OPTIONS: { value: Size; label: string }[] = [
   { value: "large-medium", label: "Large or medium" },

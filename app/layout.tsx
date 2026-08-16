@@ -44,7 +44,7 @@ const organizationJsonLd = {
   name: SITE_NAME,
   url: SITE_URL,
   description: DESCRIPTION,
-  email: "hello@softwarelantern.com",
+  email: "info@softwarelantern.com",
 };
 
 const websiteJsonLd = {

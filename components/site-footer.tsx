@@ -36,7 +36,7 @@ export function SiteFooter() {
         <div>
           <p className="mb-3 text-[12px] font-bold tracking-[0.09em] uppercase text-[#4f46e5]">Company</p>
           <div className="grid gap-2 text-[15px]">
-            <a href="mailto:hello@softwarelantern.com" className="text-[#4f46e5] hover:text-[#4338ca]">Contact</a>
+            <a href="mailto:info@softwarelantern.com" className="text-[#4f46e5] hover:text-[#4338ca]">Contact</a>
             <Link href="/privacy" className="text-[#4f46e5] hover:text-[#4338ca]">Privacy Policy</Link>
           </div>
         </div>

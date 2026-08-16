@@ -10,18 +10,18 @@ type Screen = "role" | "commodities" | "sourcing" | "size" | "result";
 
 const CONFIRMED_LOW_RISK = "confirmed-low-risk";
 
-const ROLE_OPTIONS: { value: Role; label: string }[] = [
+const ROLE_OPTIONS: { value: Role; label: string; supporting?: string }[] = [
   {
     value: "operator",
-    label:
-      "I place these products on the EU market for the first time (importing from outside the EU, or producing them within the EU)",
+    label: "First time on the EU market",
+    supporting: "Importing from outside the EU, or producing within it",
   },
   {
     value: "trader",
-    label:
-      "I make these products available on the EU market after someone else already placed them there (distributing, reselling, retailing within the EU)",
+    label: "Reselling within the EU",
+    supporting: "Distributing or retailing products someone else already placed on the market",
   },
-  { value: "export", label: "I export these products from the EU" },
+  { value: "export", label: "Exporting from the EU" },
   { value: "none", label: "None of these" },
 ];
 
@@ -100,11 +100,13 @@ function ProgressIndicator({ screen, role }: { screen: Screen; role: Role | null
 
 function OptionCard({
   label,
+  supporting,
   selected,
   onClick,
   multi,
 }: {
   label: string;
+  supporting?: string;
   selected: boolean;
   onClick: () => void;
   multi?: boolean;
@@ -112,7 +114,7 @@ function OptionCard({
   return (
     <button
       onClick={onClick}
-      className="flex items-start gap-4 text-left rounded-2xl border-2 bg-white px-5 py-5 font-sans text-[15px] font-semibold text-[#0d1117] transition-colors duration-150 hover:border-[#4f46e5]/[0.5]"
+      className="flex items-start gap-4 text-left rounded-2xl border-2 bg-white px-5 py-5 font-sans transition-colors duration-150 hover:border-[#4f46e5]/[0.5]"
       style={{ borderColor: selected ? "#4f46e5" : "rgba(13,17,23,0.12)" }}
     >
       <span
@@ -135,7 +137,12 @@ function OptionCard({
           </svg>
         )}
       </span>
-      {label}
+      <span>
+        <span className="block text-[15px] font-semibold text-[#0d1117]">{label}</span>
+        {supporting && (
+          <span className="block mt-[3px] text-[13px] font-normal text-[#79818f]">{supporting}</span>
+        )}
+      </span>
     </button>
   );
 }
@@ -316,6 +323,7 @@ export function EudrScopeChecker() {
                   <OptionCard
                     key={opt.value}
                     label={opt.label}
+                    supporting={opt.supporting}
                     selected={role === opt.value}
                     onClick={() => pickRole(opt.value)}
                   />

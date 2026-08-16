@@ -45,6 +45,17 @@ problem than most of the audited items — worth prioritizing when that approval
 Verified against EUR-Lex primary sources (the regulation text and its amendments directly), not
 vendor blogs, per the standing project rule.
 
+**Re-verified on urgent user request after this phase shipped**, via two independent direct fetches
+of EUR-Lex (different URL/document formats for Regulation (EU) 2025/2650), specifically to rule out
+30 December 2025 still standing. Both fetches returned identical verbatim text for the amended
+Article 38: paragraph 2 sets the general date ("Articles 3 to 13, Articles 16 to 24 and Articles 26,
+31 and 32 shall apply from 30 December 2026"); paragraph 3 sets the later date, and its exact wording
+scopes it to **"operators, whether natural persons or micro- or small undertakings... who were
+established as such by 31 December 2024"** — confirming, in the regulation's own words, that this
+provision does not name traders, which directly validates the live copy's choice to say "micro and
+small **operators**" rather than asserting trader parity. No correction was needed; the two headline
+dates already live were confirmed accurate as written.
+
 | Fact | Resolved value | Confidence |
 |---|---|---|
 | Large/medium operator & trader deadline | **30 December 2026** | High — confirmed directly from Regulation (EU) 2025/2650's text (Art. 38(2)), corroborated by the EU Commission's own DG TRADE announcement and independent legal-firm summaries (Stibbe, Lexology) |

@@ -113,12 +113,23 @@ before adding anything new:
 
 - **Added**: "(EU 2023/1542, Article 77)" citation on `/battery-passport` —
   confirmed against the primary source.
-- **Deliberately NOT added**: the 18 February 2027 compliance/go-live date. The
-  primary-source fetch needed to verify this (EUR-Lex, around Article 96) was
-  inconclusive/truncated during this phase's verification attempt. Rather than
-  rely on the earlier Phase 5 secondary-source research for a specific date, the
-  date was left out of live copy entirely. This can be revisited in a future
-  phase once the date is independently confirmed against the primary source.
+- **Added (update, post-initial-publish)**: the 18 February 2027 digital battery
+  passport date, scoped precisely to EV batteries, LMT batteries (e-bikes/
+  e-scooters), and industrial batteries above 2 kWh — added to the opening
+  paragraph once independently confirmed across multiple sources (including
+  thebatterypass.eu, which cites the regulation directly), tied to Article 77.
+  At initial Phase 6 publish, this date had been deliberately withheld because
+  the primary-source fetch needed to verify it (EUR-Lex, around Article 96) was
+  inconclusive/truncated; it was added in a follow-up edit once verification
+  cleared.
+- **Known but deliberately not added to live copy**: two adjacent, easily
+  conflated dates from the same regulation, noted here for future accuracy but
+  out of scope for this page's current copy: (1) carbon footprint declarations
+  for industrial batteries above 2 kWh became mandatory from 18 February 2026;
+  (2) critical raw material due diligence obligations were postponed via
+  Regulation (EU) 2025/1561 to 18 August 2027. Neither is the digital-passport
+  date and neither should be merged with it if referencing the regulation's
+  timeline elsewhere on the site in future phases.
 - No new regulatory claims were added to the EUDR page beyond what was already
   live and previously verified; the existing disclaimer paragraph was only
   lightly copy-edited for flow, not for substance.

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { DocumentIcon, ScaleIcon, HandshakeIcon, ShieldIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Become a Provider | Software Lantern",
@@ -134,12 +135,15 @@ export default function ProvidersPage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-8">
             {[
-              ["Briefs, not clicks", "Every lead answered a category questionnaire, so you know the industry, scope, user count and timeline before you spend anything."],
-              ["Never more than three", "We cap each brief at 3 providers. You compete with at most two others, and you can see how many have bought before you commit."],
-              ["You choose the fit", "Nothing is pushed at you. If a requirement is not right for your platform, leave it and pay nothing."],
-              ["Regulation-driven demand", "EUDR, the EU Battery Regulation and ESPR are forcing buying decisions. These buyers have deadlines, not wishlists."],
-            ].map(([title, body]) => (
-              <div key={title}>
+              [<DocumentIcon key="i" />, "Briefs, not clicks", "Every lead answered a category questionnaire, so you know the industry, scope, user count and timeline before you spend anything."],
+              [<ScaleIcon key="i" />, "Never more than three", "We cap each brief at 3 providers. You compete with at most two others, and you can see how many have bought before you commit."],
+              [<HandshakeIcon key="i" />, "You choose the fit", "Nothing is pushed at you. If a requirement is not right for your platform, leave it and pay nothing."],
+              [<ShieldIcon key="i" />, "Regulation-driven demand", "EUDR, the EU Battery Regulation and ESPR are forcing buying decisions. These buyers have deadlines, not wishlists."],
+            ].map(([icon, title, body]) => (
+              <div key={title as string}>
+                <span className="w-10 h-10 rounded-full bg-[#4f46e5]/[0.10] flex items-center justify-center mb-3 text-[#4f46e5]">
+                  {icon}
+                </span>
                 <h3 className="font-sans font-semibold text-[21px] mb-2">{title}</h3>
                 <p className="text-[16px] text-[#3d4653]">{body}</p>
               </div>

@@ -3,6 +3,45 @@ import type { Metadata } from "next";
 import { EUDR_DEADLINES } from "@/lib/eudr-dates";
 import { EudrDeadlineCountdown } from "@/components/eudr-deadline-countdown";
 import { EudrScopeChecker } from "@/components/eudr-scope-checker";
+import {
+  MapPinIcon,
+  MagnifyingGlassIcon,
+  ChecklistIcon,
+  SendIcon,
+  FolderIcon,
+  PeopleIcon,
+  ExchangeIcon,
+  PlugIcon,
+  LeafIcon,
+  BuildingIcon,
+  TagIcon,
+  ShieldIcon,
+} from "@/components/icons";
+
+function IconCard({
+  icon,
+  title,
+  children,
+  accent = "#4f46e5",
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+  accent?: string;
+}) {
+  return (
+    <div>
+      <span
+        className="w-10 h-10 rounded-full flex items-center justify-center mb-3"
+        style={{ background: `${accent}1a`, color: accent }}
+      >
+        {icon}
+      </span>
+      <h3 className="font-sans font-semibold text-[19px] mb-[7px]">{title}</h3>
+      <p className="text-[15px] leading-[1.6] text-[#5c6573]">{children}</p>
+    </div>
+  );
+}
 
 export const metadata: Metadata = {
   title: "EUDR Compliance Software | Compare Providers & Get Matched",
@@ -144,61 +183,42 @@ export default function EudrPage() {
             </p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-9">
-            {[
-              [
-                "Supplier data collection",
-                "Every EUDR platform needs a way to collect commodity, quantity, and supplier information from your supply chain: the question is how much of that it automates versus leaving you to gather manually. Check whether the platform includes supplier outreach tools (invites, reminders, data requests) or expects you to already have this data assembled.",
-              ],
-              [
-                "Geolocation (GPS/polygon handling)",
-                "The regulation requires plot-level geolocation data for where relevant commodities were produced: points for smallholder plots under 4 hectares, polygons for larger areas. A platform's ability to validate, store, and check this geolocation data is often the most technically demanding requirement, so it's worth testing directly rather than taking a feature list at face value.",
-              ],
-              [
-                "Risk assessment methodology",
-                "You're required to assess (and, where risk isn't negligible, mitigate) the risk that a product isn't deforestation-free or wasn't produced illegally. Platforms differ in how automated this is: some provide country/region risk scoring or overlay satellite deforestation data against your geolocations, others leave the methodology largely to you.",
-              ],
-              [
-                "Due diligence statement (DDS) generation",
-                "The DDS is the formal record submitted before a product enters the EU market. A platform that generates and manages these statements, including reference numbers for downstream use, removes real manual work compared to one that only helps you gather the underlying data.",
-              ],
-              [
-                "TRACES / EU Information System submission",
-                "Due diligence statements are ultimately filed through the EU's official information system, built on the TRACES platform. Some platforms submit directly via this system; others export data for you to file yourself. Worth confirming rather than assuming.",
-              ],
-              [
-                "Document management and audit trail",
-                "Customs and competent authorities can request the evidence behind a due diligence statement. A platform with a clear, exportable audit trail (who supplied what data, when, and what changed) matters more the more suppliers and shipments you handle.",
-              ],
-              [
-                "Supplier portal (self-service submission)",
-                "If you have more than a handful of suppliers, whether they can log in and submit their own data, rather than you chasing spreadsheets by email, changes how much ongoing admin this adds to your team.",
-              ],
-              [
-                "ERP integration",
-                "If commodity, purchase order, or shipment data already lives in an ERP or procurement system, a platform that connects to it directly avoids duplicate data entry. Matters far less if you're working from a small, stable supplier list you're happy to enter manually.",
-              ],
-              [
-                "Commodity coverage",
-                "EUDR covers seven commodities (cattle, cocoa, coffee, oil palm, rubber, soya, wood) and their derived products. Not every platform covers all seven equally well; confirm a platform genuinely supports your specific commodity and sourcing geography, not just \"EUDR\" generically.",
-              ],
-              [
-                "Operator vs. trader workflow support",
-                "EUDR defines two roles with different obligations: an operator is the entity that first places a relevant product on the EU market (or makes it available, if produced in the EU); a trader is any other business that makes the product available further down the supply chain. Operators carry the full due diligence burden; traders' obligations are narrower, especially for SME traders. A platform built for full operator workflows can be more than a trader actually needs.",
-              ],
-              [
-                "Company size fit (SME vs. enterprise)",
-                "Platforms built for large importers with dedicated compliance teams often assume a scale and workflow complexity a small trader or producer doesn't have, and price accordingly. A smaller business is usually better served by a tool sized for its actual supplier count and team.",
-              ],
-              [
-                "Pricing model and transparency",
-                "Per-supplier, per-shipment, flat subscription, or custom quote only: the pricing model affects whether a platform is a predictable cost or an open-ended one as your supplier base grows. Published pricing is the exception, not the norm, in this category.",
-              ],
-            ].map(([title, body]) => (
-              <div key={title}>
-                <h3 className="font-sans font-semibold text-[19px] mb-[7px]">{title}</h3>
-                <p className="text-[15px] leading-[1.6] text-[#5c6573]">{body}</p>
-              </div>
-            ))}
+            <IconCard icon={<PeopleIcon />} title="Supplier data collection">
+              Every EUDR platform needs a way to collect commodity, quantity, and supplier information from your supply chain: the question is how much of that it automates versus leaving you to gather manually. Check whether the platform includes supplier outreach tools (invites, reminders, data requests) or expects you to already have this data assembled.
+            </IconCard>
+            <IconCard icon={<MapPinIcon />} title="Geolocation (GPS/polygon handling)" accent="#047857">
+              The regulation requires plot-level geolocation data for where relevant commodities were produced: points for smallholder plots under 4 hectares, polygons for larger areas. A platform&apos;s ability to validate, store, and check this geolocation data is often the most technically demanding requirement, so it&apos;s worth testing directly rather than taking a feature list at face value.
+            </IconCard>
+            <IconCard icon={<MagnifyingGlassIcon />} title="Risk assessment methodology">
+              You&apos;re required to assess (and, where risk isn&apos;t negligible, mitigate) the risk that a product isn&apos;t deforestation-free or wasn&apos;t produced illegally. Platforms differ in how automated this is: some provide country/region risk scoring or overlay satellite deforestation data against your geolocations, others leave the methodology largely to you.
+            </IconCard>
+            <IconCard icon={<ChecklistIcon />} title="Due diligence statement (DDS) generation" accent="#047857">
+              The DDS is the formal record submitted before a product enters the EU market. A platform that generates and manages these statements, including reference numbers for downstream use, removes real manual work compared to one that only helps you gather the underlying data.
+            </IconCard>
+            <IconCard icon={<SendIcon />} title="TRACES / EU Information System submission">
+              Due diligence statements are ultimately filed through the EU&apos;s official information system, built on the TRACES platform. Some platforms submit directly via this system; others export data for you to file yourself. Worth confirming rather than assuming.
+            </IconCard>
+            <IconCard icon={<FolderIcon />} title="Document management and audit trail" accent="#047857">
+              Customs and competent authorities can request the evidence behind a due diligence statement. A platform with a clear, exportable audit trail (who supplied what data, when, and what changed) matters more the more suppliers and shipments you handle.
+            </IconCard>
+            <IconCard icon={<ExchangeIcon />} title="Supplier portal (self-service submission)">
+              If you have more than a handful of suppliers, whether they can log in and submit their own data, rather than you chasing spreadsheets by email, changes how much ongoing admin this adds to your team.
+            </IconCard>
+            <IconCard icon={<PlugIcon />} title="ERP integration" accent="#047857">
+              If commodity, purchase order, or shipment data already lives in an ERP or procurement system, a platform that connects to it directly avoids duplicate data entry. Matters far less if you&apos;re working from a small, stable supplier list you&apos;re happy to enter manually.
+            </IconCard>
+            <IconCard icon={<LeafIcon />} title="Commodity coverage">
+              EUDR covers seven commodities (cattle, cocoa, coffee, oil palm, rubber, soya, wood) and their derived products. Not every platform covers all seven equally well; confirm a platform genuinely supports your specific commodity and sourcing geography, not just &quot;EUDR&quot; generically.
+            </IconCard>
+            <IconCard icon={<ExchangeIcon />} title="Operator vs. trader workflow support" accent="#047857">
+              EUDR defines two roles with different obligations: an operator is the entity that first places a relevant product on the EU market (or makes it available, if produced in the EU); a trader is any other business that makes the product available further down the supply chain. Operators carry the full due diligence burden; traders&apos; obligations are narrower, especially for SME traders. A platform built for full operator workflows can be more than a trader actually needs.
+            </IconCard>
+            <IconCard icon={<BuildingIcon />} title="Company size fit (SME vs. enterprise)">
+              Platforms built for large importers with dedicated compliance teams often assume a scale and workflow complexity a small trader or producer doesn&apos;t have, and price accordingly. A smaller business is usually better served by a tool sized for its actual supplier count and team.
+            </IconCard>
+            <IconCard icon={<TagIcon />} title="Pricing model and transparency" accent="#047857">
+              Per-supplier, per-shipment, flat subscription, or custom quote only: the pricing model affects whether a platform is a predictable cost or an open-ended one as your supplier base grows. Published pricing is the exception, not the norm, in this category.
+            </IconCard>
           </div>
         </div>
       </section>
@@ -210,12 +230,15 @@ export default function EudrPage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[22px]">
             {[
-              ["Due diligence & risk", "Risk assessment, due diligence statements and your role in the supply chain."],
-              ["Supplier data & geolocation", "Supplier collection, plot-level geolocation and how far along you already are."],
-              ["Traceability & audit trail", "Tracing products to origin and keeping a defensible record for audits."],
-              ["Systems & integration", "Your current ERP or procurement system, and what a new tool needs to connect to."],
-            ].map(([title, body]) => (
-              <div key={title} className="bg-white border border-[#0d1117]/[0.08] rounded-2xl p-6">
+              [<ShieldIcon key="i" />, "Due diligence & risk", "Risk assessment, due diligence statements and your role in the supply chain."],
+              [<MapPinIcon key="i" />, "Supplier data & geolocation", "Supplier collection, plot-level geolocation and how far along you already are."],
+              [<FolderIcon key="i" />, "Traceability & audit trail", "Tracing products to origin and keeping a defensible record for audits."],
+              [<PlugIcon key="i" />, "Systems & integration", "Your current ERP or procurement system, and what a new tool needs to connect to."],
+            ].map(([icon, title, body]) => (
+              <div key={title as string} className="bg-white border border-[#0d1117]/[0.08] rounded-2xl p-6">
+                <span className="w-9 h-9 rounded-full bg-[#4f46e5]/[0.10] flex items-center justify-center mb-3 text-[#4f46e5]">
+                  {icon}
+                </span>
                 <h3 className="font-sans font-semibold text-[20px] mb-2">{title}</h3>
                 <p className="text-[15px] text-[#5c6573]">{body}</p>
               </div>

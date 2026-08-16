@@ -1,5 +1,44 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import {
+  SwatchIcon,
+  ChecklistIcon,
+  DocumentIcon,
+  PeopleIcon,
+  ChatIcon,
+  TagIcon,
+  CalendarIcon,
+  FlagIcon,
+  PlugIcon,
+  CubeIcon,
+  LayersIcon,
+  BuildingIcon,
+} from "@/components/icons";
+
+function IconCard({
+  icon,
+  title,
+  children,
+  accent = "#4f46e5",
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+  accent?: string;
+}) {
+  return (
+    <div>
+      <span
+        className="w-10 h-10 rounded-full flex items-center justify-center mb-3"
+        style={{ background: `${accent}1a`, color: accent }}
+      >
+        {icon}
+      </span>
+      <h3 className="font-sans font-semibold text-[19px] mb-[7px]">{title}</h3>
+      <p className="text-[15px] leading-[1.6] text-[#5c6573]">{children}</p>
+    </div>
+  );
+}
 
 export const metadata: Metadata = {
   title: "Fashion PLM Software | Compare Providers & Get Matched",
@@ -123,6 +162,83 @@ export default function PlmPage() {
         </div>
       </section>
 
+      <section className="border-b border-[#0d1117]/[0.07]">
+        <div className="max-w-[1160px] mx-auto px-5 sm:px-8 py-21">
+          <div className="max-w-[860px] mb-14">
+            <h2 className="font-sans font-semibold text-[clamp(28px,3.8vw,40px)] leading-[1.1] tracking-[-0.03em] mb-4">
+              How to choose fashion PLM software
+            </h2>
+            <p className="text-[17px] leading-[1.6] text-[#3d4653]">
+              No single vendor can neutrally tell you how it compares to its competitors. Here&apos;s what
+              we&apos;d suggest evaluating yourself, and why each factor matters, whether or not you use
+              Software Lantern to do it.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-9">
+            <IconCard icon={<SwatchIcon />} title="Materials & trim library">
+              Fashion products are defined as much by fabric and trim choices as by silhouette. Check
+              whether the platform tracks material, colour, and trim history across multiple seasons, and
+              whether you can see who approved a given material and when.
+            </IconCard>
+            <IconCard icon={<ChecklistIcon />} title="Bill of materials (BOM) management" accent="#047857">
+              A BOM that has to be rebuilt from scratch each season, instead of copied and adjusted for a
+              new colourway or size run, costs real time every cycle. Ask how many steps it takes to
+              create a new colourway&apos;s BOM from an existing style.
+            </IconCard>
+            <IconCard icon={<DocumentIcon />} title="Tech pack generation & versioning">
+              Outdated tech packs reaching a factory are a common cause of costly production mistakes. A
+              platform should keep a live, versioned tech pack that factories see the same copy of, not a
+              static file that goes stale the moment a spec changes.
+            </IconCard>
+            <IconCard icon={<PeopleIcon />} title="Supplier & factory collaboration" accent="#047857">
+              Whether suppliers and factories can log in and comment, upload, and respond directly, or
+              everything routes back through your team, changes how much of your team&apos;s time goes
+              into relaying messages instead of managing exceptions.
+            </IconCard>
+            <IconCard icon={<ChatIcon />} title="Sampling & approval tracking">
+              Sampling is usually the most iterative, back-and-forth part of development. A platform
+              should keep the full comment and approval history for a sample across multiple revision
+              rounds, not just the latest version.
+            </IconCard>
+            <IconCard icon={<TagIcon />} title="Costing & margin visibility" accent="#047857">
+              Costing that&apos;s disconnected from the BOM means margin surprises show up after decisions
+              are already made. Check whether a material substitution automatically recalculates the
+              costed BOM or requires manual re-entry.
+            </IconCard>
+            <IconCard icon={<CalendarIcon />} title="Season & collection planning">
+              Most fashion brands work on more than one season or collection at once, including carryover
+              styles. A tool that only handles one cleanly forces workarounds.
+            </IconCard>
+            <IconCard icon={<FlagIcon />} title="Critical path & milestone tracking" accent="#047857">
+              Missed calendar deadlines are one of the most expensive failure modes in fashion production,
+              since they can push delivery past a selling window. Check how a missed milestone is actually
+              flagged and who gets notified.
+            </IconCard>
+            <IconCard icon={<PlugIcon />} title="ERP / order management integration">
+              Without a real integration, your team ends up re-entering the same style and material data
+              in two systems. Ask for the specific data fields that sync, not just the names of the ERP
+              systems a provider claims to support.
+            </IconCard>
+            <IconCard icon={<CubeIcon />} title="3D design tool integration" accent="#047857">
+              3D-to-PLM workflows can meaningfully cut physical sampling, but only if the integration is
+              genuinely two-way. Confirm whether changes made in the 3D tool sync back into the PLM record
+              automatically or need to be re-entered.
+            </IconCard>
+            <IconCard icon={<LayersIcon />} title="Multi-brand / multi-label scalability">
+              If you run more than one brand or label, check whether each can have its own workflow,
+              approval chain, and branding, or whether everything is forced through one shared setup. A
+              platform that only really works well for a single brand often becomes a bottleneck once
+              you&apos;re managing more than one.
+            </IconCard>
+            <IconCard icon={<BuildingIcon />} title="Company size fit" accent="#047857">
+              A platform built for a multi-brand enterprise is usually more complexity, and more cost,
+              than a small or growing brand needs yet. Conversely, a tool sized for a single small brand
+              can become a bottleneck for a business coordinating several labels at once.
+            </IconCard>
+          </div>
+        </div>
+      </section>
+
       <section className="bg-[#f6f7fb] border-b border-[#0d1117]/[0.07]">
         <div className="max-w-[1160px] mx-auto px-5 sm:px-8 py-21">
           <h2 className="font-sans font-semibold text-[clamp(28px,3.8vw,40px)] leading-[1.1] tracking-[-0.03em] mb-11 max-w-[24ch]">
@@ -130,12 +246,15 @@ export default function PlmPage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[22px]">
             {[
-              ["Product development", "Line planning, seasonal calendars, tech packs and revisions."],
-              ["BOM & materials", "Bills of materials, libraries, colourways and component data."],
-              ["Supplier collaboration", "Sampling rounds, comments and approvals with factories."],
-              ["Costing & compliance", "Target costing, margins, sustainability and audit trails."],
-            ].map(([title, body]) => (
-              <div key={title} className="bg-white border border-[#0d1117]/[0.08] rounded-2xl p-6">
+              [<DocumentIcon key="i" />, "Product development", "Line planning, seasonal calendars, tech packs and revisions."],
+              [<SwatchIcon key="i" />, "BOM & materials", "Bills of materials, libraries, colourways and component data."],
+              [<PeopleIcon key="i" />, "Supplier collaboration", "Sampling rounds, comments and approvals with factories."],
+              [<TagIcon key="i" />, "Costing & compliance", "Target costing, margins, sustainability and audit trails."],
+            ].map(([icon, title, body]) => (
+              <div key={title as string} className="bg-white border border-[#0d1117]/[0.08] rounded-2xl p-6">
+                <span className="w-9 h-9 rounded-full bg-[#4f46e5]/[0.10] flex items-center justify-center mb-3 text-[#4f46e5]">
+                  {icon}
+                </span>
                 <h3 className="font-sans font-semibold text-[20px] mb-2">{title}</h3>
                 <p className="text-[15px] text-[#5c6573]">{body}</p>
               </div>

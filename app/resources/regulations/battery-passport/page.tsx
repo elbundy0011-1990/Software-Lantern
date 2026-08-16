@@ -35,6 +35,9 @@ export default function BatteryPassportRegulationArticlePage() {
           <h1 className="font-sans font-semibold text-[clamp(32px,4.4vw,44px)] leading-[1.1] tracking-[-0.03em] mb-3">
             What Is a Battery Passport? The EU Battery Regulation Explained
           </h1>
+          <p className="text-[13px] font-semibold text-[#5c6573] mb-6">
+            Written by Johannes Cornelis de Boer, founder of Software Lantern
+          </p>
           <p className="text-[15px] text-[#79818f] mb-14">
             An explainer on the regulation itself: for software-specific guidance, see{" "}
             <Link href="/battery-passport" className={link}>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { BuildingIcon, BoxIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "How to Evaluate Fashion PLM Software: A Buyer's Checklist and Questions to Ask Providers | Software Lantern",
@@ -11,10 +12,36 @@ export const metadata: Metadata = {
 };
 
 const h2 = "font-sans font-semibold text-[26px] leading-[1.2] tracking-[-0.02em] mt-16 mb-4";
-const h3 = "font-sans font-semibold text-[19px] leading-[1.3] mt-8 mb-2";
 const p = "text-[16px] leading-[1.7] text-[#3d4653] mb-4";
 const link = "text-[#4f46e5] font-semibold";
 const ol = "list-decimal pl-6 mb-4 grid gap-3 text-[16px] leading-[1.7] text-[#3d4653]";
+
+function IconCard({
+  icon,
+  title,
+  children,
+  accent = "#4f46e5",
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+  accent?: string;
+}) {
+  return (
+    <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-6">
+      <div className="flex items-center gap-3 mb-3">
+        <span
+          className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center"
+          style={{ background: `${accent}1a`, color: accent }}
+        >
+          {icon}
+        </span>
+        <h3 className="font-sans font-semibold text-[17px] text-[#0d1117]">{title}</h3>
+      </div>
+      <p className="text-[15px] leading-[1.6] text-[#5c6573]">{children}</p>
+    </div>
+  );
+}
 
 const QUESTIONS: { q: string; why: string; lookFor: string }[] = [
   {
@@ -94,6 +121,9 @@ export default function FashionPlmQuestionsArticlePage() {
             How to Evaluate Fashion PLM Software: A Buyer&apos;s Checklist and Questions to Ask
             Providers
           </h1>
+          <p className="text-[13px] font-semibold text-[#5c6573] mb-6">
+            Written by Johannes Cornelis de Boer, founder of Software Lantern
+          </p>
           <p className="text-[15px] text-[#79818f] mb-14">
             For a compact overview of the core areas, see{" "}
             <Link href="/plm" className={link}>
@@ -117,25 +147,26 @@ export default function FashionPlmQuestionsArticlePage() {
             a poor fit, and a poor price, for the other.
           </p>
 
-          <h3 className={h3}>If you&apos;re a small or growing brand</h3>
-          <p className={p}>
-            You&apos;re likely managing a single brand, a smaller SKU count, and a product
-            development process that still runs partly through spreadsheets and email. Prioritize
-            speed to value: how quickly your team can actually start using the tool, whether
-            tech packs and BOMs are simple to set up without a long implementation project, and
-            whether the pricing scales sensibly as your collection grows. A platform built for a
-            multi-brand enterprise is usually more complexity, and more cost, than you need yet.
-          </p>
-
-          <h3 className={h3}>If you&apos;re a multi-brand or multinational business</h3>
-          <p className={p}>
-            You&apos;re likely coordinating multiple brands or labels, a large supplier network,
-            and product development teams working across several collections at once. Prioritize
-            depth: separate workflows and approval chains per brand, ERP integration, critical
-            path tracking across many styles simultaneously, and reporting that rolls up across
-            brands without forcing everyone into one shared setup. A platform built for a single
-            growing brand often can&apos;t hold this complexity without workarounds.
-          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <IconCard icon={<BoxIcon />} title="If you're a small or growing brand" accent="#047857">
+              You&apos;re likely managing a single brand, a smaller SKU count, and a product
+              development process that still runs partly through spreadsheets and email.
+              Prioritize speed to value: how quickly your team can actually start using the tool,
+              whether tech packs and BOMs are simple to set up without a long implementation
+              project, and whether the pricing scales sensibly as your collection grows. A
+              platform built for a multi-brand enterprise is usually more complexity, and more
+              cost, than you need yet.
+            </IconCard>
+            <IconCard icon={<BuildingIcon />} title="If you're a multi-brand or multinational business">
+              You&apos;re likely coordinating multiple brands or labels, a large supplier network,
+              and product development teams working across several collections at once.
+              Prioritize depth: separate workflows and approval chains per brand, ERP
+              integration, critical path tracking across many styles simultaneously, and
+              reporting that rolls up across brands without forcing everyone into one shared
+              setup. A platform built for a single growing brand often can&apos;t hold this
+              complexity without workarounds.
+            </IconCard>
+          </div>
 
           <h2 className={h2}>Then work through what actually matters for your workflow</h2>
           <p className={p}>

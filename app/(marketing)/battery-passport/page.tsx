@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { BATTERY_PASSPORT_DEADLINE } from "@/lib/battery-passport-dates";
+import { BuildingIcon, DocumentIcon, PlugIcon, CalendarIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Battery Passport Software | Compare Providers & Get Matched",
@@ -134,12 +135,15 @@ export default function BatteryPassportPage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[22px]">
             {[
-              ["Position in the chain", "Cell manufacturer, pack assembler, automotive OEM, energy storage or materials supplier."],
-              ["Passport data scope", "Material traceability, carbon footprint, due diligence data, State of Health, and more."],
-              ["Current systems", "What you use today and what a new tool needs to integrate with."],
-              ["Timeline", "How soon you need this live, and how that shapes which providers make sense."],
-            ].map(([title, body]) => (
-              <div key={title} className="bg-white border border-[#0d1117]/[0.08] rounded-2xl p-6">
+              [<BuildingIcon key="i" />, "Position in the chain", "Cell manufacturer, pack assembler, automotive OEM, energy storage or materials supplier."],
+              [<DocumentIcon key="i" />, "Passport data scope", "Material traceability, carbon footprint, due diligence data, State of Health, and more."],
+              [<PlugIcon key="i" />, "Current systems", "What you use today and what a new tool needs to integrate with."],
+              [<CalendarIcon key="i" />, "Timeline", "How soon you need this live, and how that shapes which providers make sense."],
+            ].map(([icon, title, body]) => (
+              <div key={title as string} className="bg-white border border-[#0d1117]/[0.08] rounded-2xl p-6">
+                <span className="w-9 h-9 rounded-full bg-[#4f46e5]/[0.10] flex items-center justify-center mb-3 text-[#4f46e5]">
+                  {icon}
+                </span>
                 <h3 className="font-sans font-semibold text-[20px] mb-2">{title}</h3>
                 <p className="text-[15px] text-[#5c6573]">{body}</p>
               </div>

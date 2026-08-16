@@ -248,3 +248,56 @@ regulatory claims beyond what's already verified elsewhere in this project.
 component unaffected by the icon-import refactor), live-server rendering confirming the byline, all
 icon-card sections, all 7 commodity chips, the FAQ, correct date values, and zero em-dash bytes on both
 pages.
+
+## 5. Sitewide icon-card enrichment + new PLM comparison section
+
+Extended `components/icons.tsx` with 16 new simple line icons (`MapPinIcon`, `SendIcon`,
+`FolderIcon`, `PeopleIcon`, `PlugIcon`, `TagIcon`, `SwatchIcon`, `ChatIcon`, `FlagIcon`, `CubeIcon`,
+`LayersIcon`, `ShirtIcon`, `BatteryIcon`, `TargetIcon`, `HandshakeIcon`, `ScaleIcon`), same 24x24,
+~1.8 stroke style as the existing set. Reused existing icons wherever the concept repeated (e.g.
+`BuildingIcon` for "company size fit" on both `/eudr` and `/plm`) rather than creating near-duplicates.
+
+Applied icon-card treatment to every discrete factor/benefit list sitewide:
+
+- **Homepage**: the 3 category cards' previously-empty colored circles now hold a real icon
+  (`LeafIcon` for EUDR, `ShirtIcon` for Fashion PLM, `BatteryIcon` for DBP). The 4-item "Why use
+  Software Lantern" grid got icons (`MagnifyingGlassIcon`, `TargetIcon`, `HandshakeIcon`, `TagIcon`).
+- **Providers page**: the 4-item "Why providers work with us" grid got icons (`DocumentIcon`,
+  `ScaleIcon`, `HandshakeIcon`, `ShieldIcon`).
+- **`/eudr`**: the 12-factor "How to choose EUDR compliance software" grid, previously plain
+  h3/p text, converted to icon cards (one icon per factor, no card border, matching the density of a
+  12-item grid). The 4-card "What your brief will cover" section got icons.
+- **`/plm`**: brand-new "How to choose fashion PLM software" section added, 12 factors in the same
+  icon-card format as `/eudr`'s, inserted between "What is fashion PLM software" and "What your
+  brief will cover" (mirroring `/eudr`'s section order). All 12 factors and their descriptions are
+  drawn from content already established and verified in the fashion PLM blog article (materials/trim
+  library, BOM management, tech packs, supplier collaboration, sampling, costing, season/collection
+  planning, critical path, ERP integration, 3D design integration, multi-brand scalability, company
+  size fit), not new claims. The 4-card "What your brief will cover" section also got icons.
+- **`/battery-passport`**: the 4-card "What your brief will cover" section got icons, for
+  consistency with the other two category pages, even though no "How to choose" section was
+  requested for this page this pass.
+- **Fashion PLM blog article**: the two buyer-segment sections (small/growing brand vs.
+  multi-brand/multinational), previously plain `<h3>` headers, converted to the same `BuildingIcon`/
+  `BoxIcon` icon-card treatment already used on the EUDR blog article, for parity.
+- **Bylines added** (per explicit confirmation) to the Fashion PLM blog article and the Battery
+  Passport regulation article: "Written by Johannes Cornelis de Boer, founder of Software Lantern",
+  same text and placement as the two EUDR pages, matching the founder name already published on
+  `/privacy`.
+
+**Deliberately left untouched, for consistency**: the numbered step sequences (homepage "How it
+works," providers "How it works for providers," providers "Our promise" 1-2-3 refund steps) stay
+number-only, no icons. Numbers are the correct signifier for an ordered process, not a set of
+parallel factors, and per the "all factors get one, or none do" rule, icon-ing two of the three
+step-flows but not the third would itself be the inconsistent outcome.
+
+No new regulatory or software-feature claims: every EUDR factor already existed in this file's copy
+(just re-presented with an icon); every PLM factor is drawn from the already-verified blog article.
+No competitor names, no em-dashes, no pricing/budget figures added anywhere in this pass.
+
+**Verification**: `tsc --noEmit` clean, `eslint --max-warnings=0` clean, full production build (all
+touched pages still static: `/`, `/plm`, `/eudr`, `/battery-passport`, `/providers`, both blog
+articles, the Battery Passport regulation article). Production server + `curl` checks confirmed: 12
+icon-card factors render on both `/eudr` and `/plm`, all new section headings and byline text render,
+zero em-dash bytes across every touched page, no competitor names (including a Matchilla-specific
+check) in any touched file, no pricing/budget-figure patterns in any touched file.

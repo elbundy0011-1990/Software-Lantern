@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
+import { LeafIcon, ShirtIcon, BatteryIcon, MagnifyingGlassIcon, TargetIcon, HandshakeIcon, TagIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   alternates: {
@@ -142,7 +143,9 @@ export default function HomePage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl px-[30px] pt-8 pb-[30px] flex flex-col">
-              <span className="w-11 h-11 rounded-full bg-[#4f46e5]/[0.10] block mb-6" />
+              <span className="w-11 h-11 rounded-full bg-[#4f46e5]/[0.10] flex items-center justify-center mb-6 text-[#4f46e5]">
+                <LeafIcon />
+              </span>
               <h3 className="font-sans font-semibold text-[27px] leading-[1.12] mb-3">EUDR Software</h3>
               <p className="mb-[26px] text-[16px] text-[#5c6573]">
                 Software for EU Deforestation Regulation compliance: supplier geolocation, due diligence
@@ -156,7 +159,9 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl px-[30px] pt-8 pb-[30px] flex flex-col">
-              <span className="w-11 h-11 rounded-full bg-[#10b981]/[0.10] block mb-6" />
+              <span className="w-11 h-11 rounded-full bg-[#10b981]/[0.10] flex items-center justify-center mb-6 text-[#047857]">
+                <ShirtIcon />
+              </span>
               <h3 className="font-sans font-semibold text-[27px] leading-[1.12] mb-3">Fashion PLM Software</h3>
               <p className="mb-[26px] text-[16px] text-[#5c6573]">
                 PLM for fashion brands, apparel manufacturers, footwear and accessories companies managing
@@ -170,7 +175,9 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl px-[30px] pt-8 pb-[30px] flex flex-col">
-              <span className="w-11 h-11 rounded-full bg-[#10b981]/[0.18] block mb-6" />
+              <span className="w-11 h-11 rounded-full bg-[#10b981]/[0.18] flex items-center justify-center mb-6 text-[#047857]">
+                <BatteryIcon />
+              </span>
               <h3 className="font-sans font-semibold text-[27px] leading-[1.12] mb-3">
                 Digital Battery Passport Software
               </h3>
@@ -216,12 +223,15 @@ export default function HomePage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-8">
               {[
-                ["Less research", "Your brief reaches providers directly, so you don't have to evaluate dozens yourself."],
-                ["Better fit", "Your requirements, industry and company size are all part of the brief providers see, so only relevant ones respond."],
-                ["Your choice", "You compare the options and decide who you want to talk to, or nobody at all."],
-                ["Free for buyers", "There is no cost to use Software Lantern. Providers are the commercial side."],
-              ].map(([title, body]) => (
-                <div key={title}>
+                [<MagnifyingGlassIcon key="i" />, "Less research", "Your brief reaches providers directly, so you don't have to evaluate dozens yourself."],
+                [<TargetIcon key="i" />, "Better fit", "Your requirements, industry and company size are all part of the brief providers see, so only relevant ones respond."],
+                [<HandshakeIcon key="i" />, "Your choice", "You compare the options and decide who you want to talk to, or nobody at all."],
+                [<TagIcon key="i" />, "Free for buyers", "There is no cost to use Software Lantern. Providers are the commercial side."],
+              ].map(([icon, title, body]) => (
+                <div key={title as string}>
+                  <span className="w-10 h-10 rounded-full bg-[#4f46e5]/[0.10] flex items-center justify-center mb-3 text-[#4f46e5]">
+                    {icon}
+                  </span>
                   <h3 className="font-sans font-semibold text-[22px] mb-2">{title}</h3>
                   <p className="text-[16px] text-[#3d4653]">{body}</p>
                 </div>

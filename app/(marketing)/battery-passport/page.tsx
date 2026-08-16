@@ -57,7 +57,15 @@ export default function BatteryPassportPage() {
                 Free for buyers · No obligation · Providers respond by email within 24 hours
               </p>
             </div>
-            <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-[30px] pb-[26px]">
+            <div
+              className="border border-[#0d1117]/[0.08] rounded-2xl p-[30px] pb-[26px]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(160deg, rgba(246,247,251,0.55) 0%, rgba(238,241,248,0.42) 100%), url('/battery-passport-bg.webp')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
               <p className="mb-[18px] text-[12px] font-bold tracking-[0.09em] uppercase text-[#4f46e5]">
                 By position in the chain
               </p>
@@ -67,7 +75,7 @@ export default function BatteryPassportPage() {
                     <Link
                       key={label}
                       href={batteryHref}
-                      className={`flex justify-between items-center py-[13px] px-1 font-semibold text-[#0d1117] ${
+                      className={`flex justify-between items-center py-[13px] px-3 -mx-3 rounded-lg font-semibold text-[#0d1117] transition-colors duration-150 hover:bg-white/[0.6] hover:text-[#4338ca] focus-visible:bg-white/[0.6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4f46e5] ${
                         i < arr.length - 1 ? "border-b border-[#0d1117]/[0.07]" : ""
                       }`}
                     >

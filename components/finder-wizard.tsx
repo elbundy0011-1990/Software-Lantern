@@ -285,6 +285,9 @@ export function FinderWizard() {
                 className="w-full bg-[#f6f7fb] rounded-full px-5 py-[14px] font-sans text-[16px] text-[#0d1117] outline-none"
                 style={{ border: `1px solid ${emailBorder}` }}
               />
+              <span className="block mt-[6px] ml-1 text-[12px] text-[#79818f]">
+                Personal email providers (Gmail, Yahoo, etc.) aren&apos;t accepted.
+              </span>
             </label>
             <label className="block">
               <span className="block text-[13px] font-bold text-[#5c6573] mb-[7px]">Phone</span>

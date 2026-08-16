@@ -1,3 +1,5 @@
+import FREE_EMAIL_DOMAINS from "free-email-domains";
+
 export type StepKind = "single" | "multi" | "text" | "contact";
 
 export interface FinderStep {
@@ -289,35 +291,14 @@ export function getSteps(
   return catPreset ? questions : [CATEGORY_STEP, ...questions];
 }
 
-export const FREE_EMAIL_DOMAINS = [
-  "gmail.com",
-  "googlemail.com",
-  "hotmail.com",
-  "hotmail.co.uk",
-  "outlook.com",
-  "live.com",
-  "msn.com",
-  "yahoo.com",
-  "yahoo.co.uk",
-  "ymail.com",
-  "aol.com",
-  "icloud.com",
-  "me.com",
-  "mac.com",
-  "proton.me",
-  "protonmail.com",
-  "gmx.com",
-  "gmx.de",
-  "mail.com",
-  "zoho.com",
-  "yandex.com",
-  "web.de",
-  "free.fr",
-  "orange.fr",
-  "qq.com",
-  "163.com",
-  "126.com",
-];
+// Sourced from the `free-email-domains` package (actively maintained,
+// ~13k domains) rather than a hand-rolled list — this is a heuristic, not
+// perfect: it can't tell a company using Google Workspace on its own custom
+// domain (passes, correctly) from someone using a personal gmail.com address
+// (blocked), and it can't catch a free provider that isn't in the list. Both
+// the finder wizard (client) and /api/leads (server) import this same
+// constant, so the check can't be bypassed by posting straight to the API.
+export { FREE_EMAIL_DOMAINS };
 
 export function validateStep(
   step: FinderStep,
@@ -342,8 +323,8 @@ export function validateStep(
     if (!email) return "Please add your work email.";
     if (!/^[^\s@]+@[^\s@.]+\.[^\s@]{2,}$/.test(email)) return "That email address does not look valid.";
     const domain = email.split("@")[1];
-    if (FREE_EMAIL_DOMAINS.indexOf(domain) > -1) {
-      return "Please use your work email. Personal addresses such as Gmail, Hotmail, Outlook and Yahoo cannot be matched to a company.";
+    if (FREE_EMAIL_DOMAINS.includes(domain)) {
+      return "Please use your work email address — we use it to connect your brief to the right providers.";
     }
     const phone = trim(contact.phone).replace(/[^0-9]/g, "");
     if (!phone) return "Please add a phone number. Providers use it to reach you.";

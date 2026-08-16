@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { BATTERY_PASSPORT_DEADLINE } from "@/lib/battery-passport-dates";
 
 export const metadata: Metadata = {
   title: "Battery Passport Software | Compare Providers & Get Matched",
@@ -101,8 +102,8 @@ export default function BatteryPassportPage() {
               2023/1542, Article 77) requires: material traceability, carbon footprint, recycled content,
               State of Health data, and the QR-linked digital passport itself — usually pulling data from
               suppliers, ERP, and PLM systems into one connected record instead of scattered spreadsheets.
-              EV batteries, LMT batteries (e-bikes and e-scooters), and industrial batteries above 2 kWh
-              must carry a digital battery passport from 18 February 2027.
+              {BATTERY_PASSPORT_DEADLINE.scope} must carry a digital battery passport from{" "}
+              {BATTERY_PASSPORT_DEADLINE.display}.
             </p>
             <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-3">
               &ldquo;Battery passport&rdquo; and &ldquo;digital product passport (DPP)&rdquo; are related

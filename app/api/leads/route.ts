@@ -42,8 +42,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "A valid work email is required." }, { status: 400 });
   }
   const domain = email.split("@")[1];
-  if (FREE_EMAIL_DOMAINS.indexOf(domain) > -1) {
-    return NextResponse.json({ error: "Please use a work email address." }, { status: 400 });
+  if (FREE_EMAIL_DOMAINS.includes(domain)) {
+    return NextResponse.json(
+      { error: "Please use your work email address — we use it to connect your brief to the right providers." },
+      { status: 400 },
+    );
   }
   if (phoneDigits.length < 7) {
     return NextResponse.json({ error: "A valid phone number is required." }, { status: 400 });

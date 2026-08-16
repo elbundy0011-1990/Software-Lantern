@@ -67,6 +67,12 @@ Each category table uses these columns: **Keyword | Search Intent | Buyer Person
 
 ### Tier 3 — Informational (Supporting Only)
 
+**Update (Phase 9)**: "what is EUDR," "EUDR requirements," "EUDR due diligence statement," and "EUDR
+deadline" are now targeted by a dedicated article at `/resources/regulations/eudr`, not just an
+on-page GEO block — a deliberate scope increase from the original "not a standalone content
+investment" call below. See `docs/PHASE-9-CHANGES.md` for the cannibalization check against `/eudr`
+and the verification record. The table below is left as originally written for historical record.
+
 | Keyword | Search Intent | Buyer Persona | Industry | Commercial Intent | Priority | Recommended Page | Content Type | Primary/Secondary | Notes |
 |---|---|---|---|---|---|---|---|---|---|
 | what is EUDR | Informational | Anyone early-stage | Cross-industry | Low (as a standalone target) | P3 | `/eudr` (new) — brief definition block only, not a dedicated page | GEO definition block | Secondary | High volume likely, but weak buyer/purchase intent per the brief's own hierarchy — deliberately not a standalone content investment |
@@ -187,6 +193,15 @@ Each category table uses these columns: **Keyword | Search Intent | Buyer Person
 | battery passport software pricing | Evaluation, price research | Economic buyer | Same | Medium | P2 | `/battery-passport` (new) | Category page section | Secondary | Same treatment as the other two categories' pricing terms |
 
 ### Tier 3 — Informational (Supporting Only)
+
+**Update (Phase 9)**: "what is a battery passport," "what is digital product passport," and "battery
+passport requirements" are now targeted by a dedicated article at
+`/resources/regulations/battery-passport`. The `[VERIFY]` on "battery passport requirements" was
+acted on this phase — see `docs/PHASE-9-CHANGES.md` for what could and couldn't be confirmed against
+EUR-Lex (direct primary-source fetch of Article 77 failed after 5 attempts due to document length;
+the article's copy is written at medium-confidence/secondary-source precision as a result, not
+presented as an exhaustive legal enumeration). The table below is left as originally written for
+historical record.
 
 | Keyword | Search Intent | Buyer Persona | Industry | Commercial Intent | Priority | Recommended Page | Content Type | Primary/Secondary | Notes |
 |---|---|---|---|---|---|---|---|---|---|

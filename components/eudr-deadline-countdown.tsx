@@ -3,6 +3,56 @@
 import { useEffect, useState } from "react";
 import { EUDR_DEADLINES, daysUntil } from "@/lib/eudr-dates";
 
+function CalendarIcon({ color }: { color: string }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3.5" y="5" width="17" height="16" rx="2.5" stroke={color} strokeWidth="1.8" />
+      <path d="M3.5 9.5H20.5" stroke={color} strokeWidth="1.8" />
+      <path d="M8 3V6.5" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M16 3V6.5" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function DeadlineCard({
+  label,
+  display,
+  days,
+  accent,
+  bg,
+}: {
+  label: string;
+  display: string;
+  days: number | null;
+  accent: string;
+  bg: string;
+}) {
+  return (
+    <div
+      className="flex-1 min-w-[240px] rounded-2xl border p-6 sm:p-7 text-center"
+      style={{ borderColor: `${accent}33`, background: bg }}
+    >
+      <div className="flex items-center justify-center gap-2 mb-4">
+        <CalendarIcon color={accent} />
+        <p
+          className="text-[13px] font-bold tracking-[0.06em] uppercase"
+          style={{ color: accent }}
+        >
+          {label}
+        </p>
+      </div>
+      <p
+        className="font-sans font-semibold leading-none tracking-[-0.02em] mb-2 tabular-nums"
+        style={{ color: "#0d1117", fontSize: "clamp(44px, 8vw, 64px)" }}
+      >
+        {days !== null ? days : "–"}
+      </p>
+      <p className="text-[14px] font-semibold text-[#5c6573] mb-3">days remaining</p>
+      <p className="text-[14px] text-[#79818f]">Deadline: {display}</p>
+    </div>
+  );
+}
+
 export function EudrDeadlineCountdown() {
   // Day counts are computed client-side, after mount, rather than at build
   // time — /eudr is statically prerendered, so baking "X days remaining"
@@ -20,22 +70,28 @@ export function EudrDeadlineCountdown() {
   }, []);
 
   return (
-    <div className="border-b border-[#0d1117]/[0.07] bg-[#f6f7fb]">
-      <div className="max-w-[1160px] mx-auto px-5 sm:px-8 py-4 flex flex-wrap items-center gap-x-8 gap-y-2">
-        <p className="text-[12px] font-bold tracking-[0.08em] uppercase text-[#79818f] whitespace-nowrap">
+    <section className="border-b border-[#0d1117]/[0.07] bg-[#f6f7fb]">
+      <div className="max-w-[860px] mx-auto px-5 sm:px-8 py-16 text-center">
+        <p className="mb-7 text-[12px] font-bold tracking-[0.09em] uppercase text-[#79818f]">
           EUDR compliance deadlines
         </p>
-        <div className="flex items-center gap-2 text-[14px] font-semibold text-[#3d4653]">
-          <span className="w-[7px] h-[7px] rounded-full bg-[#4f46e5] shrink-0" />
-          {EUDR_DEADLINES.largeMedium.label}: {EUDR_DEADLINES.largeMedium.display}
-          {days && <span className="text-[#79818f] font-normal"> — {days.largeMedium} days</span>}
-        </div>
-        <div className="flex items-center gap-2 text-[14px] font-semibold text-[#3d4653]">
-          <span className="w-[7px] h-[7px] rounded-full bg-[#10b981] shrink-0" />
-          {EUDR_DEADLINES.microSmall.label}: {EUDR_DEADLINES.microSmall.display}
-          {days && <span className="text-[#79818f] font-normal"> — {days.microSmall} days</span>}
+        <div className="flex flex-col sm:flex-row gap-5">
+          <DeadlineCard
+            label={EUDR_DEADLINES.largeMedium.label}
+            display={EUDR_DEADLINES.largeMedium.display}
+            days={days ? days.largeMedium : null}
+            accent="#4f46e5"
+            bg="#eef1f8"
+          />
+          <DeadlineCard
+            label={EUDR_DEADLINES.microSmall.label}
+            display={EUDR_DEADLINES.microSmall.display}
+            days={days ? days.microSmall : null}
+            accent="#047857"
+            bg="rgba(16,185,129,0.08)"
+          />
         </div>
       </div>
-    </div>
+    </section>
   );
 }

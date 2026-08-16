@@ -7,3 +7,21 @@
 * {
   box-sizing: border-box;
 }
+
+/* Used by the EUDR scope checker to fade/slide each new question or the
+   result screen in on mount — applied to a div keyed by screen name, so a
+   screen change remounts the node and retriggers the animation for free. */
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.eudr-step-in {
+  animation: step-in 0.28s ease-out;
+}

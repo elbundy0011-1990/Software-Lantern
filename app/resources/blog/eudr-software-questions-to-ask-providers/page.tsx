@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { EUDR_DEADLINES } from "@/lib/eudr-dates";
+import { BuildingIcon, BoxIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "How to Evaluate EUDR Software: A Buyer's Checklist and Questions to Ask Providers | Software Lantern",
@@ -12,10 +13,36 @@ export const metadata: Metadata = {
 };
 
 const h2 = "font-sans font-semibold text-[26px] leading-[1.2] tracking-[-0.02em] mt-16 mb-4";
-const h3 = "font-sans font-semibold text-[19px] leading-[1.3] mt-8 mb-2";
 const p = "text-[16px] leading-[1.7] text-[#3d4653] mb-4";
 const link = "text-[#4f46e5] font-semibold";
 const ol = "list-decimal pl-6 mb-4 grid gap-3 text-[16px] leading-[1.7] text-[#3d4653]";
+
+function IconCard({
+  icon,
+  title,
+  children,
+  accent = "#4f46e5",
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+  accent?: string;
+}) {
+  return (
+    <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-6">
+      <div className="flex items-center gap-3 mb-3">
+        <span
+          className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center"
+          style={{ background: `${accent}1a`, color: accent }}
+        >
+          {icon}
+        </span>
+        <h3 className="font-sans font-semibold text-[17px] text-[#0d1117]">{title}</h3>
+      </div>
+      <p className="text-[15px] leading-[1.6] text-[#5c6573]">{children}</p>
+    </div>
+  );
+}
 
 const QUESTIONS: { q: string; why: string; lookFor: string }[] = [
   {
@@ -99,6 +126,9 @@ export default function EudrSoftwareQuestionsArticlePage() {
           <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-3">
             How to Evaluate EUDR Software: A Buyer&apos;s Checklist and Questions to Ask Providers
           </h1>
+          <p className="text-[13px] font-semibold text-[#5c6573] mb-6">
+            Written by Johannes Cornelis de Boer, founder of Software Lantern
+          </p>
           <p className="text-[15px] text-[#79818f] mb-14">
             For a compact side-by-side reference of specific capabilities, see the{" "}
             <Link href="/eudr#eudr-scope-checker" className={link}>
@@ -121,28 +151,26 @@ export default function EudrSoftwareQuestionsArticlePage() {
             often a poor fit, and a poor price, for the other.
           </p>
 
-          <h3 className={h3}>If you&apos;re a large operator or trader</h3>
-          <p className={p}>
-            You&apos;re likely managing a high supplier count, multiple commodities, and a
-            compliance team that needs audit-defensible records, not just a compliant process.
-            Prioritize depth: automated risk scoring, direct submission to the EU&apos;s
-            Information System, ERP
-            integration, and an audit trail detailed enough to survive scrutiny. Obligations apply
-            from <strong>{EUDR_DEADLINES.largeMedium.display}</strong>, so integration timelines
-            and internal rollout matter as much as the feature set itself.
-          </p>
-
-          <h3 className={h3}>If you&apos;re a small trader or producer</h3>
-          <p className={p}>
-            You&apos;re handling this alongside everything else it takes to run the business,
-            usually without a dedicated compliance hire. A platform built for a large importer is
-            usually the wrong fit, and the wrong price, for you. If you&apos;re a trader
-            specifically, your obligations are narrower than an operator&apos;s, so confirm the
-            platform doesn&apos;t force you into a full operator workflow you don&apos;t need. If
-            you do qualify for the later,
-            micro/small deadline, use the extra time to pick a tool sized for your actual supplier
-            count, not a scaled-down enterprise platform.
-          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <IconCard icon={<BuildingIcon />} title="If you're a large operator or trader">
+              You&apos;re likely managing a high supplier count, multiple commodities, and a
+              compliance team that needs audit-defensible records, not just a compliant process.
+              Prioritize depth: automated risk scoring, direct submission to the EU&apos;s
+              Information System, ERP integration, and an audit trail detailed enough to survive
+              scrutiny. Obligations apply from <strong>{EUDR_DEADLINES.largeMedium.display}</strong>,
+              so integration timelines and internal rollout matter as much as the feature set
+              itself.
+            </IconCard>
+            <IconCard icon={<BoxIcon />} title="If you're a small trader or producer" accent="#047857">
+              You&apos;re handling this alongside everything else it takes to run the business,
+              usually without a dedicated compliance hire. A platform built for a large importer is
+              usually the wrong fit, and the wrong price, for you. If you&apos;re a trader
+              specifically, your obligations are narrower than an operator&apos;s, so confirm the
+              platform doesn&apos;t force you into a full operator workflow you don&apos;t need. If
+              you do qualify for the later, micro/small deadline, use the extra time to pick a tool
+              sized for your actual supplier count, not a scaled-down enterprise platform.
+            </IconCard>
+          </div>
 
           <h2 className={h2}>Then work through what actually matters for your situation</h2>
           <p className={p}>

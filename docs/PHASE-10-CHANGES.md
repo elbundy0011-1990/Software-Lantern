@@ -187,4 +187,64 @@ discipline used for industry-specific subpages elsewhere in this project.
 **Verification**: `tsc`, `eslint`, full production build, live-server rendering confirming all 11
 questions, both buyer-segment tracks, the corrected CTA link, the hub listing, and zero em-dash bytes.
 
-**Status: awaiting approval to commit and push.**
+**Status: approved and published.**
+
+---
+
+## 4. Visual enrichment — regulation article + EUDR blog article
+
+Enrichment of two existing pages (`/resources/regulations/eudr` and the EUDR blog article), not new
+pages, not a merge. Plan (icon sections, table decision, FAQ questions) shown and approved before
+implementing.
+
+**New shared module** `components/icons.tsx`: eight simple, generic inline line icons (leaf,
+document, shield, magnifying glass, calendar, exchange/arrows, checklist, building, box), same stroke
+style as the icon already established in the deadline countdown component. `eudr-deadline-countdown.tsx`
+now imports its calendar icon from this shared module instead of defining its own copy, removing
+duplication rather than adding to it.
+
+**Table decision**: attempted to verify EUR-Lex Annex I (which commodity maps to which derived
+products) to build a "commodity → example products" table. **Failed after 2 fetch attempts**, same
+truncation issue seen with long EUR-Lex documents elsewhere in this project. Since a table would imply
+regulatory precision that couldn't be backed up, no table was added — the commodities section instead
+became an icon-grid (leaf icon, 7 cards) achieving the requested visual richness without the unverified
+claim. No other section was genuinely tabular enough to justify a table either, so this phase adds zero
+new tables, a deliberate judgment call, not an oversight.
+
+**`/resources/regulations/eudr` changes**:
+- Byline added under the H1: "Written by Johannes Cornelis de Boer, founder of Software Lantern" —
+  the name already published and verifiable on `/privacy`, no invented persona.
+- "Who does EUDR apply to?" — the Operator/Trader list became 2 icon cards (document icon for
+  Operator, exchange-arrows icon for Trader).
+- "EUDR covers seven commodities" — became an icon-grid (leaf icon × 7), not a table, per the
+  verification failure above.
+- "EUDR requirements" — the 4-part list became icon cards (document, magnifying glass, shield,
+  checklist).
+- "EUDR deadlines" — became 2 icon cards using the calendar icon, matching the countdown component's
+  visual pattern and accent colors (indigo / emerald). **Both cards read their dates directly from
+  `EUDR_DEADLINES` in `lib/eudr-dates.ts`** — the same import already used elsewhere on this page — so
+  there is no independent restatement and no drift risk from the countdown component, per the explicit
+  confirmation requested before implementing.
+- New FAQ section added (5 questions), every answer reusing only already-established facts already on
+  this page or in `lib/eudr-dates.ts`: operator/trader distinction, the SME deadline and its
+  operator-only scope, the low-risk simplified procedure, where the due diligence statement is filed,
+  and the 2025/2650-supersedes-2024/3234 history. No penalties/enforcement question was added, since
+  that hasn't been verified anywhere in this project and wasn't going to be guessed at.
+- **CTA block left completely unchanged** (confirmed via direct diff) — no push toward commercial
+  intent, no merge with the blog article's framing.
+
+**Blog article changes**: same byline treatment; the two buyer-segment sections (large operator/trader,
+small trader/producer) became icon cards (building icon, box icon), keeping their full existing text.
+No FAQ, no table (nothing genuinely tabular there, and none was requested for this page).
+
+**Standing rules**: no competitor names anywhere (swept, including Matchilla specifically, per the
+explicit instruction not to reference the competitor this enrichment was prompted by reviewing — it
+was never mentioned in any draft). No em-dashes (swept, source and rendered HTML, only remaining
+instance sitewide is a pre-existing code comment in `eudr-deadline-countdown.tsx`, out of scope for the
+live-copy rule). No pricing or budget figures added anywhere (checked directly, none present). No new
+regulatory claims beyond what's already verified elsewhere in this project.
+
+**Verification**: `tsc`, `eslint`, full production build (both pages still static, `/eudr`'s countdown
+component unaffected by the icon-import refactor), live-server rendering confirming the byline, all
+icon-card sections, all 7 commodity chips, the FAQ, correct date values, and zero em-dash bytes on both
+pages.

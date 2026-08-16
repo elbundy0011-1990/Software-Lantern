@@ -2,17 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { EUDR_DEADLINES, daysUntil } from "@/lib/eudr-dates";
-
-function CalendarIcon({ color }: { color: string }) {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="3.5" y="5" width="17" height="16" rx="2.5" stroke={color} strokeWidth="1.8" />
-      <path d="M3.5 9.5H20.5" stroke={color} strokeWidth="1.8" />
-      <path d="M8 3V6.5" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M16 3V6.5" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  );
-}
+import { CalendarIcon } from "@/components/icons";
 
 function DeadlineCard({
   label,

@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/resources/regulations/eudr",
     "/resources/regulations/battery-passport",
     "/resources/blog",
+    "/resources/blog/eudr-software-questions-to-ask-providers",
   ];
 
   return routes.map((route) => ({

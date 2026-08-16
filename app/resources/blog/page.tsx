@@ -31,15 +31,26 @@ export default function BlogHubPage() {
             we cover.
           </p>
 
-          <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-10 text-center">
-            <p className="text-[16px] font-semibold text-[#0d1117] mb-2">Nothing published yet</p>
-            <p className="text-[15px] text-[#5c6573] mb-6 max-w-[46ch] mx-auto">
-              We&apos;re working on our first posts. In the meantime, our{" "}
-              <Link href="/resources/regulations" className="text-[#4f46e5] font-semibold">
-                regulation explainers
-              </Link>{" "}
-              cover what EUDR and the EU Battery Regulation actually require.
-            </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <Link
+              href="/resources/blog/eudr-software-questions-to-ask-providers"
+              className="block bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-7 hover:border-[#4f46e5]/[0.4] transition-colors duration-150"
+            >
+              <p className="mb-3 text-[12px] font-bold tracking-[0.09em] uppercase text-[#4f46e5]">
+                EUDR
+              </p>
+              <h2 className="font-sans font-semibold text-[21px] leading-[1.25] mb-2">
+                How to Evaluate EUDR Software: A Buyer&apos;s Checklist and Questions to Ask
+                Providers
+              </h2>
+              <p className="text-[15px] text-[#5c6573] leading-[1.5]">
+                A sequential guide organized by buyer role and size, plus a script of questions to
+                bring to a provider call.
+              </p>
+              <span className="mt-4 inline-block text-[14px] font-semibold text-[#4338ca]">
+                Read the guide →
+              </span>
+            </Link>
           </div>
         </div>
       </section>

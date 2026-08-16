@@ -1,5 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { EUDR_DEADLINES } from "@/lib/eudr-dates";
+import { EudrDeadlineCountdown } from "@/components/eudr-deadline-countdown";
+import { EudrScopeChecker } from "@/components/eudr-scope-checker";
 
 export const metadata: Metadata = {
   title: "EUDR Compliance Software | Compare Providers & Get Matched",
@@ -77,6 +80,10 @@ export default function EudrPage() {
           </div>
         </div>
       </section>
+
+      <EudrDeadlineCountdown />
+
+      <EudrScopeChecker />
 
       <section className="border-b border-[#0d1117]/[0.07]">
         <div className="max-w-[1160px] mx-auto px-5 sm:px-8 py-21">
@@ -267,11 +274,11 @@ export default function EudrPage() {
               ],
               [
                 "What's the difference between EUDR software for operators vs. traders?",
-                "Operators — the businesses that first place a covered product on the EU market, or make it available if produced in the EU — carry the full due diligence burden: geolocation, risk assessment, and filing the due diligence statement, with obligations applying from 30 December 2026 for large and medium operators. Traders further down the supply chain have narrower obligations, particularly SME traders, who mainly need to reference the due diligence statement from their supplier rather than generate their own. A platform built for full operator workflows is often more than a trader actually needs.",
+                `Operators — the businesses that first place a covered product on the EU market, or make it available if produced in the EU — carry the full due diligence burden: geolocation, risk assessment, and filing the due diligence statement, with obligations applying from ${EUDR_DEADLINES.largeMedium.display} for large and medium operators. Traders further down the supply chain have narrower obligations, particularly SME traders, who mainly need to reference the due diligence statement from their supplier rather than generate their own. A platform built for full operator workflows is often more than a trader actually needs.`,
               ],
               [
                 "Do small businesses and SMEs need EUDR software?",
-                "If you place or trade any of the seven EUDR-covered commodities (cattle, cocoa, coffee, oil palm, rubber, soya, wood) or their derived products on the EU market, EUDR applies to you regardless of size — large operators and traders must comply from 30 December 2026, and micro and small operators have longer, until 30 June 2027. Even with a later deadline, an SME's requirements — supplier count, budget, and how much of this data is already systemized — are usually different from an enterprise's, not just smaller.",
+                `If you place or trade any of the seven EUDR-covered commodities (cattle, cocoa, coffee, oil palm, rubber, soya, wood) or their derived products on the EU market, EUDR applies to you regardless of size — large operators and traders must comply from ${EUDR_DEADLINES.largeMedium.display}, and micro and small operators have longer, until ${EUDR_DEADLINES.microSmall.display}. Even with a later deadline, an SME's requirements — supplier count, budget, and how much of this data is already systemized — are usually different from an enterprise's, not just smaller.`,
               ],
               [
                 "What EUDR software is suitable for small businesses?",

@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { track } from "@vercel/analytics";
 import {
   getSteps,
   validateStep,
@@ -62,6 +63,13 @@ export function FinderWizard() {
   const [website, setWebsite] = useState(""); // honeypot
   const [turnstileToken, setTurnstileToken] = useState("");
 
+  useEffect(() => {
+    // Fires once per wizard mount, not per step — this is the "finder started"
+    // funnel event, distinct from per-step navigation.
+    track("finder_start", presetCategory ? { category: presetCategory } : {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally only on mount
+  }, []);
+
   const usingSoftwareAnswer = answers.usingSoftware as string | undefined;
   const steps = useMemo(
     () => getSteps(category, catPreset, usingSoftwareAnswer),
@@ -115,6 +123,7 @@ export function FinderWizard() {
       setSubmitting(false);
       return;
     }
+    track("finder_complete", category ? { category } : {});
     const summary = summaryRows(category, answers, contact);
     sessionStorage.setItem(
       "sl_finder_done",

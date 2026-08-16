@@ -41,7 +41,14 @@ This document is the reference for *who* the site should be built for. It intent
 - Never name a competitor (by company name or product name) in live, public-facing site copy. Competitive research informs internal strategy only — see `/docs/SERP-GEO-ANALYSIS.md` and `/docs/SEO-NEXT-STEPS.md`, which are internal documents, not source material for site copy.
 - The buyer stays in control: Software Lantern narrows the field and explains why; the buyer compares and decides.
 
-Any future work on copy, messaging, landing pages, or category pages should treat this section as binding, not just directional.
+**Software Lantern is not an automated software recommendation engine, and does not run algorithmic matching or provider scoring.** The actual mechanism is: a buyer submits structured requirements through the Finder → the resulting lead is published to the relevant category's provider portal → providers review the lead and self-select whether to respond, claim, or purchase it, because they have the product expertise to judge their own fit — not Software Lantern. Software Lantern's job is to produce a high-quality, structured requirement and get it in front of the right providers efficiently; determining fit is the provider's call, not an algorithm's. This is a deliberate architectural decision, not a missing feature.
+
+**Language discipline that follows from this:**
+- Do not describe or imply automated/algorithmic matching, fit-scoring, filtering, or ranking of providers — Software Lantern does not compute or claim to know provider fit.
+- Avoid phrasing where Software Lantern is the grammatical subject of "matching" or "identifying" providers on the buyer's behalf (e.g. "we identify providers that fit," "we match you with...") if it implies an automated process happening on our side. Prefer framing where the mechanism is visible: Software Lantern publishes a clear, structured requirement; providers review it and decide for themselves.
+- The provider portal is core marketplace infrastructure, not a passive display — future copy and product work should treat provider self-selection as the actual mechanism, not an implementation detail to gloss over.
+
+Any future work on copy, messaging, landing pages, features, or the provider portal should treat this section as binding, not just directional.
 
 ---
 

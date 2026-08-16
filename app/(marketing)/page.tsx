@@ -242,10 +242,10 @@ export default function HomePage() {
               <Image src="/logo-phd.png" alt="PHD" width={160} height={42} className="h-[42px] w-auto object-contain" />
             </div>
             <div className="h-24 bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl flex items-center justify-center px-6">
-              <Image src="/logo-meraas.png" alt="Meraas" width={320} height={320} className="h-[42px] w-auto object-contain" />
+              <Image src="/logo-meraas.png" alt="Meraas" width={307} height={92} className="h-[42px] w-auto object-contain" />
             </div>
             <div className="h-24 bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl flex items-center justify-center px-6">
-              <Image src="/logo-kawasaki.png" alt="Kawasaki" width={169} height={148} className="h-[42px] w-auto object-contain" />
+              <Image src="/logo-kawasaki.png" alt="Kawasaki" width={164} height={28} className="h-[42px] w-auto object-contain" />
             </div>
           </div>
         </div>

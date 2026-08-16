@@ -48,7 +48,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 bg-white/[0.86] backdrop-blur-[8px] border-b border-[#0d1117]/[0.07]">
       <div className="max-w-[1160px] mx-auto px-5 sm:px-8 py-4 flex items-center gap-8">
         <Link href="/" aria-label="Software Lantern home" className="flex items-center">
-          <Logo height={34} />
+          <Logo height={44} />
         </Link>
 
         <nav className="hidden min-[1041px]:flex items-center gap-[26px] ml-auto text-[15px] font-semibold">

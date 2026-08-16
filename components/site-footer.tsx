@@ -6,7 +6,7 @@ export function SiteFooter() {
     <footer className="border-t border-[#0d1117]/[0.07] bg-[#f6f7fb]">
       <div className="max-w-[1160px] mx-auto px-5 sm:px-8 pt-[60px] pb-11 grid grid-cols-1 sm:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10">
         <div>
-          <Logo height={32} />
+          <Logo height={44} />
           <p className="mt-4 text-[15px] text-[#5c6573] max-w-[34ch]">
             Tell us what software you need. We&apos;ll connect you with 3 providers that believe they can help.
           </p>

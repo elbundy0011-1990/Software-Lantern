@@ -30,12 +30,33 @@ function formatPrice(price: number | null): string {
   return price != null ? `€${price}` : "Contact us";
 }
 
-export function PortalDashboard({ leads, loadError }: { leads: PartnerLead[]; loadError: boolean }) {
+function defaultFilter(partnerCategories: string[]): (typeof FILTERS)[number] {
+  // Only default to a single category when the partner declared exactly one
+  // at signup — a multi-category partner (or one who hasn't set this yet)
+  // still starts on "All categories" rather than guessing which one to show.
+  if (partnerCategories.length === 1) {
+    const only = partnerCategories[0];
+    if ((FILTERS as readonly string[]).includes(only)) {
+      return only as (typeof FILTERS)[number];
+    }
+  }
+  return "All categories";
+}
+
+export function PortalDashboard({
+  leads,
+  loadError,
+  partnerCategories,
+}: {
+  leads: PartnerLead[];
+  loadError: boolean;
+  partnerCategories: string[];
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const unlockedParam = searchParams.get("unlocked");
 
-  const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All categories");
+  const [filter, setFilter] = useState<(typeof FILTERS)[number]>(() => defaultFilter(partnerCategories));
   const [openLeadId, setOpenLeadId] = useState<string | null>(unlockedParam);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 

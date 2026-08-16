@@ -63,7 +63,8 @@ export default function HomePage() {
           <div className="bg-white border border-[#0d1117]/[0.09] rounded-[20px] p-[30px] pb-[26px] shadow-[0_24px_60px_rgba(13,17,23,0.10),0_2px_6px_rgba(13,17,23,0.04)]">
             <h2 className="font-sans font-semibold text-[27px] leading-[1.14] mb-2">What are you looking for?</h2>
             <p className="mb-[22px] text-[16px] text-[#5c6573]">
-              Pick a category and answer a few quick questions to get matched.
+              Pick a category and answer a few quick questions to get your requirements in front of
+              providers.
             </p>
             <p className="mb-3 text-[12px] font-bold tracking-[0.09em] uppercase text-[#4f46e5]">
               Browse our categories
@@ -81,7 +82,7 @@ export default function HomePage() {
               ))}
             </div>
             <p className="mt-[22px] pt-[18px] border-t border-[#0d1117]/[0.07] text-[14px] font-semibold text-[#5c6573]">
-              3 relevant providers · No obligation · No spam
+              Up to 3 responding providers · No obligation · No spam
             </p>
           </div>
         </div>
@@ -92,8 +93,8 @@ export default function HomePage() {
         <div className="max-w-[1160px] mx-auto px-5 sm:px-8 py-[26px] grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             "Free for buyers, always",
-            "3 matched providers, not a directory",
-            "Matches by email within 24 hours",
+            "Providers respond, not a directory",
+            "Providers respond by email within 24 hours",
           ].map((t) => (
             <div key={t} className="flex items-center gap-3">
               <span className="w-2 h-2 rounded-full bg-[#10b981] shrink-0 block" />
@@ -116,7 +117,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
               ["01", "Tell us what you need", "A few quick questions about your company, requirements and goals."],
-              ["02", "We find your matches", "We identify up to 3 providers that believe their platform fits your needs."],
+              ["02", "We publish your brief", "Your brief is published to providers in the category. Up to 3 who believe they're a fit will respond."],
               ["03", "Compare your options", "Speak with the providers and see how each solution fits your requirements."],
               ["04", "Choose the right one", "You decide which provider is best for your business. No obligation either way."],
             ].map(([num, title, body]) => (
@@ -189,7 +190,7 @@ export default function HomePage() {
           <div className="flex items-center justify-center gap-[18px] flex-wrap mt-10 bg-[#eef1f8] rounded-full px-[30px] py-5">
             <span className="font-sans font-semibold text-[19px]">Your needs</span>
             <span className="text-[#4338ca] text-[19px]">→</span>
-            <span className="font-sans font-semibold text-[19px]">We match</span>
+            <span className="font-sans font-semibold text-[19px]">We publish</span>
             <span className="text-[#4338ca] text-[19px]">→</span>
             <span className="font-sans font-semibold text-[19px] bg-[#4f46e5] text-white rounded-full px-[18px] py-[7px]">
               3 providers
@@ -215,8 +216,8 @@ export default function HomePage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-8">
               {[
-                ["Less research", "We narrow the market so you don't have to evaluate dozens of providers."],
-                ["Better fit", "We match providers against your requirements, industry and company size."],
+                ["Less research", "Your brief reaches providers directly, so you don't have to evaluate dozens yourself."],
+                ["Better fit", "Your requirements, industry and company size are all part of the brief providers see, so only relevant ones respond."],
                 ["Your choice", "You compare the options and decide who you want to talk to, or nobody at all."],
                 ["Free for buyers", "There is no cost to use Software Lantern. Providers are the commercial side."],
               ].map(([title, body]) => (

@@ -42,9 +42,9 @@ export default function PlmPage() {
                 Comparing every option yourself can take weeks.
               </p>
               <p className="text-[17px] text-[#5c6573] mb-[34px] max-w-[48ch]">
-                Tell us about your brand and requirements, and we&apos;ll identify up to 3 fashion PLM
-                providers that appear relevant to your specific situation — not a ranked list, and not a
-                guess at which one is objectively best.
+                Tell us about your brand and requirements, and we&apos;ll publish your brief to fashion PLM
+                providers in the category — up to 3 who believe they&apos;re a fit will respond. Not a
+                ranked list, and not a guess at which one is objectively best.
               </p>
               <Link
                 href={plmHref}
@@ -53,7 +53,7 @@ export default function PlmPage() {
                 Find my PLM →
               </Link>
               <p className="mt-6 text-[14px] font-semibold text-[#5c6573]">
-                Free for buyers · No obligation · Matches by email within 24 hours
+                Free for buyers · No obligation · Providers respond by email within 24 hours
               </p>
             </div>
             <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-[30px] pb-[26px]">
@@ -118,7 +118,7 @@ export default function PlmPage() {
       <section className="bg-[#f6f7fb] border-b border-[#0d1117]/[0.07]">
         <div className="max-w-[1160px] mx-auto px-5 sm:px-8 py-21">
           <h2 className="font-sans font-semibold text-[clamp(28px,3.8vw,40px)] leading-[1.1] tracking-[-0.03em] mb-11 max-w-[24ch]">
-            What we&apos;ll match you on
+            What your brief will cover
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[22px]">
             {[
@@ -145,11 +145,11 @@ export default function PlmPage() {
             {[
               [
                 "How do you choose the three providers?",
-                "We take your requirements to providers in the category and share your brief with those whose platform is a plausible fit. The three you receive are providers that believe they can meet your requirements, not a ranking.",
+                "We publish your brief to providers in the category. Any provider can review it and choose to respond — the providers you hear from are the ones that believe they can meet your requirements, not a ranking we've made.",
               ],
               [
                 "How do I choose a fashion PLM system?",
-                "Start with your product development workflow and where it breaks down today — tech packs, BOM, supplier collaboration, costing, or all of the above. That's exactly what our questions cover, so the providers we introduce you to are ones that plausibly fit your workflow and company size, not a generic top-10 list.",
+                "Start with your product development workflow and where it breaks down today — tech packs, BOM, supplier collaboration, costing, or all of the above. That's exactly what our questions cover, so your brief reaches providers with enough detail for them to judge their own fit to your workflow and company size, not a generic top-10 list.",
               ],
               [
                 "What's the difference between general PLM and fashion PLM?",
@@ -161,7 +161,7 @@ export default function PlmPage() {
               ],
               [
                 "How long does it take?",
-                "The questions take about three minutes. Your matches arrive by email within 24 hours.",
+                "The questions take about three minutes. Provider replies arrive by email within 24 hours.",
               ],
               [
                 "Do I have to speak to all of them?",

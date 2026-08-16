@@ -5,17 +5,32 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
+const CATEGORY_OPTIONS = [
+  { code: "EUDR", label: "EUDR software" },
+  { code: "PLM", label: "Fashion PLM software" },
+  { code: "DBP", label: "Battery Passport software" },
+] as const;
+
 export default function PartnerSignupPage() {
   const router = useRouter();
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [categories, setCategories] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const toggleCategory = (code: string) => {
+    setCategories((cur) => (cur.includes(code) ? cur.filter((c) => c !== code) : [...cur, code]));
+  };
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (categories.length === 0) {
+      setError("Pick at least one category you provide software for.");
+      return;
+    }
     setLoading(true);
     setError(null);
     setNotice(null);
@@ -26,7 +41,7 @@ export default function PartnerSignupPage() {
         email,
         password,
         options: {
-          data: { company_name: companyName },
+          data: { company_name: companyName, categories },
           emailRedirectTo: `${window.location.origin}/auth/callback?next=/portal`,
         },
       });
@@ -94,6 +109,32 @@ export default function PartnerSignupPage() {
             className="w-full bg-[#f6f7fb] border border-[#0d1117]/[0.12] rounded-full px-5 py-[12px] text-[15px] outline-none focus:border-[#4f46e5]"
           />
         </label>
+
+        <div className="mb-6">
+          <span className="block text-[13px] font-bold text-[#5c6573] mb-[7px]">
+            Which categories do you provide software for?
+          </span>
+          <div className="grid gap-2">
+            {CATEGORY_OPTIONS.map((opt) => (
+              <label
+                key={opt.code}
+                className="flex items-center gap-3 bg-[#f6f7fb] border border-[#0d1117]/[0.12] rounded-full px-5 py-[11px] text-[15px] cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  checked={categories.includes(opt.code)}
+                  onChange={() => toggleCategory(opt.code)}
+                  className="accent-[#4f46e5]"
+                />
+                {opt.label}
+              </label>
+            ))}
+          </div>
+          <p className="mt-2 text-[13px] text-[#79818f]">
+            This sets which leads show by default in your portal — you can still browse other
+            categories from there.
+          </p>
+        </div>
 
         {error && <p className="mb-4 text-[14px] font-semibold text-[#c0451f]">{error}</p>}
         {notice && <p className="mb-4 text-[14px] font-semibold text-[#047857]">{notice}</p>}

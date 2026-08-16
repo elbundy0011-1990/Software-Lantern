@@ -48,7 +48,7 @@ const CATEGORY_STEP: FinderStep = {
 const CONTACT_STEP: FinderStep = {
   id: "contact",
   kind: "contact",
-  title: "Where should we send your matches?",
+  title: "Where should providers reach you?",
   help: "All fields are required. Please use your work email so we can match you to a company.",
 };
 
@@ -368,10 +368,10 @@ export const MATCH_COUNT = 3;
 // to a page that doesn't exist (or worse, always linking to /plm regardless
 // of category). Add an entry here as each category's page ships.
 const CATEGORY_INFO_PAGES: Record<string, { label: string; href: string }> = {
-  "Product Lifecycle Management (PLM)": { label: "Read about PLM matching", href: "/plm" },
+  "Product Lifecycle Management (PLM)": { label: "Read about fashion PLM software", href: "/plm" },
 };
 
-const GENERIC_INFO_LINK = { label: "Read about how matching works", href: "/#how-it-works" };
+const GENERIC_INFO_LINK = { label: "Read about how it works", href: "/#how-it-works" };
 
 export function categoryInfoLink(category: string | null): { label: string; href: string } {
   if (!category) return GENERIC_INFO_LINK;

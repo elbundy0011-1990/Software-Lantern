@@ -17,7 +17,7 @@ export async function requirePartner() {
 
   const { data: existing } = await supabase
     .from("partners")
-    .select("id, company_name, contact_email")
+    .select("id, company_name, contact_email, categories")
     .eq("auth_user_id", user.id)
     .maybeSingle();
 
@@ -25,10 +25,12 @@ export async function requirePartner() {
 
   const companyName = (user.user_metadata?.company_name as string | undefined) || "New partner";
   const contactEmail = user.email || "";
+  const categories = (user.user_metadata?.categories as string[] | undefined) || [];
 
   const { data: created, error } = await supabase.rpc("create_partner", {
     p_company_name: companyName,
     p_contact_email: contactEmail,
+    p_categories: categories,
   });
 
   if (error || !created) redirect("/portal/login");

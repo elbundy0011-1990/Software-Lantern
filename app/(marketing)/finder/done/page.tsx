@@ -44,8 +44,8 @@ export default function FinderDonePage() {
         Your brief is with us
       </h2>
       <p className="mb-[30px] text-[19px] text-[#3d4653] max-w-[44ch]">
-        We&apos;ll come back within 24 hours with up to 3 {doneCategory} providers that believe they can
-        meet your requirements.
+        Within 24 hours, up to 3 {doneCategory} providers that believe they can meet your requirements
+        will be in touch.
       </p>
       {summary.length > 0 && (
         <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-[30px] mb-[34px]">

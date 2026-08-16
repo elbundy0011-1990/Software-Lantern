@@ -42,9 +42,9 @@ export default function EudrPage() {
                 yourself can take weeks.
               </p>
               <p className="text-[17px] text-[#5c6573] mb-[34px] max-w-[48ch]">
-                Tell us about your business and requirements, and we&apos;ll identify up to 3 EUDR software
-                providers that appear relevant to your specific situation — not a ranked list, and not a
-                guess at which one is objectively best.
+                Tell us about your business and requirements, and we&apos;ll publish your brief to EUDR
+                software providers in the category — up to 3 who believe they&apos;re a fit will respond.
+                Not a ranked list, and not a guess at which one is objectively best.
               </p>
               <Link
                 href={eudrHref}
@@ -53,7 +53,7 @@ export default function EudrPage() {
                 Find EUDR software →
               </Link>
               <p className="mt-6 text-[14px] font-semibold text-[#5c6573]">
-                Free for buyers · No obligation · Matches by email within 24 hours
+                Free for buyers · No obligation · Providers respond by email within 24 hours
               </p>
             </div>
             <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-[30px] pb-[26px]">
@@ -191,7 +191,7 @@ export default function EudrPage() {
       <section className="bg-[#f6f7fb] border-b border-[#0d1117]/[0.07]">
         <div className="max-w-[1160px] mx-auto px-5 sm:px-8 py-21">
           <h2 className="font-sans font-semibold text-[clamp(28px,3.8vw,40px)] leading-[1.1] tracking-[-0.03em] mb-11 max-w-[24ch]">
-            What we&apos;ll match you on
+            What your brief will cover
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[22px]">
             {[
@@ -251,11 +251,11 @@ export default function EudrPage() {
             {[
               [
                 "How do you choose the three providers?",
-                "We take your requirements to providers in the category and share your brief with those whose platform is a plausible fit. The three you receive are providers that believe they can meet your requirements, not a ranking.",
+                "We publish your brief to providers in the category. Any provider can review it and choose to respond — the providers you hear from are the ones that believe they can meet your requirements, not a ranking we've made.",
               ],
               [
                 "How do I choose EUDR software?",
-                "Start with what you actually need to prove: which commodities and suppliers are in scope, how much geolocation data you already have, and what system it needs to connect to. That's exactly what our questions cover, so the providers we introduce you to are ones that plausibly fit rather than a generic top-10 list.",
+                "Start with what you actually need to prove: which commodities and suppliers are in scope, how much geolocation data you already have, and what system it needs to connect to. That's exactly what our questions cover, so your brief reaches providers with enough detail to judge their own fit, rather than a generic top-10 list.",
               ],
               [
                 "What does EUDR software actually do?",
@@ -275,7 +275,7 @@ export default function EudrPage() {
               ],
               [
                 "What EUDR software is suitable for small businesses?",
-                "It depends on your supplier count and budget, which is exactly why we ask — a platform built for a large importer with a compliance team is usually the wrong fit (and the wrong price) for a small business handling this themselves. Tell us your size and we'll weight the match accordingly.",
+                "It depends on your supplier count and budget, which is exactly why we ask — a platform built for a large importer with a compliance team is usually the wrong fit (and the wrong price) for a small business handling this themselves. Tell us your size, and it becomes part of the brief providers see before deciding whether to respond.",
               ],
               [
                 "Is it really free?",
@@ -283,7 +283,7 @@ export default function EudrPage() {
               ],
               [
                 "How long does it take?",
-                "The questions take a few minutes. Your matches arrive by email within 24 hours.",
+                "The questions take a few minutes. Provider replies arrive by email within 24 hours.",
               ],
               [
                 "Do I have to speak to all of them?",

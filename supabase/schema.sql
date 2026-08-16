@@ -40,6 +40,14 @@ create table if not exists public.partners (
   stripe_customer_id text
 );
 
+-- Added post-launch: which categories a partner operates in ('EUDR' | 'PLM' |
+-- 'DBP', matching portal-dashboard.tsx's short codes). Powers the portal's
+-- default category filter — a soft default, not a hard visibility
+-- restriction; get_partner_leads() still returns every published lead, this
+-- only changes what the UI shows by default. See docs/PHASE-6-CHANGES.md /
+-- PHASE-7-CHANGES.md for the reasoning behind that choice.
+alter table public.partners add column if not exists categories text[] not null default '{}';
+
 create table if not exists public.unlocks (
   id uuid primary key default gen_random_uuid(),
   lead_id uuid not null references public.leads (id) on delete cascade,
@@ -204,7 +212,16 @@ grant execute on function public.get_partner_leads() to authenticated;
 -- INSERT grant on partners for the authenticated role.
 -- ─────────────────────────────────────────────────────────────────────────
 
-create or replace function public.create_partner(p_company_name text, p_contact_email text)
+-- Signature changed (added p_categories) after initial launch — drop the old
+-- two-arg overload explicitly so re-running this file doesn't leave a stale
+-- create_partner(text, text) function alongside the new one.
+drop function if exists public.create_partner(text, text);
+
+create or replace function public.create_partner(
+  p_company_name text,
+  p_contact_email text,
+  p_categories text[] default '{}'
+)
 returns public.partners
 language plpgsql
 security definer
@@ -217,13 +234,13 @@ begin
     raise exception 'Not authenticated';
   end if;
 
-  insert into public.partners (company_name, contact_email, auth_user_id)
-  values (p_company_name, p_contact_email, auth.uid())
+  insert into public.partners (company_name, contact_email, auth_user_id, categories)
+  values (p_company_name, p_contact_email, auth.uid(), coalesce(p_categories, '{}'))
   returning * into result;
 
   return result;
 end;
 $$;
 
-revoke execute on function public.create_partner(text, text) from public, anon;
-grant execute on function public.create_partner(text, text) to authenticated;
+revoke execute on function public.create_partner(text, text, text[]) from public, anon;
+grant execute on function public.create_partner(text, text, text[]) to authenticated;

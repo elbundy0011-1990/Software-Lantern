@@ -29,11 +29,17 @@ software vendors** in some form. Two are notable exclusions/cautions:
   Germany's LkSG and the upcoming CSDDD, **not EUDR**. No deforestation, geolocation, commodity, or
   DDS functionality found anywhere on their site. **Recommend excluding from any EUDR-specific
   context**; if referenced at all internally, flag clearly as "not an EUDR tool."
-- **passionfruit.earth** — genuine company, but its actual product is general compliance-
-  questionnaire automation for food-supplier teams (auto-filling Excel/Word/portal forms), not
-  EUDR-specific software. Their EUDR presence is blog/thought-leadership content, not a documented
-  EUDR product feature. **Recommend treating as "EUDR-adjacent content presence," not a vendor to
-  reference as an EUDR software option.**
+- **passionfruit.earth** — re-verified directly against the vendor's own site following founder
+  feedback: this **is a genuine, real commercial software platform** (AI-powered supplier-
+  questionnaire automation for food Quality/ESG/Technical teams — auto-fills Excel, Word, and
+  online portals; has a demo-booking flow and a "3 min tour," not just editorial content). The
+  founder is correct that it's a real product, not merely a review site. However, **EUDR is not
+  mentioned anywhere on the site as a supported feature or use case** — the product is general
+  compliance-questionnaire automation, not built for EUDR specifically. Their EUDR presence found
+  in earlier research is blog/thought-leadership content, separate from the product itself.
+  **Recommend treating Passionfruit as a genuine software vendor, but not yet a confirmed EUDR
+  vendor** — worth a direct follow-up with them if the founder has reason to believe EUDR support
+  exists but isn't reflected on the site.
 - **banqu.com → banqu.co**: the founder's domain (`banqu.com`) does not resolve to the actual
   product; the real site is `banqu.co`. Flagging this correction for the record.
 - **mastersustainability.today**: the founder was right to push back on treating this as pure
@@ -63,7 +69,7 @@ platform with EUDR bolted on as one module or feature.
 | SourceTrace | sourcetrace.com | Yes | Broader ag-tech/farm-management platform, dedicated EUDR page with real depth | Enterprise/institutional ✅ (Cargill, IFC, gov't) | Medium-high |
 | Coolset | coolset.com | Yes | Broader ESG-reporting platform (CSRD, EUDR, CBAM, PPWR, VSME, EU Taxonomy) | Mid-market ✅ | Medium |
 | Banqu | banqu.co (not .com — see note) | Yes | Blockchain traceability platform; go-to-market is close to EUDR-specific (per-commodity landing pages) | `[VERIFY]` | Medium |
-| Passionfruit | passionfruit.earth | **Weak / not confirmed** | Not EUDR-specific — general compliance-questionnaire automation; EUDR is content/thought-leadership only | `[VERIFY]` | Low — see caution above |
+| Passionfruit | passionfruit.earth | **Yes, real product — but not confirmed as EUDR software** | Not EUDR-specific — confirmed genuine AI-powered compliance-questionnaire platform; EUDR not mentioned anywhere on the vendor's own site as a feature | Food supplier Quality/ESG/Technical teams; SME vs. enterprise `[VERIFY]` | Medium — product genuineness confirmed directly, EUDR non-support also confirmed directly |
 | Master Sustainability | mastersustainability.today | Yes | Broader ESG suite (EUDR, CSRD, VSME, CBAM, Carbon Accounting, SFDR, CSDDD, EU Taxonomy, EUTR, PPWR) | `[VERIFY]` | Medium |
 | Meridia | meridia.land | Yes | Broader-but-adjacent geospatial risk-verification platform ("Meridia Verify®"); EUDR is a named use case, not the whole product | Enterprise ✅ (Cargill, ICE, LDC, Volcafé, ETG) | High |
 | SAI360 | sai360.com | Yes | Broader (20+-module enterprise GRC platform); EUDR = one named solution | Enterprise ✅ (Fortune 500-heavy) | Medium |

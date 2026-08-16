@@ -34,7 +34,7 @@ This document is the reference for *who* the site should be built for. It intent
 - Category-specific expertise (EUDR / Fashion PLM / Battery Passport specifically, not generic B2B software matching)
 - Genuinely understanding the buyer's specific requirements (industry, company size, supply chain, technical/data needs — not a one-size-fits-all form)
 - Helping buyers navigate markets that are fragmented and hard to compare alone
-- Matching based on those actual requirements, not a generic feature checklist
+- Turning those actual requirements into a structured, provider-ready brief — not a generic feature checklist
 
 **Language discipline that follows from this:**
 - Never claim to know which provider is objectively "best," "guaranteed," or a "perfect" fit. Use "relevant providers," "potential fit," "based on your requirements," "providers that may fit your needs."

@@ -7,7 +7,6 @@ import {
   getSteps,
   validateStep,
   shortCategoryLabel,
-  MATCH_COUNT,
   type ContactAnswers,
   type StepAnswers,
 } from "@/lib/finder-config";
@@ -35,7 +34,7 @@ function summaryRows(category: string | null, answers: StepAnswers, contact: Con
       { label: "Geolocation data", value: val(answers.geo) },
       ...currentSoftwareRows(),
       { label: "Compliance deadline", value: val(answers.timing) },
-      { label: "Send matches to", value: val(contact.email) },
+      { label: "We'll email you at", value: val(contact.email) },
     ];
   }
   return [
@@ -176,7 +175,7 @@ export function FinderWizard() {
 
   const shortCat = shortCategoryLabel(category);
   const nextLabel =
-    i === steps.length - 1 ? `Find my ${MATCH_COUNT} ${shortCat} matches →` : "Continue →";
+    i === steps.length - 1 ? `Send my brief to ${shortCat} providers →` : "Continue →";
 
   return (
     <main
@@ -326,7 +325,7 @@ export function FinderWizard() {
         </button>
       </div>
       <p className="mt-[22px] text-[14px] text-[#79818f]">
-        Free for buyers · We only share your brief with providers in this category.
+        Free for buyers · Your brief is published to the provider portal for providers to review.
       </p>
     </main>
   );

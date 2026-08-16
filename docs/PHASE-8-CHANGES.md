@@ -65,9 +65,12 @@ Implemented exactly as proposed in the original investigation — a default, not
   live project. `create_partner()` was given a new `p_categories text[] default '{}'` parameter —
   the old two-arg overload is explicitly `drop function if exists`-ed first so re-running the file
   doesn't leave a stale overload alongside the new three-arg version.
-  **This SQL has not been applied to the live Supabase project** — as with the original schema, it
-  needs to be run in the Supabase SQL editor (or via direct `psql` access, which this environment
-  doesn't have). The application code changes below will not take effect until it is.
+  **Applied to the live Supabase project and verified.** The user ran the minimal delta SQL (the
+  `alter table` and the `create_partner()` replacement, isolated from the rest of `schema.sql`)
+  directly against production, then tested the full signup flow end-to-end with a real account
+  (jdb@insidersalpha.com): selected a category at signup, completed email confirmation, and signed
+  in successfully — confirming the new `categories` column, the new `create_partner()` signature,
+  and the signup form's category capture all work correctly in production.
 - **Signup** (`app/portal/signup/page.tsx`): added a required multi-select (EUDR / Fashion PLM /
   Battery Passport, checkboxes) — submission is blocked with an inline error if none are selected.
   Selected short codes are passed through `supabase.auth.signUp`'s `options.data.categories`.
@@ -92,6 +95,11 @@ This is also what makes the `/finder` footer fix and the portal's existing "Live
 categories" / "New briefs in your categories land in this view" copy (left untouched, not part of
 this batch) become true for a single-category partner, rather than aspirational — as intended.
 
+**On the default-filter behavior specifically**: the user has confirmed this isn't a priority to
+verify further — since "All categories" stays available as a filter pill to every partner
+regardless of what they default to, nothing is actually restricted either way, so the exact default
+shown on first load is a minor UX nicety, not a correctness question.
+
 ---
 
 ## Verification performed
@@ -107,12 +115,13 @@ this batch) become true for a single-category partner, rather than aspirational 
 
 ## Not done in this phase
 
-- **The `supabase/schema.sql` changes have not been run against the live database** — needs to be
-  applied via the Supabase SQL editor before the categories column, the new `create_partner()`
-  signature, or the portal default will work in production. Until then, signup will fail at the
-  `create_partner` RPC call (parameter mismatch against the live, unmigrated function) — this should
-  be applied before deploying this batch, not after.
 - No backfill of `categories` for existing partner rows (out of scope; they'll simply see "All
   categories" as before until they set one).
 - No settings page for a partner to change their categories after signup — not requested, and the
   original recommendation didn't call for it at this scale.
+
+## Production status
+
+**Live and verified**, as of the user's own end-to-end test: schema migration applied to the live
+Supabase project, real-account signup (jdb@insidersalpha.com) completed successfully including
+category selection, email confirmation, and sign-in.

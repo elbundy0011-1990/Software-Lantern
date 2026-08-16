@@ -6,7 +6,9 @@ import { EUDR_DEADLINES, EUDR_SME_SIZE_NOTE, daysUntil, type EudrDeadlineKey } f
 
 type Role = "operator" | "trader" | "export" | "none";
 type Size = "large-medium" | "micro-small" | "not-sure";
-type Screen = "role" | "commodities" | "size" | "result";
+type Screen = "role" | "commodities" | "sourcing" | "size" | "result";
+
+const CONFIRMED_LOW_RISK = "confirmed-low-risk";
 
 const ROLE_OPTIONS: { value: Role; label: string }[] = [
   {
@@ -31,23 +33,47 @@ const SIZE_OPTIONS: { value: Size; label: string }[] = [
   { value: "not-sure", label: "Not sure" },
 ];
 
+// Risk classification under EUDR is per-country (Article 29 benchmarking,
+// via Commission Implementing Regulation (EU) 2025/1093), not per-region —
+// and the confirmed low-risk list spans every continent, so none of these
+// region options can be honestly mapped to a specific tier. They're offered
+// for context; only the last option changes the result.
+const SOURCING_OPTIONS: { value: string; label: string }[] = [
+  { value: "West Africa", label: "West Africa" },
+  { value: "East Africa", label: "East Africa" },
+  { value: "South America", label: "South America" },
+  { value: "Southeast Asia", label: "Southeast Asia" },
+  { value: "South Asia", label: "South Asia" },
+  { value: "Europe", label: "Europe" },
+  { value: "North America", label: "North America" },
+  { value: "Mixed / not sure", label: "A mix of regions, or not sure" },
+  { value: CONFIRMED_LOW_RISK, label: "All of my sourcing is confirmed low-risk under the EU's official country list" },
+];
+
 const BOTH_ROLES_NOTE =
   "If your business operates as both an operator and a trader across different product lines, the earlier applicable deadline generally applies — confirm your specific situation with a qualified advisor.";
 
-// Total question count depends on path: traders skip the size question
-// (the SME date only applies to operators), "none" ends after Q1. Before a
-// role is picked, default to 3 — the longest/most common path — for the
-// step indicator.
+const LOW_RISK_NOTE =
+  "Since you've indicated all your sourcing is from EU-classified low-risk countries, a simplified due diligence procedure may apply under Article 13 of the regulation — you may not need to carry out the risk assessment and risk mitigation steps that otherwise apply, though the underlying information-gathering and due diligence system requirements still apply. Confirm your sourcing countries' exact status and what this means for your business with a qualified advisor.";
+
+const GENERAL_RISK_NOTE =
+  "The EU classifies sourcing countries into three risk tiers — low, standard, or high — under the regulation's country benchmarking system. Only a small number of countries are currently classified high-risk; most others are low or standard risk by default. If all of your sourcing is confirmed to come from low-risk-classified countries, a simplified due diligence procedure may be available — check the EU's published country list or ask a qualified advisor to confirm your specific situation.";
+
+// Total question count depends on path: "none" ends after Q1; every other
+// path now gets the sourcing question, and only operators/exporters also
+// get the size question (the SME date only applies to operators). Before a
+// role is picked, default to 4 — the longest path — for the step indicator.
 function totalSteps(role: Role | null): number {
-  if (role === "trader") return 2;
   if (role === "none") return 1;
-  return 3;
+  if (role === "trader") return 3;
+  return 4;
 }
 
 function stepNumber(screen: Screen): number {
   if (screen === "role") return 1;
   if (screen === "commodities") return 2;
-  if (screen === "size") return 3;
+  if (screen === "sourcing") return 3;
+  if (screen === "size") return 4;
   return 0;
 }
 
@@ -137,6 +163,7 @@ export function EudrScopeChecker() {
   const [screen, setScreen] = useState<Screen>("role");
   const [role, setRole] = useState<Role | null>(null);
   const [commodities, setCommodities] = useState<string[]>([]);
+  const [sourcing, setSourcing] = useState<string | null>(null);
   const [size, setSize] = useState<Size | null>(null);
 
   const pickRole = (r: Role) => {
@@ -149,6 +176,11 @@ export function EudrScopeChecker() {
   };
 
   const afterCommodities = () => {
+    setScreen("sourcing");
+  };
+
+  const pickSourcing = (value: string) => {
+    setSourcing(value);
     // Traders don't get a size question — the SME extension in the
     // regulation's own text applies only to operators, so asking would
     // imply an answer that doesn't exist.
@@ -164,10 +196,12 @@ export function EudrScopeChecker() {
     setScreen("role");
     setRole(null);
     setCommodities([]);
+    setSourcing(null);
     setSize(null);
   };
 
   const commodityPhrase = commodities.length > 0 ? ` (${commodities.join(", ")})` : "";
+  const riskNote = sourcing === CONFIRMED_LOW_RISK ? LOW_RISK_NOTE : GENERAL_RISK_NOTE;
 
   const renderResult = () => {
     if (role === "none") {
@@ -197,6 +231,7 @@ export function EudrScopeChecker() {
             Based on your answers, EUDR likely applies to you as a trader{commodityPhrase}. The
             later SME date in the regulation applies only to operators, not traders.
           </p>
+          <p className="text-[14px] text-[#5c6573] text-center mb-4">{riskNote}</p>
           <p className="text-[14px] text-[#79818f] text-center">{BOTH_ROLES_NOTE}</p>
         </>
       );
@@ -212,6 +247,7 @@ export function EudrScopeChecker() {
             Based on your answers, EUDR likely applies to you as {roleWord}
             {commodityPhrase}.
           </p>
+          <p className="text-[14px] text-[#5c6573] text-center mb-4">{riskNote}</p>
           <p className="text-[14px] text-[#79818f] text-center">{BOTH_ROLES_NOTE}</p>
         </>
       );
@@ -227,6 +263,7 @@ export function EudrScopeChecker() {
             established as such by <strong>31 December 2024</strong> — otherwise the general{" "}
             {EUDR_DEADLINES.largeMedium.display} deadline applies.
           </p>
+          <p className="text-[14px] text-[#5c6573] text-center mb-4">{riskNote}</p>
           <p className="text-[14px] text-[#79818f] text-center">{BOTH_ROLES_NOTE}</p>
         </>
       );
@@ -246,6 +283,7 @@ export function EudrScopeChecker() {
           such by 31 December 2024.
         </p>
         <p className="text-[14px] text-[#5c6573] text-center mb-4">{EUDR_SME_SIZE_NOTE}</p>
+        <p className="text-[14px] text-[#5c6573] text-center mb-4">{riskNote}</p>
         <p className="text-[14px] text-[#79818f] text-center">{BOTH_ROLES_NOTE}</p>
       </>
     );
@@ -313,6 +351,31 @@ export function EudrScopeChecker() {
             </div>
           )}
 
+          {screen === "sourcing" && (
+            <div key="sourcing" className="eudr-step-in">
+              <h3 className="font-sans font-semibold text-[21px] mb-2">
+                Where do you source these commodities from?
+              </h3>
+              <p className="text-[14px] text-[#5c6573] mb-5">
+                This affects how much due diligence work is required — the EU classifies sourcing
+                countries into risk tiers under the regulation.
+              </p>
+              <div className="grid gap-3 mb-7">
+                {SOURCING_OPTIONS.map((opt) => (
+                  <OptionCard
+                    key={opt.value}
+                    label={opt.label}
+                    selected={sourcing === opt.value}
+                    onClick={() => pickSourcing(opt.value)}
+                  />
+                ))}
+              </div>
+              <button onClick={() => setScreen("commodities")} className={backButtonClass}>
+                ← Back
+              </button>
+            </div>
+          )}
+
           {screen === "size" && (
             <div key="size" className="eudr-step-in">
               <h3 className="font-sans font-semibold text-[21px] mb-5">What&apos;s your company size?</h3>
@@ -326,7 +389,7 @@ export function EudrScopeChecker() {
                   />
                 ))}
               </div>
-              <button onClick={() => setScreen("commodities")} className={backButtonClass}>
+              <button onClick={() => setScreen("sourcing")} className={backButtonClass}>
                 ← Back
               </button>
             </div>

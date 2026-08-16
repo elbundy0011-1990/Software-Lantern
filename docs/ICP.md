@@ -26,6 +26,25 @@ This document is the reference for *who* the site should be built for. It intent
 
 ---
 
+## Positioning Principles (Read Before Writing Any Copy)
+
+**The matchmaking mechanic — "answer some questions, get matched with up to 3 providers" — is not a unique differentiator.** Live SERP/GEO research (see `/docs/SERP-GEO-ANALYSIS.md` for the full research) confirmed that functioning competitors already run a similar questionnaire-to-shortlist model in every one of Software Lantern's three categories. The mechanic is real and should stay central to the product, but it is the *delivery mechanism*, not the moat — do not write copy that positions "we match you with 3 providers, unlike a directory" as the primary reason to choose Software Lantern.
+
+**The actual differentiation is:**
+- Category-specific expertise (EUDR / Fashion PLM / Battery Passport specifically, not generic B2B software matching)
+- Genuinely understanding the buyer's specific requirements (industry, company size, supply chain, technical/data needs — not a one-size-fits-all form)
+- Helping buyers navigate markets that are fragmented and hard to compare alone
+- Matching based on those actual requirements, not a generic feature checklist
+
+**Language discipline that follows from this:**
+- Never claim to know which provider is objectively "best," "guaranteed," or a "perfect" fit. Use "relevant providers," "potential fit," "based on your requirements," "providers that may fit your needs."
+- Never name a competitor (by company name or product name) in live, public-facing site copy. Competitive research informs internal strategy only — see `/docs/SERP-GEO-ANALYSIS.md` and `/docs/SEO-NEXT-STEPS.md`, which are internal documents, not source material for site copy.
+- The buyer stays in control: Software Lantern narrows the field and explains why; the buyer compares and decides.
+
+Any future work on copy, messaging, landing pages, or category pages should treat this section as binding, not just directional.
+
+---
+
 ## 2. Overall Software Lantern ICP
 
 Across every category, the ideal visitor has all (or nearly all) of the following:

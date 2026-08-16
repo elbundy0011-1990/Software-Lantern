@@ -29,20 +29,22 @@ export default function PlmPage() {
               Home
             </Link>{" "}
             <span className="text-[#c2c8d1]">/</span> Software categories{" "}
-            <span className="text-[#c2c8d1]">/</span> PLM software
+            <span className="text-[#c2c8d1]">/</span> Fashion PLM software
           </p>
           <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-[72px] items-start">
             <div>
               <h1 className="font-sans font-semibold text-[clamp(34px,5.6vw,58px)] leading-[1.06] tracking-[-0.035em] mb-[22px] text-pretty">
                 Looking for fashion PLM software?
               </h1>
-              <p className="text-[20px] leading-[1.5] text-[#3d4653] mb-4 max-w-[40ch]">
-                Tell us about your brand and requirements. We&apos;ll connect you with up to 3 fashion PLM
-                providers that believe they can help.
+              <p className="text-[20px] leading-[1.5] text-[#3d4653] mb-4 max-w-[42ch]">
+                Fashion PLM is a crowded market, and the right platform depends on your product
+                development workflow, collection complexity, sourcing model and supplier network.
+                Comparing every option yourself can take weeks.
               </p>
               <p className="text-[17px] text-[#5c6573] mb-[34px] max-w-[48ch]">
-                Fashion, footwear, and accessories: PLM means something different in each, so we match on
-                your industry and product complexity, not a generic feature list.
+                Tell us about your brand and requirements, and we&apos;ll identify up to 3 fashion PLM
+                providers that appear relevant to your specific situation — not a ranked list, and not a
+                guess at which one is objectively best.
               </p>
               <Link
                 href={plmHref}
@@ -51,7 +53,7 @@ export default function PlmPage() {
                 Find my PLM →
               </Link>
               <p className="mt-6 text-[14px] font-semibold text-[#5c6573]">
-                Free for buyers · No obligation · 7 quick questions
+                Free for buyers · No obligation · Matches by email within 24 hours
               </p>
             </div>
             <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-[30px] pb-[26px]">
@@ -87,7 +89,7 @@ export default function PlmPage() {
             <h2 className="font-sans font-semibold text-[clamp(28px,3.8vw,40px)] leading-[1.1] tracking-[-0.03em] mb-4">
               What is fashion PLM software?
             </h2>
-            <p className="text-[17px] leading-[1.6] text-[#3d4653]">
+            <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-3">
               Fashion PLM (Product Lifecycle Management) software is the system fashion and apparel
               companies use to manage a product from first sketch to shipped order: tech packs, bills of
               materials, sampling, supplier collaboration, costing, and collection calendars, all in one
@@ -95,6 +97,19 @@ export default function PlmPage() {
               industries like automotive or industrial manufacturing — fashion-specific platforms are
               built around seasons, colourways, sizing, and fast-moving supplier networks rather than
               long, fixed product cycles.
+            </p>
+            <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-3">
+              Which platform fits best depends on your collection complexity, SKU count, and sourcing
+              model — a small direct-to-consumer brand usually needs a lighter tool than a multi-brand
+              group coordinating dozens of supplier relationships across several product categories.
+            </p>
+            <p className="text-[17px] leading-[1.6] text-[#3d4653]">
+              If your sourcing involves EUDR-relevant materials — leather, rubber, or other regulated
+              commodities — you may also want{" "}
+              <Link href="/eudr" className="text-[#4f46e5] font-semibold">
+                EUDR compliance software
+              </Link>
+              .
             </p>
           </div>
         </div>
@@ -131,6 +146,14 @@ export default function PlmPage() {
               [
                 "How do you choose the three providers?",
                 "We take your requirements to providers in the category and share your brief with those whose platform is a plausible fit. The three you receive are providers that believe they can meet your requirements, not a ranking.",
+              ],
+              [
+                "How do I choose a fashion PLM system?",
+                "Start with your product development workflow and where it breaks down today — tech packs, BOM, supplier collaboration, costing, or all of the above. That's exactly what our questions cover, so the providers we introduce you to are ones that plausibly fit your workflow and company size, not a generic top-10 list.",
+              ],
+              [
+                "What's the difference between general PLM and fashion PLM?",
+                "General PLM, used in industries like automotive and industrial manufacturing, is usually built around long, fixed product cycles. Fashion PLM is built around seasons, colourways, sizing, and fast-moving supplier networks — which is why a generic PLM platform is rarely the right fit for a fashion or apparel business.",
               ],
               [
                 "Is it really free?",

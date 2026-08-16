@@ -36,14 +36,15 @@ export default function EudrPage() {
               <h1 className="font-sans font-semibold text-[clamp(34px,5.6vw,58px)] leading-[1.06] tracking-[-0.035em] mb-[22px] text-pretty">
                 Looking for EUDR compliance software?
               </h1>
-              <p className="text-[20px] leading-[1.5] text-[#3d4653] mb-4 max-w-[40ch]">
-                Tell us about your supply chain and requirements. We&apos;ll connect you with up to 3 EUDR
-                software providers that believe they can help.
+              <p className="text-[20px] leading-[1.5] text-[#3d4653] mb-4 max-w-[42ch]">
+                EUDR software is a crowded, fast-moving market, and the right fit depends on your
+                commodities, supply chain, supplier network and company size. Comparing every option
+                yourself can take weeks.
               </p>
               <p className="text-[17px] text-[#5c6573] mb-[34px] max-w-[48ch]">
-                Timber, coffee, cocoa, rubber, palm oil, soy, cattle, furniture: EUDR software differs by
-                commodity, supplier network and company size, so we match on your specifics, not a
-                generic feature list.
+                Tell us about your business and requirements, and we&apos;ll identify up to 3 EUDR software
+                providers that appear relevant to your specific situation — not a ranked list, and not a
+                guess at which one is objectively best.
               </p>
               <Link
                 href={eudrHref}
@@ -52,7 +53,7 @@ export default function EudrPage() {
                 Find EUDR software →
               </Link>
               <p className="mt-6 text-[14px] font-semibold text-[#5c6573]">
-                Free for buyers · No obligation · A few quick questions
+                Free for buyers · No obligation · Matches by email within 24 hours
               </p>
             </div>
             <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-[30px] pb-[26px]">
@@ -90,11 +91,26 @@ export default function EudrPage() {
               record for the commodities and products in scope — replacing spreadsheets and email chains
               with a system suppliers can actually populate.
             </p>
+            <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-3">
+              Which platform fits best varies a lot by buyer: a large importer with dedicated compliance
+              staff often needs deeper risk-assessment and audit-trail features, while a smaller trader
+              handling this alongside everything else usually needs something simpler to run day to day.
+              Providers are also built around different commodities and sourcing regions, so the same
+              platform rarely suits everyone equally well.
+            </p>
+            <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-3">
+              If your business also manages fashion, footwear, or accessories product development
+              involving EUDR-relevant materials like leather or rubber, you may also want{" "}
+              <Link href="/plm" className="text-[#4f46e5] font-semibold">
+                fashion PLM software
+              </Link>
+              .
+            </p>
             <p className="text-[15px] leading-[1.6] text-[#79818f]">
               Software Lantern does not provide legal advice, regulatory certification, or a compliance
               guarantee. We help you find and compare software providers whose platforms may fit your
-              EUDR requirements — always confirm your specific obligations with the official EU sources
-              or your own legal/compliance advisors.
+              EUDR requirements — always confirm your specific obligations against the EU Deforestation
+              Regulation itself or your own legal/compliance advisors.
             </p>
           </div>
         </div>
@@ -129,17 +145,19 @@ export default function EudrPage() {
                 For small businesses
               </p>
               <h2 className="font-sans font-semibold text-[clamp(27px,3.6vw,38px)] leading-[1.12] mb-4 text-pretty">
-                EUDR software for small businesses
+                EUDR software for small businesses and SMEs
               </h2>
               <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-4 max-w-[52ch]">
-                Most EUDR software is built and priced for large importers with a dedicated compliance
-                team. If you&apos;re a small roaster, trader, or producer figuring this out yourself
-                alongside everything else it takes to run the business, you need something simpler and
-                more affordable — not an enterprise platform sized for a team you don&apos;t have.
+                Most EUDR compliance software is built and priced for large importers with a dedicated
+                compliance team. A small roaster, trader, or producer figuring this out alongside
+                everything else it takes to run the business usually has genuinely different
+                requirements, not just a smaller budget — often a simpler, more affordable EUDR tool
+                fits better than an enterprise platform sized for a team you don&apos;t have.
               </p>
               <p className="text-[15px] text-[#5c6573] max-w-[52ch]">
-                Tell us about your business and we&apos;ll match you with providers that fit a business
-                your size, not just the biggest names in the category.
+                Tell us about your business and we&apos;ll identify EUDR software providers that appear
+                appropriate to your size and requirements, not just the platforms built for the largest
+                importers in the category.
               </p>
             </div>
             <Link

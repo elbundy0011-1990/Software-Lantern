@@ -36,14 +36,16 @@ export default function BatteryPassportPage() {
               <h1 className="font-sans font-semibold text-[clamp(34px,5.6vw,58px)] leading-[1.06] tracking-[-0.035em] mb-[22px] text-pretty">
                 Looking for battery passport software?
               </h1>
-              <p className="text-[20px] leading-[1.5] text-[#3d4653] mb-4 max-w-[40ch]">
-                Tell us about your product and data requirements. We&apos;ll connect you with up to 3
-                battery passport software providers that believe they can help.
+              <p className="text-[20px] leading-[1.5] text-[#3d4653] mb-4 max-w-[42ch]">
+                Battery passport software spans everything from carbon-accounting add-ons to full
+                lifecycle platforms, and the right fit depends on your product type, where you sit in the
+                value chain, and what data your passport needs to carry. Comparing every option yourself
+                can take weeks.
               </p>
               <p className="text-[17px] text-[#5c6573] mb-[34px] max-w-[48ch]">
-                Cell manufacturers, pack assemblers, automotive OEMs, energy storage: battery passport
-                needs differ by where you sit in the chain, so we match on your specifics, not a generic
-                feature list.
+                Tell us about your product and requirements, and we&apos;ll identify up to 3 battery
+                passport software providers that appear relevant to your specific situation — not a
+                ranked list, and not a guess at which one is objectively best.
               </p>
               <Link
                 href={batteryHref}
@@ -52,7 +54,7 @@ export default function BatteryPassportPage() {
                 Find battery passport software →
               </Link>
               <p className="mt-6 text-[14px] font-semibold text-[#5c6573]">
-                Free for buyers · No obligation · A few quick questions
+                Free for buyers · No obligation · Matches by email within 24 hours
               </p>
             </div>
             <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-[30px] pb-[26px]">
@@ -87,10 +89,10 @@ export default function BatteryPassportPage() {
             </h2>
             <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-3">
               Battery passport software helps battery manufacturers and the companies in their supply
-              chain collect, structure, and report the lifecycle data the EU Battery Regulation requires:
-              material traceability, carbon footprint, recycled content, State of Health data, and the
-              QR-linked digital passport itself — usually pulling data from suppliers, ERP, and PLM
-              systems into one connected record instead of scattered spreadsheets.
+              chain collect, structure, and report the lifecycle data the EU Battery Regulation (EU
+              2023/1542, Article 77) requires: material traceability, carbon footprint, recycled content,
+              State of Health data, and the QR-linked digital passport itself — usually pulling data from
+              suppliers, ERP, and PLM systems into one connected record instead of scattered spreadsheets.
             </p>
             <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-3">
               &ldquo;Battery passport&rdquo; and &ldquo;digital product passport (DPP)&rdquo; are related
@@ -98,6 +100,11 @@ export default function BatteryPassportPage() {
               battery passport is the specific, regulated implementation for batteries. Some platforms are
               battery-specific; others are general DPP tools configured for batteries — both can be a
               genuine fit depending on whether batteries are your only product line or one of several.
+            </p>
+            <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-3">
+              Which is the better starting point for you depends on where you sit in the value chain and
+              how much of this data you already have systemized — a cell manufacturer&apos;s requirements
+              look very different from an automotive OEM&apos;s or an energy storage company&apos;s.
             </p>
             <p className="text-[15px] leading-[1.6] text-[#79818f]">
               Software Lantern does not provide legal advice, regulatory certification, or a compliance
@@ -148,6 +155,10 @@ export default function BatteryPassportPage() {
               [
                 "How can I compare battery passport providers?",
                 "Start with where you sit in the value chain and exactly what data the passport needs to carry for your product — that's what determines whether you need a battery-specific platform or a broader DPP tool, and it's exactly what our questions are built around.",
+              ],
+              [
+                "Is Battery Passport software the same as Digital Product Passport software?",
+                "Related, but not the same. Digital Product Passport (DPP) is the broader concept covering many product categories; Battery Passport is the specific, regulated implementation for batteries. Some platforms are battery-specific, others are general DPP tools configured for batteries — which one fits depends on whether batteries are your only product line.",
               ],
               [
                 "Is it really free?",

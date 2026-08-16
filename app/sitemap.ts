@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/resources/regulations/battery-passport",
     "/resources/blog",
     "/resources/blog/eudr-software-questions-to-ask-providers",
+    "/resources/blog/fashion-plm-software-questions-to-ask-providers",
   ];
 
   return routes.map((route) => ({

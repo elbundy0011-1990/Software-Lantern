@@ -51,6 +51,25 @@ export default function BlogHubPage() {
                 Read the guide →
               </span>
             </Link>
+            <Link
+              href="/resources/blog/fashion-plm-software-questions-to-ask-providers"
+              className="block bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-7 hover:border-[#4f46e5]/[0.4] transition-colors duration-150"
+            >
+              <p className="mb-3 text-[12px] font-bold tracking-[0.09em] uppercase text-[#4f46e5]">
+                Fashion PLM
+              </p>
+              <h2 className="font-sans font-semibold text-[21px] leading-[1.25] mb-2">
+                How to Evaluate Fashion PLM Software: A Buyer&apos;s Checklist and Questions to Ask
+                Providers
+              </h2>
+              <p className="text-[15px] text-[#5c6573] leading-[1.5]">
+                A sequential guide organized by brand structure and collection complexity, plus a
+                script of questions to bring to a provider call.
+              </p>
+              <span className="mt-4 inline-block text-[14px] font-semibold text-[#4338ca]">
+                Read the guide →
+              </span>
+            </Link>
           </div>
         </div>
       </section>

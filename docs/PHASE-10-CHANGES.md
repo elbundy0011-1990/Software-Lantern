@@ -129,3 +129,62 @@ in Part 1 of this phase), per the standing style rule.
 
 **Status: approved and published** — re-verified via `tsc`, `eslint`, a full production build, and
 live-server rendering confirming the final CTA text and zero em-dash bytes in the rendered HTML.
+
+---
+
+## 3. Second blog article — Fashion PLM
+
+Same process as the EUDR article: duplication check and keyword confirmation shown and approved
+before writing full copy, no rewrite/find-replace of the EUDR piece.
+
+**Duplication check**: `/plm` does not have an EUDR-style deep comparison framework (that Phase 7
+treatment was never applied to `/plm`). It has a lighter "What your brief will cover" 4-card summary
+and a short FAQ answer ("How do I choose a fashion PLM system?"). Lower duplication risk than EUDR,
+but real content to differentiate from, not a blank slate.
+
+**Keyword check**: checked all five candidates in the request against `KEYWORD-MAP.md`. "fashion PLM
+software," "fashion PLM software comparison" are Tier 1/2 and explicitly assigned to `/plm`. "fashion
+PLM software features" is not a literal map entry, but the adjacent workflow-tool cluster (tech pack
+software, BOM management software, sample management software, costing software, supplier
+collaboration software) is explicitly assigned to `/plm`'s existing section. "How to choose fashion
+PLM software" is not documented in the map but is near-verbatim the live FAQ already on `/plm`.
+"Fashion PLM software checklist" and "questions to ask PLM software providers" are open in both the
+map and live content. Also checked `SERP-GEO-ANALYSIS.md` (existing research reused, no new search
+needed) — comparison/listicle-style fashion PLM queries are heavily vendor-saturated (confirmed
+competitor names, all excluded from this article per the standing rule), reinforcing that a
+questions-to-ask script is genuinely differentiated from that space, same conclusion as EUDR.
+
+**Confirmed target**: primary "questions to ask fashion PLM software providers," secondary "how to
+evaluate fashion PLM software" used only in intro prose, mirroring the EUDR resolution.
+
+**Buyer-segment tracks adapted, not copied**: EUDR's operator/trader framing is regulation-specific
+and doesn't apply to PLM. Used *small or growing brand* vs. *multi-brand or multinational business*
+instead, mirroring the segmentation already established in `/plm`'s own live copy.
+
+**Content**: 11 questions, each with a "why this matters" and "what to look for in the answer" line,
+covering every workflow area specified: materials/fabrics/trims, BOM management, tech packs, supplier
+collaboration, sampling, costing, collection/season management, critical path/calendar management,
+ERP integration, PLM-to-3D-design workflow, and multi-brand/multi-season complexity. Each question is
+specific to the actual workflow (e.g. "how many steps to create a new colorway's BOM," not "does it
+have BOM management?"). No claims about current vendor differentiation or market trends were made —
+every "why it matters" line is grounded in structural, evergreen buyer-decision reasoning rather than
+an assertion about what vendors currently do, which sidesteps the verification risk the request
+flagged rather than requiring new research to clear it.
+
+**CTA URL corrected**: the request specified `/finder?category=Product%20Lifecycle%20Management`,
+but the actual category string used everywhere else on the site (matching `/plm`'s own CTA) is
+`"Product Lifecycle Management (PLM)"`. Used the correct full string so the finder preloads the
+category correctly, flagged and confirmed before writing.
+
+**Published at** `/resources/blog/fashion-plm-software-questions-to-ask-providers`, linked from the
+blog hub alongside the EUDR article, added to `app/sitemap.ts`. No competitor names (swept, including
+every vendor name surfaced in the PLM SERP research). No em-dashes (swept, source and rendered HTML).
+
+Per instruction, the Battery Passport article was **not** written this phase — held pending real
+Search Console signal from these first two articles, consistent with the existing gate-on-data
+discipline used for industry-specific subpages elsewhere in this project.
+
+**Verification**: `tsc`, `eslint`, full production build, live-server rendering confirming all 11
+questions, both buyer-segment tracks, the corrected CTA link, the hub listing, and zero em-dash bytes.
+
+**Status: awaiting approval to commit and push.**

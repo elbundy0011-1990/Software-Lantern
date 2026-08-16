@@ -4,14 +4,14 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Fashion PLM Software | Compare Providers & Get Matched",
   description:
-    "Looking for fashion PLM software? Tell us about your brand, products and requirements — we'll connect you with up to 3 fashion PLM providers that believe they can help.",
+    "Looking for fashion PLM software? Tell us about your brand, products and requirements, and we'll connect you with up to 3 fashion PLM providers that believe they can help.",
   alternates: {
     canonical: "/plm",
   },
   openGraph: {
     title: "Fashion PLM Software | Compare Providers & Get Matched",
     description:
-      "Tell us about your brand, products and requirements — we'll connect you with up to 3 fashion PLM providers that believe they can help.",
+      "Tell us about your brand, products and requirements, and we'll connect you with up to 3 fashion PLM providers that believe they can help.",
     url: "/plm",
   },
 };
@@ -43,7 +43,7 @@ export default function PlmPage() {
               </p>
               <p className="text-[17px] text-[#5c6573] mb-[34px] max-w-[48ch]">
                 Tell us about your brand and requirements, and we&apos;ll publish your brief to fashion PLM
-                providers in the category — up to 3 who believe they&apos;re a fit will respond. Not a
+                providers in the category. Up to 3 who believe they&apos;re a fit will respond. Not a
                 ranked list, and not a guess at which one is objectively best.
               </p>
               <Link
@@ -102,18 +102,18 @@ export default function PlmPage() {
               companies use to manage a product from first sketch to shipped order: tech packs, bills of
               materials, sampling, supplier collaboration, costing, and collection calendars, all in one
               place instead of spreadsheets and email. It differs meaningfully from generic PLM used in
-              industries like automotive or industrial manufacturing — fashion-specific platforms are
+              industries like automotive or industrial manufacturing. Fashion-specific platforms are
               built around seasons, colourways, sizing, and fast-moving supplier networks rather than
               long, fixed product cycles.
             </p>
             <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-3">
               Which platform fits best depends on your collection complexity, SKU count, and sourcing
-              model — a small direct-to-consumer brand usually needs a lighter tool than a multi-brand
+              model: a small direct-to-consumer brand usually needs a lighter tool than a multi-brand
               group coordinating dozens of supplier relationships across several product categories.
             </p>
             <p className="text-[17px] leading-[1.6] text-[#3d4653]">
-              If your sourcing involves EUDR-relevant materials — leather, rubber, or other regulated
-              commodities — you may also want{" "}
+              If your sourcing involves EUDR-relevant materials (leather, rubber, or other regulated
+              commodities), you may also want{" "}
               <Link href="/eudr" className="text-[#4f46e5] font-semibold">
                 EUDR compliance software
               </Link>
@@ -153,15 +153,15 @@ export default function PlmPage() {
             {[
               [
                 "How do you choose the three providers?",
-                "We publish your brief to providers in the category. Any provider can review it and choose to respond — the providers you hear from are the ones that believe they can meet your requirements, not a ranking we've made.",
+                "We publish your brief to providers in the category. Any provider can review it and choose to respond. The providers you hear from are the ones that believe they can meet your requirements, not a ranking we've made.",
               ],
               [
                 "How do I choose a fashion PLM system?",
-                "Start with your product development workflow and where it breaks down today — tech packs, BOM, supplier collaboration, costing, or all of the above. That's exactly what our questions cover, so your brief reaches providers with enough detail for them to judge their own fit to your workflow and company size, not a generic top-10 list.",
+                "Start with your product development workflow and where it breaks down today: tech packs, BOM, supplier collaboration, costing, or all of the above. That's exactly what our questions cover, so your brief reaches providers with enough detail for them to judge their own fit to your workflow and company size, not a generic top-10 list.",
               ],
               [
                 "What's the difference between general PLM and fashion PLM?",
-                "General PLM, used in industries like automotive and industrial manufacturing, is usually built around long, fixed product cycles. Fashion PLM is built around seasons, colourways, sizing, and fast-moving supplier networks — which is why a generic PLM platform is rarely the right fit for a fashion or apparel business.",
+                "General PLM, used in industries like automotive and industrial manufacturing, is usually built around long, fixed product cycles. Fashion PLM is built around seasons, colourways, sizing, and fast-moving supplier networks, which is why a generic PLM platform is rarely the right fit for a fashion or apparel business.",
               ],
               [
                 "Is it really free?",

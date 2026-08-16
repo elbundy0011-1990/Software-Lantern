@@ -54,13 +54,13 @@ const SOURCING_OPTIONS: { value: string; label: string }[] = [
 ];
 
 const BOTH_ROLES_NOTE =
-  "If your business operates as both an operator and a trader across different product lines, the earlier applicable deadline generally applies — confirm your specific situation with a qualified advisor.";
+  "If your business operates as both an operator and a trader across different product lines, the earlier applicable deadline generally applies. Confirm your specific situation with a qualified advisor.";
 
 const LOW_RISK_NOTE =
-  "Since you've indicated all your sourcing is from EU-classified low-risk countries, a simplified due diligence procedure may apply under Article 13 of the regulation — you may not need to carry out the risk assessment and risk mitigation steps that otherwise apply, though the underlying information-gathering and due diligence system requirements still apply. Confirm your sourcing countries' exact status and what this means for your business with a qualified advisor.";
+  "Since you've indicated all your sourcing is from EU-classified low-risk countries, a simplified due diligence procedure may apply under Article 13 of the regulation: you may not need to carry out the risk assessment and risk mitigation steps that otherwise apply, though the underlying information-gathering and due diligence system requirements still apply. Confirm your sourcing countries' exact status and what this means for your business with a qualified advisor.";
 
 const GENERAL_RISK_NOTE =
-  "The EU classifies sourcing countries into three risk tiers — low, standard, or high — under the regulation's country benchmarking system. Only a small number of countries are currently classified high-risk; most others are low or standard risk by default. If all of your sourcing is confirmed to come from low-risk-classified countries, a simplified due diligence procedure may be available — check the EU's published country list or ask a qualified advisor to confirm your specific situation.";
+  "The EU classifies sourcing countries into three risk tiers (low, standard, or high) under the regulation's country benchmarking system. Only a small number of countries are currently classified high-risk; most others are low or standard risk by default. If all of your sourcing is confirmed to come from low-risk-classified countries, a simplified due diligence procedure may be available: check the EU's published country list or ask a qualified advisor to confirm your specific situation.";
 
 // Total question count depends on path: "none" ends after Q1; every other
 // path now gets the sourcing question, and only operators/exporters also
@@ -270,7 +270,7 @@ export function EudrScopeChecker() {
           <p className="text-[16px] text-[#3d4653] text-center mb-4">
             Based on your answers, EUDR likely applies to you as {roleWord}
             {commodityPhrase}. This applies if your business qualifies as micro or small and was
-            established as such by <strong>31 December 2024</strong> — otherwise the general{" "}
+            established as such by <strong>31 December 2024</strong>, otherwise the general{" "}
             {EUDR_DEADLINES.largeMedium.display} deadline applies.
           </p>
           <p className="text-[14px] text-[#5c6573] text-center mb-4">{riskNote}</p>
@@ -288,7 +288,7 @@ export function EudrScopeChecker() {
         </div>
         <p className="text-[16px] text-[#3d4653] text-center mb-3">
           Based on your answers, EUDR likely applies to you as {roleWord}
-          {commodityPhrase}. Your deadline depends on company size — the earlier date if you&apos;re
+          {commodityPhrase}. Your deadline depends on company size: the earlier date if you&apos;re
           large or medium, the later date if you&apos;re micro or small and were established as
           such by 31 December 2024.
         </p>
@@ -306,7 +306,7 @@ export function EudrScopeChecker() {
           Does EUDR apply to you?
         </h2>
         <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-10">
-          A few questions to check your scope and deadline — based on the regulation&apos;s
+          A few questions to check your scope and deadline, based on the regulation&apos;s
           published dates, not a guess.
         </p>
 
@@ -368,7 +368,7 @@ export function EudrScopeChecker() {
                 Where do you source these commodities from?
               </h3>
               <p className="text-[14px] text-[#5c6573] mb-5">
-                This affects how much due diligence work is required — the EU classifies sourcing
+                This affects how much due diligence work is required. The EU classifies sourcing
                 countries into risk tiers under the regulation.
               </p>
               <div className="grid gap-3 mb-7">

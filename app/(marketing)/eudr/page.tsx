@@ -7,14 +7,14 @@ import { EudrScopeChecker } from "@/components/eudr-scope-checker";
 export const metadata: Metadata = {
   title: "EUDR Compliance Software | Compare Providers & Get Matched",
   description:
-    "Looking for EUDR compliance software? Tell us about your supply chain and requirements — we'll connect you with up to 3 EUDR software providers that believe they can help, whether you're a large importer or a small business.",
+    "Looking for EUDR compliance software? Tell us about your supply chain and requirements, and we'll connect you with up to 3 EUDR software providers that believe they can help, whether you're a large importer or a small business.",
   alternates: {
     canonical: "/eudr",
   },
   openGraph: {
     title: "EUDR Compliance Software | Compare Providers & Get Matched",
     description:
-      "Tell us about your supply chain and requirements — we'll connect you with up to 3 EUDR software providers that believe they can help.",
+      "Tell us about your supply chain and requirements, and we'll connect you with up to 3 EUDR software providers that believe they can help.",
     url: "/eudr",
   },
 };
@@ -46,7 +46,7 @@ export default function EudrPage() {
               </p>
               <p className="text-[17px] text-[#5c6573] mb-[34px] max-w-[48ch]">
                 Tell us about your business and requirements, and we&apos;ll publish your brief to EUDR
-                software providers in the category — up to 3 who believe they&apos;re a fit will respond.
+                software providers in the category. Up to 3 who believe they&apos;re a fit will respond.
                 Not a ranked list, and not a guess at which one is objectively best.
               </p>
               <Link
@@ -103,7 +103,7 @@ export default function EudrPage() {
               EUDR compliance software helps companies meet the EU Deforestation Regulation&apos;s due
               diligence requirements: collecting supplier and plot-level geolocation data, running risk
               assessments, generating due diligence statements, and keeping an audit-ready traceability
-              record for the commodities and products in scope — replacing spreadsheets and email chains
+              record for the commodities and products in scope, replacing spreadsheets and email chains
               with a system suppliers can actually populate.
             </p>
             <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-3">
@@ -124,7 +124,7 @@ export default function EudrPage() {
             <p className="text-[15px] leading-[1.6] text-[#79818f]">
               Software Lantern does not provide legal advice, regulatory certification, or a compliance
               guarantee. We help you find and compare software providers whose platforms may fit your
-              EUDR requirements — always confirm your specific obligations against the EU Deforestation
+              EUDR requirements. Always confirm your specific obligations against the EU Deforestation
               Regulation itself or your own legal/compliance advisors.
             </p>
           </div>
@@ -139,7 +139,7 @@ export default function EudrPage() {
             </h2>
             <p className="text-[17px] leading-[1.6] text-[#3d4653]">
               No single vendor can neutrally tell you how it compares to its competitors. Here&apos;s what
-              we&apos;d suggest evaluating yourself, and why each factor matters — whether or not you use
+              we&apos;d suggest evaluating yourself, and why each factor matters, whether or not you use
               Software Lantern to do it.
             </p>
           </div>
@@ -147,19 +147,19 @@ export default function EudrPage() {
             {[
               [
                 "Supplier data collection",
-                "Every EUDR platform needs a way to collect commodity, quantity, and supplier information from your supply chain — the question is how much of that it automates versus leaving you to gather manually. Check whether the platform includes supplier outreach tools (invites, reminders, data requests) or expects you to already have this data assembled.",
+                "Every EUDR platform needs a way to collect commodity, quantity, and supplier information from your supply chain: the question is how much of that it automates versus leaving you to gather manually. Check whether the platform includes supplier outreach tools (invites, reminders, data requests) or expects you to already have this data assembled.",
               ],
               [
                 "Geolocation (GPS/polygon handling)",
-                "The regulation requires plot-level geolocation data for where relevant commodities were produced — points for smallholder plots under 4 hectares, polygons for larger areas. A platform's ability to validate, store, and check this geolocation data is often the most technically demanding requirement, so it's worth testing directly rather than taking a feature list at face value.",
+                "The regulation requires plot-level geolocation data for where relevant commodities were produced: points for smallholder plots under 4 hectares, polygons for larger areas. A platform's ability to validate, store, and check this geolocation data is often the most technically demanding requirement, so it's worth testing directly rather than taking a feature list at face value.",
               ],
               [
                 "Risk assessment methodology",
-                "You're required to assess — and where risk isn't negligible, mitigate — the risk that a product isn't deforestation-free or wasn't produced illegally. Platforms differ in how automated this is: some provide country/region risk scoring or overlay satellite deforestation data against your geolocations, others leave the methodology largely to you.",
+                "You're required to assess (and, where risk isn't negligible, mitigate) the risk that a product isn't deforestation-free or wasn't produced illegally. Platforms differ in how automated this is: some provide country/region risk scoring or overlay satellite deforestation data against your geolocations, others leave the methodology largely to you.",
               ],
               [
                 "Due diligence statement (DDS) generation",
-                "The DDS is the formal record submitted before a product enters the EU market. A platform that generates and manages these statements — including reference numbers for downstream use — removes real manual work compared to one that only helps you gather the underlying data.",
+                "The DDS is the formal record submitted before a product enters the EU market. A platform that generates and manages these statements, including reference numbers for downstream use, removes real manual work compared to one that only helps you gather the underlying data.",
               ],
               [
                 "TRACES / EU Information System submission",
@@ -167,11 +167,11 @@ export default function EudrPage() {
               ],
               [
                 "Document management and audit trail",
-                "Customs and competent authorities can request the evidence behind a due diligence statement. A platform with a clear, exportable audit trail — who supplied what data, when, and what changed — matters more the more suppliers and shipments you handle.",
+                "Customs and competent authorities can request the evidence behind a due diligence statement. A platform with a clear, exportable audit trail (who supplied what data, when, and what changed) matters more the more suppliers and shipments you handle.",
               ],
               [
                 "Supplier portal (self-service submission)",
-                "If you have more than a handful of suppliers, whether they can log in and submit their own data — rather than you chasing spreadsheets by email — changes how much ongoing admin this adds to your team.",
+                "If you have more than a handful of suppliers, whether they can log in and submit their own data, rather than you chasing spreadsheets by email, changes how much ongoing admin this adds to your team.",
               ],
               [
                 "ERP integration",
@@ -179,7 +179,7 @@ export default function EudrPage() {
               ],
               [
                 "Commodity coverage",
-                "EUDR covers seven commodities — cattle, cocoa, coffee, oil palm, rubber, soya, wood — and their derived products. Not every platform covers all seven equally well; confirm a platform genuinely supports your specific commodity and sourcing geography, not just \"EUDR\" generically.",
+                "EUDR covers seven commodities (cattle, cocoa, coffee, oil palm, rubber, soya, wood) and their derived products. Not every platform covers all seven equally well; confirm a platform genuinely supports your specific commodity and sourcing geography, not just \"EUDR\" generically.",
               ],
               [
                 "Operator vs. trader workflow support",
@@ -187,11 +187,11 @@ export default function EudrPage() {
               ],
               [
                 "Company size fit (SME vs. enterprise)",
-                "Platforms built for large importers with dedicated compliance teams often assume a scale and workflow complexity a small trader or producer doesn't have — and price accordingly. A smaller business is usually better served by a tool sized for its actual supplier count and team.",
+                "Platforms built for large importers with dedicated compliance teams often assume a scale and workflow complexity a small trader or producer doesn't have, and price accordingly. A smaller business is usually better served by a tool sized for its actual supplier count and team.",
               ],
               [
                 "Pricing model and transparency",
-                "Per-supplier, per-shipment, flat subscription, or custom quote only — the pricing model affects whether a platform is a predictable cost or an open-ended one as your supplier base grows. Published pricing is the exception, not the norm, in this category.",
+                "Per-supplier, per-shipment, flat subscription, or custom quote only: the pricing model affects whether a platform is a predictable cost or an open-ended one as your supplier base grows. Published pricing is the exception, not the norm, in this category.",
               ],
             ].map(([title, body]) => (
               <div key={title}>
@@ -238,7 +238,7 @@ export default function EudrPage() {
                 Most EUDR compliance software is built and priced for large importers with a dedicated
                 compliance team. A small roaster, trader, or producer figuring this out alongside
                 everything else it takes to run the business usually has genuinely different
-                requirements, not just a smaller budget — often a simpler, more affordable EUDR tool
+                requirements, not just a smaller budget: often a simpler, more affordable EUDR tool
                 fits better than an enterprise platform sized for a team you don&apos;t have.
               </p>
               <p className="text-[15px] text-[#5c6573] max-w-[52ch]">
@@ -266,7 +266,7 @@ export default function EudrPage() {
             {[
               [
                 "How do you choose the three providers?",
-                "We publish your brief to providers in the category. Any provider can review it and choose to respond — the providers you hear from are the ones that believe they can meet your requirements, not a ranking we've made.",
+                "We publish your brief to providers in the category. Any provider can review it and choose to respond. The providers you hear from are the ones that believe they can meet your requirements, not a ranking we've made.",
               ],
               [
                 "How do I choose EUDR software?",
@@ -274,23 +274,23 @@ export default function EudrPage() {
               ],
               [
                 "What does EUDR software actually do?",
-                "It helps you meet the EU Deforestation Regulation's due diligence requirements in practice: collecting supplier and geolocation data, assessing and documenting risk, generating due diligence statements, and keeping an audit-ready record — replacing a process that would otherwise run through spreadsheets, email, and manual filing.",
+                "It helps you meet the EU Deforestation Regulation's due diligence requirements in practice: collecting supplier and geolocation data, assessing and documenting risk, generating due diligence statements, and keeping an audit-ready record, replacing a process that would otherwise run through spreadsheets, email, and manual filing.",
               ],
               [
                 "What should an EUDR software platform include?",
-                "At minimum: supplier data collection, geolocation handling, a documented risk-assessment approach, due diligence statement generation, and an audit trail. Whether you also need a supplier portal, ERP integration, or direct submission to the EU's information system depends on your supplier count, existing systems, and role in the supply chain — see the comparison framework above.",
+                "At minimum: supplier data collection, geolocation handling, a documented risk-assessment approach, due diligence statement generation, and an audit trail. Whether you also need a supplier portal, ERP integration, or direct submission to the EU's information system depends on your supplier count, existing systems, and role in the supply chain. See the comparison framework above.",
               ],
               [
                 "What's the difference between EUDR software for operators vs. traders?",
-                `Operators — the businesses that first place a covered product on the EU market, or make it available if produced in the EU — carry the full due diligence burden: geolocation, risk assessment, and filing the due diligence statement, with obligations applying from ${EUDR_DEADLINES.largeMedium.display} for large and medium operators. Traders further down the supply chain have narrower obligations, particularly SME traders, who mainly need to reference the due diligence statement from their supplier rather than generate their own. A platform built for full operator workflows is often more than a trader actually needs.`,
+                `Operators (the businesses that first place a covered product on the EU market, or make it available if produced in the EU) carry the full due diligence burden: geolocation, risk assessment, and filing the due diligence statement, with obligations applying from ${EUDR_DEADLINES.largeMedium.display} for large and medium operators. Traders further down the supply chain have narrower obligations, particularly SME traders, who mainly need to reference the due diligence statement from their supplier rather than generate their own. A platform built for full operator workflows is often more than a trader actually needs.`,
               ],
               [
                 "Do small businesses and SMEs need EUDR software?",
-                `If you place or trade any of the seven EUDR-covered commodities (cattle, cocoa, coffee, oil palm, rubber, soya, wood) or their derived products on the EU market, EUDR applies to you regardless of size — large operators and traders must comply from ${EUDR_DEADLINES.largeMedium.display}, and micro and small operators have longer, until ${EUDR_DEADLINES.microSmall.display}. Even with a later deadline, an SME's requirements — supplier count, budget, and how much of this data is already systemized — are usually different from an enterprise's, not just smaller.`,
+                `If you place or trade any of the seven EUDR-covered commodities (cattle, cocoa, coffee, oil palm, rubber, soya, wood) or their derived products on the EU market, EUDR applies to you regardless of size: large operators and traders must comply from ${EUDR_DEADLINES.largeMedium.display}, and micro and small operators have longer, until ${EUDR_DEADLINES.microSmall.display}. Even with a later deadline, an SME's requirements (supplier count, budget, and how much of this data is already systemized) are usually different from an enterprise's, not just smaller.`,
               ],
               [
                 "What EUDR software is suitable for small businesses?",
-                "It depends on your supplier count and budget, which is exactly why we ask — a platform built for a large importer with a compliance team is usually the wrong fit (and the wrong price) for a small business handling this themselves. Tell us your size, and it becomes part of the brief providers see before deciding whether to respond.",
+                "It depends on your supplier count and budget, which is exactly why we ask: a platform built for a large importer with a compliance team is usually the wrong fit (and the wrong price) for a small business handling this themselves. Tell us your size, and it becomes part of the brief providers see before deciding whether to respond.",
               ],
               [
                 "Is it really free?",

@@ -131,7 +131,7 @@ export default function PartnerSignupPage() {
             ))}
           </div>
           <p className="mt-2 text-[13px] text-[#79818f]">
-            This sets which leads show by default in your portal — you can still browse other
+            This sets which leads show by default in your portal, though you can still browse other
             categories from there.
           </p>
         </div>

@@ -131,7 +131,7 @@ export function PortalDashboard({
 
       {unlockedParam && (
         <p className="mb-6 text-[14px] font-semibold text-[#047857]">
-          Payment received — unlocking this lead now. If it still looks locked, give it a few seconds and
+          Payment received. Unlocking this lead now. If it still looks locked, give it a few seconds and
           refresh.
         </p>
       )}

@@ -73,7 +73,7 @@ export default function PrivacyPolicyPage() {
             <li>Contact email address</li>
             <li>Account authentication data (via our authentication provider, Supabase)</li>
             <li>
-              Payment-related data when you unlock a lead (processed by Stripe — see Section 5; we do
+              Payment-related data when you unlock a lead (processed by Stripe, see Section 5; we do
               not store your card details ourselves)
             </li>
           </ul>
@@ -154,12 +154,12 @@ export default function PrivacyPolicyPage() {
           </p>
           <ul className={ul}>
             <li>
-              <strong>Supabase</strong> (database hosting and authentication) — data may be processed
+              <strong>Supabase</strong> (database hosting and authentication): data may be processed
               outside the EU/EEA depending on project region; Supabase provides GDPR-compliant data
               processing terms and Standard Contractual Clauses where applicable.
             </li>
             <li>
-              <strong>Stripe</strong> (payment processing for partner lead unlocks) — Stripe acts as an
+              <strong>Stripe</strong> (payment processing for partner lead unlocks): Stripe acts as an
               independent controller/processor for payment data; see Stripe&apos;s own privacy policy for
               details.
             </li>
@@ -217,7 +217,7 @@ export default function PrivacyPolicyPage() {
             <li>Request a copy of your data in a portable format</li>
             <li>Withdraw consent at any time (where processing is based on consent)</li>
             <li>
-              Lodge a complaint with a supervisory authority — in Denmark, this is the{" "}
+              Lodge a complaint with a supervisory authority. In Denmark, this is the{" "}
               <strong>Datatilsynet</strong> (Danish Data Protection Agency),{" "}
               <a
                 href="https://www.datatilsynet.dk"

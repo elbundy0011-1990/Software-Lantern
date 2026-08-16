@@ -324,7 +324,7 @@ export function validateStep(
     if (!/^[^\s@]+@[^\s@.]+\.[^\s@]{2,}$/.test(email)) return "That email address does not look valid.";
     const domain = email.split("@")[1];
     if (FREE_EMAIL_DOMAINS.includes(domain)) {
-      return "Please use your work email address — we use it to connect your brief to the right providers.";
+      return "Please use your work email address. We use it to connect your brief to the right providers.";
     }
     const phone = trim(contact.phone).replace(/[^0-9]/g, "");
     if (!phone) return "Please add a phone number. Providers use it to reach you.";

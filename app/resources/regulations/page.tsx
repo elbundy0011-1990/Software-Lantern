@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "EU Regulations for Compliance Software Buyers | Software Lantern",
   description:
-    "Plain-language explainers on the EU regulations behind Software Lantern's categories — what they require, who they apply to, and current deadlines.",
+    "Plain-language explainers on the EU regulations behind Software Lantern's categories: what they require, who they apply to, and current deadlines.",
   alternates: {
     canonical: "/resources/regulations",
   },
@@ -47,7 +47,7 @@ export default function RegulationsHubPage() {
             EU Regulations for Compliance Software Buyers
           </h1>
           <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-14 max-w-[60ch]">
-            Plain-language explainers on the regulations behind Software Lantern&apos;s categories —
+            Plain-language explainers on the regulations behind Software Lantern&apos;s categories:
             what they actually require, not marketing copy about them.
           </p>
 

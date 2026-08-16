@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const URL_ERROR_MESSAGES: Record<string, string> = {
-  confirmation_failed: "That confirmation link didn't work — it may have expired. Try signing in, or sign up again.",
+  confirmation_failed: "That confirmation link didn't work. It may have expired. Try signing in, or sign up again.",
 };
 
 function PartnerLoginForm() {

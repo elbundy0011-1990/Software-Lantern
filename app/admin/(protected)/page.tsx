@@ -67,7 +67,7 @@ export default async function AdminDashboardPage({
               </Link>
               <p className="text-[#5c6573] truncate">{lead.software_need}</p>
             </div>
-            <span className="text-[#3d4653]">{lead.category || "—"}</span>
+            <span className="text-[#3d4653]">{lead.category || "N/A"}</span>
             <span className="text-[#5c6573]">{new Date(lead.created_at).toLocaleDateString()}</span>
             <span className="capitalize">{lead.status}</span>
             <span>

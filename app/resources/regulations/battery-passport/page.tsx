@@ -36,7 +36,7 @@ export default function BatteryPassportRegulationArticlePage() {
             What Is a Battery Passport? The EU Battery Regulation Explained
           </h1>
           <p className="text-[15px] text-[#79818f] mb-14">
-            An explainer on the regulation itself — for software-specific guidance, see{" "}
+            An explainer on the regulation itself: for software-specific guidance, see{" "}
             <Link href="/battery-passport" className={link}>
               Battery Passport software
             </Link>
@@ -46,7 +46,7 @@ export default function BatteryPassportRegulationArticlePage() {
           <p className={`${p} text-[19px] leading-[1.6] text-[#0d1117]`}>
             A battery passport is a digital record, required under the EU Battery Regulation
             (Regulation (EU) 2023/1542, Article 77), that has to accompany a battery placed on the
-            EU market — accessible via a QR code and carrying the lifecycle data regulators, market
+            EU market, accessible via a QR code and carrying the lifecycle data regulators, market
             surveillance bodies, and recyclers need to verify compliance.
           </p>
 
@@ -64,7 +64,7 @@ export default function BatteryPassportRegulationArticlePage() {
           <h2 className={h2}>Which batteries need a passport?</h2>
           <p className={p}>
             The requirement applies to <strong>EV batteries</strong>,{" "}
-            <strong>LMT batteries</strong> (light means of transport — e-bikes, e-scooters, and
+            <strong>LMT batteries</strong> (light means of transport: e-bikes, e-scooters, and
             similar), and <strong>industrial batteries above 2 kWh</strong>. Portable and
             starting-lighting-ignition (SLI) batteries are not currently in scope. The passport
             requirement applies from <strong>{BATTERY_PASSPORT_DEADLINE.display}</strong>.
@@ -86,10 +86,10 @@ export default function BatteryPassportRegulationArticlePage() {
             <li>Safety and dismantling information for repairers and recyclers</li>
           </ul>
           <p className={`${p} text-[15px] text-[#79818f]`}>
-            Not all of this data is visible to everyone — the regulation tiers access between the
+            Not all of this data is visible to everyone: the regulation tiers access between the
             general public, regulators, and recycling-service operators. Treat this list as a
             practical summary of what buyers should expect a passport to cover, not an exhaustive
-            legal enumeration — confirm the specific data fields required for your product against
+            legal enumeration. Confirm the specific data fields required for your product against
             the regulation&apos;s own annexes or a qualified advisor.
           </p>
 

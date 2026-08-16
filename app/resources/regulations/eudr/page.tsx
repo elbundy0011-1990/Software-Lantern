@@ -5,7 +5,7 @@ import { EUDR_DEADLINES } from "@/lib/eudr-dates";
 export const metadata: Metadata = {
   title: "What Is EUDR? The EU Deforestation Regulation Explained | Software Lantern",
   description:
-    "What EUDR is, who it applies to, what it requires, and the current compliance deadlines — explained in plain language, verified against the regulation text.",
+    "What EUDR is, who it applies to, what it requires, and the current compliance deadlines, explained in plain language, verified against the regulation text.",
   alternates: {
     canonical: "/resources/regulations/eudr",
   },
@@ -36,7 +36,7 @@ export default function EudrRegulationArticlePage() {
             What Is EUDR? The EU Deforestation Regulation Explained
           </h1>
           <p className="text-[15px] text-[#79818f] mb-14">
-            An explainer on the regulation itself — for software-specific guidance, see{" "}
+            An explainer on the regulation itself: for software-specific guidance, see{" "}
             <Link href="/eudr" className={link}>
               EUDR compliance software
             </Link>
@@ -44,7 +44,7 @@ export default function EudrRegulationArticlePage() {
           </p>
 
           <p className={`${p} text-[19px] leading-[1.6] text-[#0d1117]`}>
-            EUDR — the EU Deforestation Regulation, formally Regulation (EU) 2023/1115 — requires
+            EUDR, the EU Deforestation Regulation (formally Regulation (EU) 2023/1115), requires
             companies placing certain commodities on the EU market, or exporting them from it, to
             prove those commodities weren&apos;t grown on land deforested after 31 December 2020,
             and were produced legally. It applies regardless of company size, though the deadline
@@ -58,13 +58,13 @@ export default function EudrRegulationArticlePage() {
           </p>
           <ul className={ul}>
             <li>
-              <strong>Operator</strong> — the business that first places a covered product on the EU
+              <strong>Operator</strong>: the business that first places a covered product on the EU
               market, or makes it available on the market if it was produced within the EU. This
               covers importers and EU-based producers. Operators carry the full due diligence
               burden.
             </li>
             <li>
-              <strong>Trader</strong> — any other business that makes the product available further
+              <strong>Trader</strong>: any other business that makes the product available further
               down the supply chain, after an operator has already placed it on the market (for
               example, distributing or retailing it within the EU). Traders have narrower
               obligations than operators.
@@ -91,28 +91,28 @@ export default function EudrRegulationArticlePage() {
           </p>
           <ul className={ul}>
             <li>
-              <strong>Information collection</strong> — commodity type and quantity, supplier
+              <strong>Information collection</strong>: commodity type and quantity, supplier
               details, and plot-level geolocation data for where the commodity was produced (points
               for smallholder plots under 4 hectares, polygons for larger areas).
             </li>
             <li>
-              <strong>Risk assessment</strong> — assessing the risk that the product isn&apos;t
+              <strong>Risk assessment</strong>: assessing the risk that the product isn&apos;t
               deforestation-free or wasn&apos;t produced legally, based on the collected information
               and the country&apos;s risk classification.
             </li>
             <li>
-              <strong>Risk mitigation</strong> — where risk isn&apos;t negligible, taking steps to
+              <strong>Risk mitigation</strong>: where risk isn&apos;t negligible, taking steps to
               reduce it before the product can be placed on the market.
             </li>
             <li>
-              <strong>A due diligence system</strong> — maintaining the internal procedures and
+              <strong>A due diligence system</strong>: maintaining the internal procedures and
               records that make the above auditable, on an ongoing basis, not just once.
             </li>
           </ul>
           <p className={p}>
             The regulation also sets up a country-level risk benchmarking system (low, standard, or
             high risk). Operators sourcing exclusively from countries classified as low risk can use
-            a simplified procedure that skips the risk assessment and risk mitigation steps — the
+            a simplified procedure that skips the risk assessment and risk mitigation steps. The
             information collection and due diligence system requirements still apply. Only a small
             number of countries are currently classified high risk; most others are low or standard
             risk by default.
@@ -121,14 +121,14 @@ export default function EudrRegulationArticlePage() {
           <h2 className={h2}>EUDR deadlines</h2>
           <p className={p}>
             Due diligence obligations apply from <strong>{EUDR_DEADLINES.largeMedium.display}</strong>{" "}
-            for large and medium operators and traders. Micro and small operators — established as
-            such by 31 December 2024 — have until <strong>{EUDR_DEADLINES.microSmall.display}</strong>.
+            for large and medium operators and traders. Micro and small operators (established as
+            such by 31 December 2024) have until <strong>{EUDR_DEADLINES.microSmall.display}</strong>.
             This later date is specific to operators; the regulation&apos;s text doesn&apos;t extend
             it to traders regardless of size.
           </p>
           <p className={`${p} text-[15px] text-[#79818f]`}>
             These dates reflect Regulation (EU) 2025/2650, which amended the original regulation and
-            superseded an earlier delay (Regulation (EU) 2024/3234) — if you&apos;ve seen different
+            superseded an earlier delay (Regulation (EU) 2024/3234). If you&apos;ve seen different
             dates elsewhere, they&apos;re likely referencing that earlier, now-outdated timeline.
           </p>
 
@@ -151,7 +151,7 @@ export default function EudrRegulationArticlePage() {
               Not sure if EUDR applies to you?
             </h2>
             <p className="text-[16px] text-[#3d4653] mb-6 max-w-[52ch]">
-              Use the scope checker on our EUDR page — a few questions, a plain-language answer on
+              Use the scope checker on our EUDR page: a few questions, a plain-language answer on
               your role and deadline.
             </p>
             <div className="flex flex-wrap gap-3">

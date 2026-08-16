@@ -44,7 +44,7 @@ export async function POST(request: Request) {
   const domain = email.split("@")[1];
   if (FREE_EMAIL_DOMAINS.includes(domain)) {
     return NextResponse.json(
-      { error: "Please use your work email address — we use it to connect your brief to the right providers." },
+      { error: "Please use your work email address. We use it to connect your brief to the right providers." },
       { status: 400 },
     );
   }

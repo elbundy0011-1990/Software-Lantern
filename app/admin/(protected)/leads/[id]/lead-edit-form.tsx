@@ -160,7 +160,7 @@ export function LeadEditForm({ lead }: { lead: Lead }) {
       <div className="bg-white border border-[#0d1117]/[0.08] rounded-2xl p-7 mb-8">
         <h2 className="font-sans font-semibold text-[18px] mb-1">Custom fields</h2>
         <p className="text-[14px] text-[#5c6573] mb-4">
-          Ad hoc label/value pairs for this lead only. Internal — never shown to partners.
+          Ad hoc label/value pairs for this lead only. Internal, never shown to partners.
         </p>
         <div className="grid gap-2 mb-4">
           {Object.entries(customFields).map(([key, value]) => (

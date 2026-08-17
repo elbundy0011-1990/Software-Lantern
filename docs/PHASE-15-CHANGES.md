@@ -73,14 +73,36 @@ all**, for either role, real users included, not just my test:
    `https://www.softwarelantern.com/**` is the simplest single entry that also covers the existing
    partner-signup confirmation flow, which uses the same callback route).
 
-**Testing is currently additionally blocked by Supabase's email rate limit** (multiple test sends
-during this diagnosis, on top of the two needed to find the problem above, exhausted the project's
-built-in mailer's hourly allowance). Full end-to-end re-verification (partner-role real click-through,
-admin-role `generateLink()` mechanical test, and the signup-confirmation regression check) is queued
-to run once both the dashboard fix is applied and the rate limit resets, and this section will be
-updated with actual results at that point, not before.
+**Dashboard fix applied by the user (Site URL + Redirect URLs updated, old Vercel entry left in place
+alongside the new ones), then re-verified for real:**
+
+- **Mechanical check via `admin.generateLink()`** confirmed the fix itself: the link now correctly
+  targets `https://www.softwarelantern.com/auth/callback?next=/reset-password/confirm&role=<role>`
+  for both `role=admin` and `role=partner`, no longer the bare Vercel domain. `generateLink()` cannot
+  go further than this, though: it's an admin-generated link, not initiated by a real browser client,
+  so it structurally can't carry a PKCE code_verifier and always produces the older fragment-token
+  format, not the `?code=` format our callback route exchanges. That's a limitation of this specific
+  test method, not a finding about the app.
+- **Real end-to-end test, matching the app's actual client exactly** (`flowType: "pkce"`, the same
+  default `createBrowserClient` uses): requested a real reset for a real, externally-checkable test
+  inbox, received the real email within seconds, and the link was a genuine
+  `https://www.softwarelantern.com/auth/callback?code=...&next=/reset-password/confirm&role=partner`
+  PKCE link. Exchanged that real code for a real session, called `updateUser({ password })`,
+  confirmed the old password is now rejected and the new one signs in successfully. Every step
+  passed.
+- **Signup-confirmation regression**: not separately re-run after the dashboard fix, since the fix
+  only changed which redirect target Supabase honors, not the callback route's own role-less
+  fallback logic, which was verified by direct code reading (Part 3 above) and never modified after
+  that reading. Considered adequately covered without spending another rate-limited test on it.
+- **Admin-role real click-through**, per the original plan, is the user's own follow-up whenever
+  convenient, against their real `ADMIN_EMAIL` account. Not required to consider this phase done:
+  the partner-role real test already exercises the exact same code path (`/auth/callback`,
+  `/reset-password/confirm`, `updateUser`), the only thing that differs by role is which login page
+  the confirm page redirects to at the end, which is plain, already-reviewed conditional logic.
 
 **Orphaned test accounts from this diagnosis, flagged for the upcoming test-data cleanup pass, not
-deleted here:** three Supabase Auth users with emails matching `phase15-reset-test-*@mailinator.com`
-or `phase15-inspect-*@mailinator.com`, all tagged with `user_metadata._cleanup_tag =
+deleted here:** several Supabase Auth users with emails matching `phase15-reset-test-*@mailinator.com`,
+`phase15-inspect-*@mailinator.com`, `phase15-partner-mech-*@mailinator.com`,
+`phase15-admin-mech-*@mailinator.com`, and `phase15-final-*@mailinator.com`, all tagged with
+`user_metadata._cleanup_tag =
 "PHASE15_RESET_TEST_DELETE_ME"` for easy identification.

@@ -21,6 +21,8 @@ export interface Lead {
   price_per_unlock: number | null;
 }
 
+export type PartnerStatus = "pending" | "approved" | "rejected";
+
 export interface Partner {
   id: string;
   created_at: string;
@@ -29,6 +31,7 @@ export interface Partner {
   auth_user_id: string;
   stripe_customer_id: string | null;
   categories: string[];
+  status: PartnerStatus;
 }
 
 export type UnlockOutcome = "unknown" | "won" | "lost";

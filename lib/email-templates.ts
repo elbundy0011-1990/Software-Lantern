@@ -79,6 +79,37 @@ export function buildNewLeadAdminEmail(input: {
   };
 }
 
+// TRIGGER 3: a new partner signed up, sent only to ADMIN_EMAIL. New
+// partners land in 'pending', so this is what closes the loop, an
+// unreviewed application otherwise just sits silently in /admin/partners.
+export function buildNewPartnerAdminEmail(input: {
+  partnerId: string;
+  companyName: string;
+  contactEmail: string;
+  categories: string[];
+}): { subject: string; html: string } {
+  const rows = [
+    fieldRow("Company", input.companyName),
+    fieldRow("Contact email", input.contactEmail),
+    fieldRow("Categories", input.categories.length > 0 ? input.categories.join(", ") : "None selected"),
+  ];
+
+  const bodyHtml = `
+    <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">${rows.join("")}</table>
+    <p style="margin:0;font-size:15px;line-height:1.6;color:#3d4653;">This application is pending review and won't see any leads or be able to unlock any until approved.</p>
+  `;
+
+  return {
+    subject: `New provider application: ${input.companyName}`,
+    html: emailLayout({
+      heading: "A new provider applied",
+      bodyHtml,
+      ctaHref: `${SITE_URL}/admin/partners/${input.partnerId}`,
+      ctaLabel: "Review this application",
+    }),
+  };
+}
+
 // TRIGGER 2: a lead was just published, sent individually to every matching,
 // non-excluded partner. Content is deliberately narrower than everything
 // get_partner_leads() exposes pre-unlock: category, timeline, one

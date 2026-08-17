@@ -12,10 +12,20 @@ export async function POST(request: Request) {
 
   const { data: partner } = await supabase
     .from("partners")
-    .select("id, company_name")
+    .select("id, company_name, status")
     .eq("auth_user_id", user.id)
     .maybeSingle();
   if (!partner) return NextResponse.json({ error: "No partner account" }, { status: 403 });
+  // Independent of the leads list being hidden for a pending/rejected
+  // partner (get_partner_leads() returns zero rows for them): a partner
+  // who somehow already has a lead_id (an old bookmark, a direct API call)
+  // must not be able to start checkout for it either.
+  if (partner.status !== "approved") {
+    return NextResponse.json(
+      { error: "Your provider application has not been approved yet." },
+      { status: 403 },
+    );
+  }
 
   let leadId: string;
   try {

@@ -7,7 +7,22 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { categoryShortCode, partnerNotificationClassification } from "@/lib/finder-config";
 import { sendEmail } from "@/lib/resend";
 import { buildLeadPublishedPartnerEmail } from "@/lib/email-templates";
-import type { LeadStatus, UnlockOutcome } from "@/lib/types";
+import type { LeadStatus, PartnerStatus, UnlockOutcome } from "@/lib/types";
+
+// Approve or reject a pending provider application (or flip either back to
+// 'pending', though the admin UI only ever exposes approve/reject buttons
+// for this phase). No rejection-reason field, no rejection email to the
+// partner, no re-application flow: all flagged as future work, not built
+// here. Runs through the service-role client, same pattern as every other
+// admin action in this file.
+export async function setPartnerStatus(partnerId: string, status: PartnerStatus) {
+  await requireAdmin();
+  const supabase = createAdminClient();
+  const { error } = await supabase.from("partners").update({ status }).eq("id", partnerId);
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/partners");
+  revalidatePath(`/admin/partners/${partnerId}`);
+}
 
 // Admin override: unlike update_unlock_outcome() (partner-facing, RPC-gated,
 // 'won'/'lost' only), admin can set outcome back to 'unknown' and always

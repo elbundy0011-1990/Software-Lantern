@@ -1,8 +1,16 @@
 import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
-import type { Partner, Unlock } from "@/lib/types";
+import type { Partner, PartnerStatus, Unlock } from "@/lib/types";
+import { PartnerStatusButtons } from "./partner-status-buttons";
 
 type SortKey = "spent" | "login";
+
+const TABS: { label: string; value: PartnerStatus | "all" }[] = [
+  { label: "Pending", value: "pending" },
+  { label: "Approved", value: "approved" },
+  { label: "Rejected", value: "rejected" },
+  { label: "All", value: "all" },
+];
 
 function formatEuro(amount: number): string {
   return `€${amount.toFixed(2)}`;
@@ -11,16 +19,20 @@ function formatEuro(amount: number): string {
 export default async function AdminPartnersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ sort?: string }>;
+  searchParams: Promise<{ sort?: string; status?: string }>;
 }) {
-  const { sort } = await searchParams;
+  const { sort, status } = await searchParams;
   const activeSort: SortKey = sort === "login" ? "login" : "spent";
+  const activeTab = (status as PartnerStatus | "all") || "pending";
 
   const supabase = createAdminClient();
+  let query = supabase
+    .from("partners")
+    .select("id, company_name, contact_email, categories, created_at, auth_user_id, status");
+  if (activeTab !== "all") query = query.eq("status", activeTab);
+
   const [{ data: partners }, { data: unlocks }, { data: authList }] = await Promise.all([
-    supabase
-      .from("partners")
-      .select("id, company_name, contact_email, categories, created_at, auth_user_id"),
+    query,
     supabase.from("unlocks").select("partner_id, amount_paid"),
     supabase.auth.admin.listUsers({ perPage: 1000 }),
   ]);
@@ -63,24 +75,43 @@ export default async function AdminPartnersPage({
         <h1 className="font-sans font-semibold text-[30px]">Partners</h1>
       </div>
 
+      <div className="flex gap-2 mb-6">
+        {TABS.map((tab) => (
+          <Link
+            key={tab.value}
+            href={`/admin/partners?status=${tab.value}${sort ? `&sort=${sort}` : ""}`}
+            className="rounded-full px-4 py-2 text-[14px] font-semibold"
+            style={{
+              background: activeTab === tab.value ? "#4f46e5" : "#ffffff",
+              color: activeTab === tab.value ? "#ffffff" : "#3d4653",
+              border: `1px solid ${activeTab === tab.value ? "#4f46e5" : "rgba(13,17,23,0.12)"}`,
+            }}
+          >
+            {tab.label}
+          </Link>
+        ))}
+      </div>
+
       <div className="bg-white border border-[#0d1117]/[0.08] rounded-2xl overflow-hidden">
-        <div className="grid grid-cols-[1.6fr_1.6fr_1.2fr_0.8fr_1fr_1fr_1fr] gap-4 px-6 py-3 bg-[#f6f7fb] border-b border-[#0d1117]/[0.07] text-[11px] font-bold uppercase tracking-[0.06em] text-[#79818f]">
+        <div className="grid grid-cols-[1.3fr_1.3fr_0.9fr_0.7fr_0.6fr_0.8fr_0.8fr_0.8fr_auto] gap-4 px-6 py-3 bg-[#f6f7fb] border-b border-[#0d1117]/[0.07] text-[11px] font-bold uppercase tracking-[0.06em] text-[#79818f]">
           <span>Company</span>
           <span>Contact email</span>
           <span>Categories</span>
+          <span>Status</span>
           <span>Unlocked</span>
-          <Link href="/admin/partners?sort=spent" className={sortLinkClass("spent")}>
+          <Link href={`/admin/partners?status=${activeTab}&sort=spent`} className={sortLinkClass("spent")}>
             Total spent ↓
           </Link>
-          <Link href="/admin/partners?sort=login" className={sortLinkClass("login")}>
+          <Link href={`/admin/partners?status=${activeTab}&sort=login`} className={sortLinkClass("login")}>
             Last login ↓
           </Link>
           <span>Signed up</span>
+          <span>Actions</span>
         </div>
         {rows.map(({ partner, unlockCount, totalSpent, lastSignIn }) => (
           <div
             key={partner.id}
-            className="grid grid-cols-[1.6fr_1.6fr_1.2fr_0.8fr_1fr_1fr_1fr] gap-4 items-center px-6 py-4 border-b border-[#0d1117]/[0.05] text-[14px]"
+            className="grid grid-cols-[1.3fr_1.3fr_0.9fr_0.7fr_0.6fr_0.8fr_0.8fr_0.8fr_auto] gap-4 items-center px-6 py-4 border-b border-[#0d1117]/[0.05] text-[14px]"
           >
             <Link
               href={`/admin/partners/${partner.id}`}
@@ -92,16 +123,18 @@ export default async function AdminPartnersPage({
             <span className="text-[#3d4653]">
               {partner.categories.length > 0 ? partner.categories.join(", ") : "All"}
             </span>
+            <span className="capitalize">{partner.status}</span>
             <span>{unlockCount}</span>
             <span className="font-semibold text-[#0d1117]">{formatEuro(totalSpent)}</span>
             <span className="text-[#5c6573]">
               {lastSignIn ? new Date(lastSignIn).toLocaleDateString() : "Never"}
             </span>
             <span className="text-[#5c6573]">{new Date(partner.created_at).toLocaleDateString()}</span>
+            <PartnerStatusButtons id={partner.id} status={partner.status} />
           </div>
         ))}
         {rows.length === 0 && (
-          <div className="px-6 py-14 text-center text-[#5c6573]">No partners yet.</div>
+          <div className="px-6 py-14 text-center text-[#5c6573]">No partners in this view yet.</div>
         )}
       </div>
     </div>

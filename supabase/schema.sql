@@ -48,6 +48,17 @@ create table if not exists public.partners (
 -- PHASE-7-CHANGES.md for the reasoning behind that choice.
 alter table public.partners add column if not exists categories text[] not null default '{}';
 
+-- Provider approval workflow: mirrors leads.status's pattern exactly (a
+-- plain text + check constraint, no enum type). New signups land in
+-- 'pending' via this default; create_partner() needed no change since it
+-- returns public.partners (the whole row's current shape) rather than an
+-- explicit column list. Enforced in two independent places, not just one:
+-- get_partner_leads() (see below) and /api/stripe/checkout's own direct
+-- status check, so a pending partner can't unlock a lead even if they
+-- somehow already have a lead_id.
+alter table public.partners add column if not exists status text not null default 'pending'
+  check (status in ('pending', 'approved', 'rejected'));
+
 create table if not exists public.unlocks (
   id uuid primary key default gen_random_uuid(),
   lead_id uuid not null references public.leads (id) on delete cascade,
@@ -217,6 +228,15 @@ create policy "partners read own unlocks"
 -- is folded into the same WHERE clause as everything else, so an excluded
 -- lead is structurally indistinguishable from one outside the partner's
 -- category or simply not yet published: no separate flag, no visible gap.
+--
+-- A pending or rejected partner gets the same silent, no-distinguishing-
+-- signal treatment: `me` only resolves for an approved partner, and
+-- `me.partner_id is not null` in the outer WHERE turns that into genuinely
+-- zero rows, not "every published lead with fields nulled out" (which is
+-- what a bare `left join me on true` would otherwise still produce, since
+-- `ex.id is null` stays true when `me` has no row). Every authenticated
+-- caller this RPC was never meant to serve, no partner row at all, a
+-- pending/rejected partner, gets identical treatment: nothing.
 -- ─────────────────────────────────────────────────────────────────────────
 
 -- Signature changed (added unlock_id, outcome) after initial launch — drop
@@ -254,6 +274,7 @@ as $$
     select p.id as partner_id
     from public.partners p
     where p.auth_user_id = auth.uid()
+      and p.status = 'approved'
   )
   select
     l.id,
@@ -279,6 +300,7 @@ as $$
   left join public.unlocks u on u.lead_id = l.id and u.partner_id = me.partner_id
   left join public.lead_exclusions ex on ex.lead_id = l.id and ex.partner_id = me.partner_id
   where l.status = 'published'
+    and me.partner_id is not null
     and (ex.id is null or u.id is not null)
   order by l.created_at desc;
 $$;

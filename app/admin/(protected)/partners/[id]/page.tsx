@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import type { Partner, Unlock, Lead } from "@/lib/types";
 import { timeAgo } from "@/lib/dates";
 import { OutcomeSelect } from "./outcome-select";
+import { PartnerStatusButtons } from "../partner-status-buttons";
 
 function formatEuro(amount: number): string {
   return `€${amount.toFixed(2)}`;
@@ -56,8 +57,17 @@ export default async function AdminPartnerPage({ params }: { params: Promise<{ i
       </p>
 
       <div className="bg-white border border-[#0d1117]/[0.08] rounded-2xl p-7 mb-6">
-        <h1 className="font-sans font-semibold text-[26px] mb-4">{(partner as Partner).company_name}</h1>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-6 text-[14px]">
+        <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
+          <h1 className="font-sans font-semibold text-[26px]">{(partner as Partner).company_name}</h1>
+          <PartnerStatusButtons id={(partner as Partner).id} status={(partner as Partner).status} />
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-6 gap-6 text-[14px]">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.06em] text-[#79818f] mb-1">
+              Status
+            </p>
+            <p className="text-[#0d1117] capitalize">{(partner as Partner).status}</p>
+          </div>
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.06em] text-[#79818f] mb-1">
               Contact email

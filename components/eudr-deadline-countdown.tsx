@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { EUDR_DEADLINES, daysUntil } from "@/lib/eudr-dates";
+import { EUDR_DEADLINES } from "@/lib/eudr-dates";
+import { daysUntil } from "@/lib/dates";
 import { CalendarIcon } from "@/components/icons";
 
 function DeadlineCard({

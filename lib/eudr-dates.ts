@@ -27,8 +27,3 @@ export const EUDR_ESTABLISHED_BY_NOTE = "31 December 2024";
 
 export const EUDR_SME_SIZE_NOTE =
   "Company size for EUDR purposes follows Directive 2013/34/EU's standard company-size categories (based on balance sheet total, net turnover, and employee count). If you're not sure which category your business falls into, check your official size classification, since it determines which deadline applies to you.";
-
-export function daysUntil(isoDate: string): number {
-  const target = new Date(`${isoDate}T00:00:00Z`).getTime();
-  return Math.max(0, Math.ceil((target - Date.now()) / 86400000));
-}

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { EUDR_DEADLINES, EUDR_SME_SIZE_NOTE, daysUntil, type EudrDeadlineKey } from "@/lib/eudr-dates";
+import { EUDR_DEADLINES, EUDR_SME_SIZE_NOTE, type EudrDeadlineKey } from "@/lib/eudr-dates";
+import { daysUntil } from "@/lib/dates";
 
 type Role = "operator" | "trader" | "export" | "none";
 type Size = "large-medium" | "micro-small" | "not-sure";
@@ -314,7 +315,7 @@ export function EudrScopeChecker() {
           {screen !== "result" && <ProgressIndicator screen={screen} role={role} />}
 
           {screen === "role" && (
-            <div key="role" className="eudr-step-in">
+            <div key="role" className="step-in">
               <h3 className="font-sans font-semibold text-[21px] mb-5">
                 What do you do with EUDR-relevant commodities or products?
               </h3>
@@ -333,7 +334,7 @@ export function EudrScopeChecker() {
           )}
 
           {screen === "commodities" && (
-            <div key="commodities" className="eudr-step-in">
+            <div key="commodities" className="step-in">
               <h3 className="font-sans font-semibold text-[21px] mb-5">
                 Which commodities are involved?
               </h3>
@@ -363,7 +364,7 @@ export function EudrScopeChecker() {
           )}
 
           {screen === "sourcing" && (
-            <div key="sourcing" className="eudr-step-in">
+            <div key="sourcing" className="step-in">
               <h3 className="font-sans font-semibold text-[21px] mb-2">
                 Where do you source these commodities from?
               </h3>
@@ -388,7 +389,7 @@ export function EudrScopeChecker() {
           )}
 
           {screen === "size" && (
-            <div key="size" className="eudr-step-in">
+            <div key="size" className="step-in">
               <h3 className="font-sans font-semibold text-[21px] mb-5">What&apos;s your company size?</h3>
               <div className="grid gap-3 mb-7">
                 {SIZE_OPTIONS.map((opt) => (
@@ -407,7 +408,7 @@ export function EudrScopeChecker() {
           )}
 
           {screen === "result" && (
-            <div key="result" className="eudr-step-in">
+            <div key="result" className="step-in">
               {renderResult()}
               <div className="mt-7 pt-6 border-t border-[#0d1117]/[0.08] flex flex-wrap items-center justify-center gap-4">
                 <Link

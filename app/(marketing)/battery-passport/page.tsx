@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { BATTERY_PASSPORT_DEADLINE } from "@/lib/battery-passport-dates";
 import { BuildingIcon, DocumentIcon, PlugIcon, CalendarIcon } from "@/components/icons";
+import { BatteryPassportScopeChecker } from "@/components/battery-passport-scope-checker";
 
 export const metadata: Metadata = {
   title: "Battery Passport Software | Compare Providers & Get Matched",
@@ -90,6 +91,8 @@ export default function BatteryPassportPage() {
           </div>
         </div>
       </section>
+
+      <BatteryPassportScopeChecker />
 
       <section className="border-b border-[#0d1117]/[0.07]">
         <div className="max-w-[1160px] mx-auto px-5 sm:px-8 py-21">

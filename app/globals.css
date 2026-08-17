@@ -8,9 +8,10 @@
   box-sizing: border-box;
 }
 
-/* Used by the EUDR scope checker to fade/slide each new question or the
-   result screen in on mount — applied to a div keyed by screen name, so a
-   screen change remounts the node and retriggers the animation for free. */
+/* Used by the scope checkers (EUDR, Battery Passport) to fade/slide each new
+   question or the result screen in on mount — applied to a div keyed by
+   screen name, so a screen change remounts the node and retriggers the
+   animation for free. */
 @keyframes step-in {
   from {
     opacity: 0;
@@ -22,6 +23,6 @@
   }
 }
 
-.eudr-step-in {
+.step-in {
   animation: step-in 0.28s ease-out;
 }

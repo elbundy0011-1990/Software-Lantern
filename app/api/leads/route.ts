@@ -1,5 +1,5 @@
 import { NextResponse, after } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { sendEmail } from "@/lib/resend";
@@ -63,7 +63,13 @@ export async function POST(request: Request) {
     answers.usingSoftware === "Yes" && typeof answers.vendor === "string" ? answers.vendor : null;
   const timeline = typeof answers.timing === "string" ? answers.timing : null;
 
-  const supabase = await createClient();
+  // Service-role client: this insert is fully validated above and never
+  // exposed to the browser (this is a route handler, not a client-side
+  // Supabase call), and .select().single() below needs to read the row
+  // straight back — the anon/authenticated RLS policy on `leads` is
+  // deliberately insert-only, with no SELECT grant, so the anon client
+  // can't read its own just-inserted row back.
+  const supabase = createAdminClient();
   const { data: inserted, error } = await supabase
     .from("leads")
     .insert({

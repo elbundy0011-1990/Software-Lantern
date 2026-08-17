@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { track } from "@vercel/analytics";
 import {
@@ -10,7 +10,7 @@ import {
   type ContactAnswers,
   type StepAnswers,
 } from "@/lib/finder-config";
-import { TurnstileWidget } from "@/components/turnstile-widget";
+import { TurnstileWidget, type TurnstileWidgetHandle } from "@/components/turnstile-widget";
 
 function summaryRows(category: string | null, answers: StepAnswers, contact: ContactAnswers) {
   const val = (v: string | string[] | undefined) => {
@@ -61,6 +61,7 @@ export function FinderWizard() {
   const [submitting, setSubmitting] = useState(false);
   const [website, setWebsite] = useState(""); // honeypot
   const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
 
   useEffect(() => {
     // Fires once per wizard mount, not per step — this is the "finder started"
@@ -114,11 +115,18 @@ export function FinderWizard() {
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setError(data.error || "Something went wrong submitting your brief. Please try again.");
+        // The token this request just sent is now consumed (Turnstile
+        // tokens are single-use) — resend on retry would fail verification
+        // again regardless of the original error, so get a fresh one now.
+        setTurnstileToken("");
+        turnstileRef.current?.reset();
         setSubmitting(false);
         return;
       }
     } catch {
       setError("Something went wrong submitting your brief. Please try again.");
+      setTurnstileToken("");
+      turnstileRef.current?.reset();
       setSubmitting(false);
       return;
     }
@@ -300,7 +308,7 @@ export function FinderWizard() {
               />
             </label>
           </div>
-          <TurnstileWidget onToken={setTurnstileToken} />
+          <TurnstileWidget ref={turnstileRef} onToken={setTurnstileToken} />
 
           {hasErrorOnContact && (
             <p className="-mt-[18px] mb-[30px] text-[15px] font-semibold text-[#4f46e5]">{error}</p>
@@ -321,7 +329,7 @@ export function FinderWizard() {
         </button>
         <button
           onClick={next}
-          disabled={submitting}
+          disabled={submitting || (i === steps.length - 1 && !turnstileToken)}
           className="ml-auto bg-[#4f46e5] text-white rounded-full px-[30px] py-4 font-sans font-semibold text-[18px] whitespace-nowrap hover:bg-[#4338ca] disabled:opacity-60"
         >
           {submitting ? "Submitting…" : nextLabel}

@@ -8,7 +8,7 @@ export async function POST(request: Request) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Not signed in", _diag: "phase14-gate2-v1" }, { status: 401 });
+  if (!user) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
 
   const { data: partner } = await supabase
     .from("partners")

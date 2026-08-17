@@ -19,6 +19,7 @@ export async function GET() {
       STRIPE_WEBHOOK_SECRET: mask(process.env.STRIPE_WEBHOOK_SECRET),
       NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || null,
       TURNSTILE_SECRET_KEY: mask(process.env.TURNSTILE_SECRET_KEY),
+      RESEND_API_KEY: mask(process.env.RESEND_API_KEY),
     },
   });
 }

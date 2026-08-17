@@ -1,15 +1,14 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { BATTERY_PASSPORT_DEADLINE } from "@/lib/battery-passport-dates";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "What Is a Battery Passport? The EU Battery Regulation Explained | Software Lantern",
   description:
     "What a battery passport is, how it differs from a Digital Product Passport, which batteries are in scope, and the current compliance deadline.",
-  alternates: {
-    canonical: "/resources/regulations/battery-passport",
-  },
-};
+  path: "/resources/regulations/battery-passport",
+});
 
 const h2 = "font-sans font-semibold text-[26px] leading-[1.2] tracking-[-0.02em] mt-16 mb-4";
 const p = "text-[16px] leading-[1.7] text-[#3d4653] mb-4";

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { EUDR_DEADLINES } from "@/lib/eudr-dates";
+import { pageMetadata } from "@/lib/metadata";
 import { EudrDeadlineCountdown } from "@/components/eudr-deadline-countdown";
 import { EudrScopeChecker } from "@/components/eudr-scope-checker";
 import {
@@ -43,20 +44,14 @@ function IconCard({
   );
 }
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "EUDR Compliance Software | Compare Providers & Get Matched",
   description:
     "Looking for EUDR compliance software? Tell us about your supply chain and requirements, and we'll connect you with up to 3 EUDR software providers that believe they can help, whether you're a large importer or a small business.",
-  alternates: {
-    canonical: "/eudr",
-  },
-  openGraph: {
-    title: "EUDR Compliance Software | Compare Providers & Get Matched",
-    description:
-      "Tell us about your supply chain and requirements, and we'll connect you with up to 3 EUDR software providers that believe they can help.",
-    url: "/eudr",
-  },
-};
+  path: "/eudr",
+  ogDescription:
+    "Tell us about your supply chain and requirements, and we'll connect you with up to 3 EUDR software providers that believe they can help.",
+});
 
 const eudrHref = `/finder?category=${encodeURIComponent("EUDR Software")}`;
 

@@ -2,15 +2,14 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { BATTERY_PASSPORT_DEADLINE } from "@/lib/battery-passport-dates";
 import { CubeIcon, BuildingIcon } from "@/components/icons";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "How to Evaluate Battery Passport Software: A Buyer's Checklist and Questions to Ask Providers | Software Lantern",
   description:
     "Questions to ask battery passport software providers before you buy, organized by where you sit in the value chain, with a sequential guide to what actually matters for your product and role.",
-  alternates: {
-    canonical: "/resources/blog/battery-passport-software-questions-to-ask-providers",
-  },
-};
+  path: "/resources/blog/battery-passport-software-questions-to-ask-providers",
+});
 
 const h2 = "font-sans font-semibold text-[26px] leading-[1.2] tracking-[-0.02em] mt-16 mb-4";
 const p = "text-[16px] leading-[1.7] text-[#3d4653] mb-4";

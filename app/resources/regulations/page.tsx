@@ -1,14 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "EU Regulations for Compliance Software Buyers | Software Lantern",
   description:
     "Plain-language explainers on the EU regulations behind Software Lantern's categories: what they require, who they apply to, and current deadlines.",
-  alternates: {
-    canonical: "/resources/regulations",
-  },
-};
+  path: "/resources/regulations",
+});
 
 const ARTICLES = [
   {

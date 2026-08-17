@@ -1,14 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Blog | Software Lantern",
   description:
     "Guides and updates on EUDR, Fashion PLM, Battery Passport software, and the categories Software Lantern covers.",
-  alternates: {
-    canonical: "/resources/blog",
-  },
-};
+  path: "/resources/blog",
+});
 
 export default function BlogHubPage() {
   return (

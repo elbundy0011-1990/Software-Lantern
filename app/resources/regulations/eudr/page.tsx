@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { EUDR_DEADLINES } from "@/lib/eudr-dates";
+import { pageMetadata } from "@/lib/metadata";
 import {
   LeafIcon,
   DocumentIcon,
@@ -11,14 +12,12 @@ import {
   ChecklistIcon,
 } from "@/components/icons";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "What Is EUDR? The EU Deforestation Regulation Explained | Software Lantern",
   description:
     "What EUDR is, who it applies to, what it requires, and the current compliance deadlines, explained in plain language, verified against the regulation text.",
-  alternates: {
-    canonical: "/resources/regulations/eudr",
-  },
-};
+  path: "/resources/regulations/eudr",
+});
 
 const h2 = "font-sans font-semibold text-[26px] leading-[1.2] tracking-[-0.02em] mt-16 mb-4";
 const p = "text-[16px] leading-[1.7] text-[#3d4653] mb-4";

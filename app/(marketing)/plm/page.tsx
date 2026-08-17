@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import {
   SwatchIcon,
   ChecklistIcon,
@@ -40,20 +41,14 @@ function IconCard({
   );
 }
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Fashion PLM Software | Compare Providers & Get Matched",
   description:
     "Looking for fashion PLM software? Tell us about your brand, products and requirements, and we'll connect you with up to 3 fashion PLM providers that believe they can help.",
-  alternates: {
-    canonical: "/plm",
-  },
-  openGraph: {
-    title: "Fashion PLM Software | Compare Providers & Get Matched",
-    description:
-      "Tell us about your brand, products and requirements, and we'll connect you with up to 3 fashion PLM providers that believe they can help.",
-    url: "/plm",
-  },
-};
+  path: "/plm",
+  ogDescription:
+    "Tell us about your brand, products and requirements, and we'll connect you with up to 3 fashion PLM providers that believe they can help.",
+});
 
 const plmHref = `/finder?category=${encodeURIComponent("Product Lifecycle Management (PLM)")}`;
 

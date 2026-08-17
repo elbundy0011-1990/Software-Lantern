@@ -1,23 +1,18 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { BATTERY_PASSPORT_DEADLINE } from "@/lib/battery-passport-dates";
+import { pageMetadata } from "@/lib/metadata";
 import { BuildingIcon, DocumentIcon, PlugIcon, CalendarIcon } from "@/components/icons";
 import { BatteryPassportScopeChecker } from "@/components/battery-passport-scope-checker";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Battery Passport Software | Compare Providers & Get Matched",
   description:
     "Looking for battery passport software? Tell us about your product and data requirements, and we'll connect you with up to 3 digital battery passport software providers that believe they can help.",
-  alternates: {
-    canonical: "/battery-passport",
-  },
-  openGraph: {
-    title: "Battery Passport Software | Compare Providers & Get Matched",
-    description:
-      "Tell us about your product and data requirements, and we'll connect you with up to 3 battery passport software providers that believe they can help.",
-    url: "/battery-passport",
-  },
-};
+  path: "/battery-passport",
+  ogDescription:
+    "Tell us about your product and data requirements, and we'll connect you with up to 3 battery passport software providers that believe they can help.",
+});
 
 const batteryHref = `/finder?category=${encodeURIComponent("Digital Battery Passport (DBP)")}`;
 

@@ -1,16 +1,15 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { EUDR_DEADLINES } from "@/lib/eudr-dates";
+import { pageMetadata } from "@/lib/metadata";
 import { BuildingIcon, BoxIcon } from "@/components/icons";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "How to Evaluate EUDR Software: A Buyer's Checklist and Questions to Ask Providers | Software Lantern",
   description:
     "Questions to ask EUDR software providers before you buy, organized by whether you're an enterprise operator or an SME trader, with a sequential guide to what actually matters for your situation.",
-  alternates: {
-    canonical: "/resources/blog/eudr-software-questions-to-ask-providers",
-  },
-};
+  path: "/resources/blog/eudr-software-questions-to-ask-providers",
+});
 
 const h2 = "font-sans font-semibold text-[26px] leading-[1.2] tracking-[-0.02em] mt-16 mb-4";
 const p = "text-[16px] leading-[1.7] text-[#3d4653] mb-4";

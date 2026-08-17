@@ -1,15 +1,14 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { DocumentIcon, ScaleIcon, HandshakeIcon, ShieldIcon } from "@/components/icons";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Become a Provider | Software Lantern",
   description:
     "Talk to buyers who have already written down what they need. Apply as a Software Lantern provider.",
-  alternates: {
-    canonical: "/providers",
-  },
-};
+  path: "/providers",
+});
 
 export default function ProvidersPage() {
   return (

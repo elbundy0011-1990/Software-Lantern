@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Lead, LeadStatus } from "@/lib/types";
+import type { PartnerRef } from "@/lib/fuzzy-match";
 import { StatusButtons } from "./status-buttons";
 
 const TABS: { label: string; value: LeadStatus | "all" }[] = [
@@ -21,7 +22,20 @@ export default async function AdminDashboardPage({
   const supabase = createAdminClient();
   let query = supabase.from("leads").select("*").order("created_at", { ascending: false });
   if (activeTab !== "all") query = query.eq("status", activeTab);
-  const { data: leads } = await query;
+
+  const [{ data: leads }, { data: partners }, { data: exclusions }] = await Promise.all([
+    query,
+    supabase.from("partners").select("id, company_name").order("company_name"),
+    supabase.from("lead_exclusions").select("lead_id, partner_id"),
+  ]);
+
+  const partnerList = (partners as PartnerRef[] | null) || [];
+  const exclusionsByLead = new Map<string, string[]>();
+  (exclusions || []).forEach((e) => {
+    const arr = exclusionsByLead.get(e.lead_id) || [];
+    arr.push(e.partner_id);
+    exclusionsByLead.set(e.lead_id, arr);
+  });
 
   return (
     <div>
@@ -73,7 +87,13 @@ export default async function AdminDashboardPage({
             <span>
               {lead.unlock_count}/{lead.max_unlocks}
             </span>
-            <StatusButtons id={lead.id} status={lead.status} />
+            <StatusButtons
+              id={lead.id}
+              status={lead.status}
+              currentVendor={lead.current_vendor}
+              partners={partnerList}
+              excludedPartnerIds={exclusionsByLead.get(lead.id) || []}
+            />
           </div>
         ))}
         {(!leads || leads.length === 0) && (

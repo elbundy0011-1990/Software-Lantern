@@ -3,7 +3,10 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import type { Lead } from "@/lib/types";
+import type { PartnerRef } from "@/lib/fuzzy-match";
 import { updateLead, setCustomFields, setLeadStatus, type LeadFieldUpdate } from "../../actions";
+import { usePublishConfirm } from "../../publish-confirm";
+import { ExclusionsPanel } from "./exclusions-panel";
 
 function Field({
   label,
@@ -36,7 +39,27 @@ function Field({
   );
 }
 
-export function LeadEditForm({ lead }: { lead: Lead }) {
+export function LeadEditForm({
+  lead,
+  partners,
+  excludedPartnerIds,
+}: {
+  lead: Lead;
+  partners: PartnerRef[];
+  excludedPartnerIds: string[];
+}) {
+  const [excludedIds, setExcludedIds] = useState<string[]>(excludedPartnerIds);
+  const {
+    requestPublish,
+    dialog: publishDialog,
+    isPending: publishPending,
+  } = usePublishConfirm({
+    leadId: lead.id,
+    currentVendor: lead.current_vendor,
+    partners,
+    excludedPartnerIds: excludedIds,
+    onExcluded: (partnerId) => setExcludedIds((cur) => (cur.includes(partnerId) ? cur : [...cur, partnerId])),
+  });
   const [fields, setFields] = useState<LeadFieldUpdate>({
     company_name: lead.company_name || "",
     contact_name: lead.contact_name || "",
@@ -100,8 +123,8 @@ export function LeadEditForm({ lead }: { lead: Lead }) {
         {(["new", "published", "discarded"] as const).map((s) => (
           <button
             key={s}
-            disabled={isPending || lead.status === s}
-            onClick={() => startTransition(() => setLeadStatus(lead.id, s))}
+            disabled={isPending || publishPending || lead.status === s}
+            onClick={() => (s === "published" ? requestPublish() : startTransition(() => setLeadStatus(lead.id, s)))}
             className="rounded-full px-4 py-2 text-[14px] font-semibold border disabled:opacity-40"
             style={{
               background: lead.status === s ? "#4f46e5" : "#ffffff",
@@ -113,6 +136,7 @@ export function LeadEditForm({ lead }: { lead: Lead }) {
           </button>
         ))}
       </div>
+      {publishDialog}
 
       <div className="bg-white border border-[#0d1117]/[0.08] rounded-2xl p-7 grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
         <Field label="Company name" value={fields.company_name} onChange={set("company_name")} />
@@ -200,6 +224,13 @@ export function LeadEditForm({ lead }: { lead: Lead }) {
           </button>
         </div>
       </div>
+
+      <ExclusionsPanel
+        leadId={lead.id}
+        partners={partners}
+        excludedIds={excludedIds}
+        onChange={setExcludedIds}
+      />
 
       <div className="bg-white border border-[#0d1117]/[0.08] rounded-2xl p-7">
         <h2 className="font-sans font-semibold text-[18px] mb-4">Wizard answers (read-only)</h2>

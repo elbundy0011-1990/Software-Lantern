@@ -35,6 +35,20 @@ export const CATEGORIES = [
   },
 ] as const;
 
+// Maps a full lead category string ("EUDR Software", "Product Lifecycle
+// Management (PLM)", "Digital Battery Passport (DBP)") to the short code
+// partners.categories stores ("EUDR" | "PLM" | "DBP", set at signup in
+// portal/signup/page.tsx). Shared by the portal's category filter and the
+// lead-published notification's partner-matching query, so the two can
+// never drift apart on what "this partner covers this category" means.
+export function categoryShortCode(category: string | null): string {
+  if (!category) return "";
+  if (category.indexOf("EUDR") > -1) return "EUDR";
+  if (category.indexOf("PLM") > -1) return "PLM";
+  if (category.indexOf("Battery") > -1) return "DBP";
+  return category;
+}
+
 const CATEGORY_STEP: FinderStep = {
   id: "category",
   kind: "single",

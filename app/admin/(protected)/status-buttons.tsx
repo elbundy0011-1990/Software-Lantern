@@ -2,17 +2,36 @@
 
 import { useTransition } from "react";
 import { setLeadStatus } from "./actions";
+import { usePublishConfirm } from "./publish-confirm";
+import type { PartnerRef } from "@/lib/fuzzy-match";
 import type { LeadStatus } from "@/lib/types";
 
-export function StatusButtons({ id, status }: { id: string; status: LeadStatus }) {
+export function StatusButtons({
+  id,
+  status,
+  currentVendor,
+  partners,
+  excludedPartnerIds,
+}: {
+  id: string;
+  status: LeadStatus;
+  currentVendor: string | null;
+  partners: PartnerRef[];
+  excludedPartnerIds: string[];
+}) {
   const [isPending, startTransition] = useTransition();
+  const {
+    requestPublish,
+    dialog,
+    isPending: publishPending,
+  } = usePublishConfirm({ leadId: id, currentVendor, partners, excludedPartnerIds });
 
   return (
     <div className="flex gap-2">
       {status !== "published" && (
         <button
-          disabled={isPending}
-          onClick={() => startTransition(() => setLeadStatus(id, "published"))}
+          disabled={isPending || publishPending}
+          onClick={requestPublish}
           className="rounded-full px-3 py-1 text-[13px] font-semibold bg-[#10b981]/[0.12] text-[#047857] hover:bg-[#10b981]/[0.2] disabled:opacity-50"
         >
           Publish
@@ -36,6 +55,7 @@ export function StatusButtons({ id, status }: { id: string; status: LeadStatus }
           Reset
         </button>
       )}
+      {dialog}
     </div>
   );
 }

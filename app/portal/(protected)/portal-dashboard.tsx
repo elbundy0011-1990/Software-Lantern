@@ -3,17 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { PartnerLead } from "@/lib/types";
-import { leadDetailRows } from "@/lib/finder-config";
+import { leadDetailRows, categoryShortCode } from "@/lib/finder-config";
 
 const FILTERS = ["All categories", "EUDR", "PLM", "DBP"] as const;
-
-function categoryShort(category: string | null): string {
-  if (!category) return "";
-  if (category.indexOf("EUDR") > -1) return "EUDR";
-  if (category.indexOf("PLM") > -1) return "PLM";
-  if (category.indexOf("Battery") > -1) return "DBP";
-  return category;
-}
 
 function timeAgo(iso: string): string {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -68,7 +60,7 @@ export function PortalDashboard({
   }, [unlockedParam, router]);
 
   const visibleLeads = useMemo(
-    () => (filter === "All categories" ? leads : leads.filter((l) => categoryShort(l.category) === filter)),
+    () => (filter === "All categories" ? leads : leads.filter((l) => categoryShortCode(l.category) === filter)),
     [leads, filter],
   );
 
@@ -190,14 +182,14 @@ export function PortalDashboard({
             >
               <div className="min-w-0">
                 <p className="mb-[3px] text-[16px] font-semibold text-[#0d1117]">
-                  {lead.unlocked ? lead.company_name : `${categoryShort(lead.category)} buyer`}
+                  {lead.unlocked ? lead.company_name : `${categoryShortCode(lead.category)} buyer`}
                 </p>
                 <p className="text-[14px] text-[#5c6573]">
                   {lead.unlocked ? timeAgo(lead.created_at) : "Details unlock on purchase"}
                 </p>
               </div>
               <p className="text-[14px] text-[#3d4653] leading-[1.45]">{lead.software_need}</p>
-              <p className="text-[14px] font-semibold text-[#3d4653]">{categoryShort(lead.category)}</p>
+              <p className="text-[14px] font-semibold text-[#3d4653]">{categoryShortCode(lead.category)}</p>
               <p className="text-[14px] text-[#5c6573]">{timeAgo(lead.created_at)}</p>
               <div className="min-w-0">
                 <div className="mb-[6px] text-[14px] font-bold" style={{ color: statusColor }}>
@@ -251,10 +243,10 @@ export function PortalDashboard({
             <div className="flex-none px-5 sm:px-8 pt-7 pb-5 border-b border-[#0d1117]/[0.07] flex items-start justify-between gap-4">
               <div>
                 <p className="mb-[6px] text-[12px] font-bold tracking-[0.09em] uppercase text-[#4f46e5]">
-                  {categoryShort(openLead.category)}
+                  {categoryShortCode(openLead.category)}
                 </p>
                 <h2 className="font-sans font-semibold text-[26px] leading-[1.15] tracking-[-0.028em] mb-1">
-                  {openLead.unlocked ? openLead.company_name : `${categoryShort(openLead.category)} buyer`}
+                  {openLead.unlocked ? openLead.company_name : `${categoryShortCode(openLead.category)} buyer`}
                 </h2>
                 <p className="text-[15px] text-[#5c6573]">{timeAgo(openLead.created_at)}</p>
               </div>
@@ -341,7 +333,7 @@ export function PortalDashboard({
               {openLead.unlocked && (
                 <a
                   href={`mailto:${openLead.contact_email}?subject=${encodeURIComponent(
-                    `Your ${categoryShort(openLead.category)} brief via Software Lantern`,
+                    `Your ${categoryShortCode(openLead.category)} brief via Software Lantern`,
                   )}`}
                   className="bg-[#4f46e5] text-white rounded-full px-[26px] py-[15px] font-sans font-semibold text-[16px] no-underline"
                 >

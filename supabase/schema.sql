@@ -62,6 +62,20 @@ create index if not exists leads_category_idx on public.leads (category);
 create index if not exists unlocks_partner_idx on public.unlocks (partner_id);
 create index if not exists unlocks_lead_idx on public.unlocks (lead_id);
 
+-- A row here means "this partner must never see this lead" (e.g. the
+-- partner is the buyer's current vendor). Admin-only, set via /admin/leads/[id].
+-- See the RLS section below for why this table is locked down harder than
+-- the others: its existence as a concept must never be inferable by a partner.
+create table if not exists public.lead_exclusions (
+  id uuid primary key default gen_random_uuid(),
+  lead_id uuid not null references public.leads (id) on delete cascade,
+  partner_id uuid not null references public.partners (id) on delete cascade,
+  created_at timestamptz not null default now(),
+  unique (lead_id, partner_id)
+);
+
+create index if not exists lead_exclusions_partner_idx on public.lead_exclusions (partner_id);
+
 -- ─────────────────────────────────────────────────────────────────────────
 -- unlock_count bookkeeping: keep it in sync with unlocks, and hard-stop
 -- at max_unlocks even under concurrent webhook deliveries.
@@ -103,6 +117,20 @@ create trigger on_unlock_created
 alter table public.leads enable row level security;
 alter table public.partners enable row level security;
 alter table public.unlocks enable row level security;
+alter table public.lead_exclusions enable row level security;
+
+-- lead_exclusions: intentionally zero policies for anon/authenticated, and
+-- privileges explicitly revoked below. This is stricter than every other
+-- table here on purpose: even a permission-denied response on a SELECT
+-- would confirm the table exists to a partner probing the REST API, which
+-- would itself reveal the concept of exclusion. With no grant at all,
+-- PostgREST excludes this table from the schema it serves to `authenticated`
+-- entirely, so a partner's client can't distinguish "this table has zero
+-- rows for me" from "this table isn't part of the API surface". Only
+-- service_role (admin server actions) and get_partner_leads() below
+-- (security definer, runs with the function owner's privileges regardless
+-- of the caller's grants) ever read this table.
+revoke all on public.lead_exclusions from anon, authenticated;
 
 -- leads: anon + authenticated may INSERT new enquiries only. No one gets a
 -- direct SELECT/UPDATE/DELETE grant here — the admin panel reads/writes via
@@ -144,6 +172,15 @@ create policy "partners read own unlocks"
 -- matching row in unlocks. SECURITY DEFINER + owned by the table owner, so
 -- it reads leads/unlocks/partners without needing direct grants on those
 -- tables for the authenticated role.
+--
+-- Also excludes any lead with a matching lead_exclusions row for the calling
+-- partner, EXCEPT when the partner already has a row in unlocks for that
+-- lead: exclusion only ever prevents seeing/unlocking a lead the partner
+-- hasn't already paid for. An already-unlocked lead must never disappear
+-- just because an exclusion was added after the fact. The exclusion filter
+-- is folded into the same WHERE clause as everything else, so an excluded
+-- lead is structurally indistinguishable from one outside the partner's
+-- category or simply not yet published: no separate flag, no visible gap.
 -- ─────────────────────────────────────────────────────────────────────────
 
 create or replace function public.get_partner_leads()
@@ -195,7 +232,9 @@ as $$
   from public.leads l
   left join me on true
   left join public.unlocks u on u.lead_id = l.id and u.partner_id = me.partner_id
+  left join public.lead_exclusions ex on ex.lead_id = l.id and ex.partner_id = me.partner_id
   where l.status = 'published'
+    and (ex.id is null or u.id is not null)
   order by l.created_at desc;
 $$;
 

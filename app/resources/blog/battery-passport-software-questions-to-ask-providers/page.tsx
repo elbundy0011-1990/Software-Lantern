@@ -129,9 +129,13 @@ export default function BatteryPassportQuestionsArticlePage() {
             <Link href="/battery-passport#battery-passport-scope-checker" className={link}>
               scope checker on our Battery Passport page
             </Link>{" "}
-            first to confirm your category and deadline. This guide picks up from there and walks
-            through how to evaluate battery passport software in order, with a script of questions
-            to bring to a provider call.
+            first to confirm your category and deadline. If the vendor landscape itself is what&apos;s
+            confusing you, see{" "}
+            <Link href="/resources/blog/why-battery-passport-software-market-is-fragmented" className={link}>
+              why the battery passport software market is so fragmented
+            </Link>{" "}
+            first. This guide picks up from there and walks through how to evaluate battery passport
+            software in order, with a script of questions to bring to a provider call.
           </p>
 
           <p className={`${p} text-[19px] leading-[1.6] text-[#0d1117]`}>

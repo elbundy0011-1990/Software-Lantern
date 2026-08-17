@@ -9,12 +9,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/battery-passport",
     "/providers",
     "/finder",
+    "/privacy",
     "/resources/regulations",
     "/resources/regulations/eudr",
     "/resources/regulations/battery-passport",
     "/resources/blog",
     "/resources/blog/eudr-software-questions-to-ask-providers",
     "/resources/blog/fashion-plm-software-questions-to-ask-providers",
+    "/resources/blog/battery-passport-software-questions-to-ask-providers",
+    "/resources/blog/why-battery-passport-software-market-is-fragmented",
   ];
 
   return routes.map((route) => ({

@@ -167,7 +167,19 @@ export default function BatteryPassportPage() {
               ],
               [
                 "How can I compare battery passport providers?",
-                "Start with where you sit in the value chain and exactly what data the passport needs to carry for your product: that's what determines whether you need a battery-specific platform or a broader DPP tool, and it's exactly what our questions are built around.",
+                <>
+                  Start with where you sit in the value chain and exactly what data the passport
+                  needs to carry for your product: that&apos;s what determines whether you need a
+                  battery-specific platform or a broader DPP tool, and it&apos;s exactly what our
+                  questions are built around. If the market itself looks confusing before you even
+                  get that far, see{" "}
+                  <Link
+                    href="/resources/blog/why-battery-passport-software-market-is-fragmented"
+                    className="text-[#4f46e5] font-semibold"
+                  >
+                    why battery passport software is so fragmented →
+                  </Link>
+                </>,
               ],
               [
                 "Is Battery Passport software the same as Digital Product Passport software?",

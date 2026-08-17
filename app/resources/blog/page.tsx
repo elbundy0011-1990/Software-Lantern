@@ -88,6 +88,24 @@ export default function BlogHubPage() {
                 Read the guide →
               </span>
             </Link>
+            <Link
+              href="/resources/blog/why-battery-passport-software-market-is-fragmented"
+              className="block bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-7 hover:border-[#4f46e5]/[0.4] transition-colors duration-150"
+            >
+              <p className="mb-3 text-[12px] font-bold tracking-[0.09em] uppercase text-[#4f46e5]">
+                Battery Passport
+              </p>
+              <h2 className="font-sans font-semibold text-[21px] leading-[1.25] mb-2">
+                Why the Battery Passport Software Market Is So Fragmented
+              </h2>
+              <p className="text-[15px] text-[#5c6573] leading-[1.5]">
+                Why a comparison search turns up market-research noise and vendor sites that all
+                look interchangeable, and what that means before you start evaluating providers.
+              </p>
+              <span className="mt-4 inline-block text-[14px] font-semibold text-[#4338ca]">
+                Read the guide →
+              </span>
+            </Link>
           </div>
         </div>
       </section>

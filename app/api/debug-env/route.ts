@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 
-// TEMPORARY diagnostic route — reports which env vars this specific
-// deployment/runtime can actually see, without leaking secret values.
-// Hit it on your live Vercel URL, then DELETE this file once you've
-// confirmed the vars are present (don't leave an env-introspection
-// endpoint in production).
+// Deploy/env diagnostic route, gated behind requireAdmin() the same way
+// every /admin/* route is: it used to be reachable by anyone, which leaked
+// truncated secret prefixes to unauthenticated requests. Only an
+// authenticated admin session can reach this now.
 export async function GET() {
+  await requireAdmin();
+
   const mask = (v: string | undefined) => (v ? `${v.slice(0, 6)}…(${v.length} chars)` : null);
 
   return NextResponse.json({

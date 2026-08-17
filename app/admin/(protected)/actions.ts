@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { categoryShortCode } from "@/lib/finder-config";
+import { categoryShortCode, partnerNotificationClassification } from "@/lib/finder-config";
 import { sendEmail } from "@/lib/resend";
 import { buildLeadPublishedPartnerEmail } from "@/lib/email-templates";
 import type { LeadStatus } from "@/lib/types";
@@ -15,11 +15,11 @@ export async function setLeadStatus(id: string, status: LeadStatus) {
 
   // Read the current status before updating so we can detect a genuine
   // new/discarded -> published transition, not every subsequent edit to an
-  // already-published lead. Pull category/software_need in the same query
-  // since the notification needs them and this is already a round trip.
+  // already-published lead. Pull everything the notification needs in the
+  // same query since this is already a round trip.
   const { data: before } = await supabase
     .from("leads")
-    .select("status, category, software_need")
+    .select("status, category, software_need, timeline, answers")
     .eq("id", id)
     .maybeSingle();
   const wasPublished = before?.status === "published";
@@ -32,6 +32,8 @@ export async function setLeadStatus(id: string, status: LeadStatus) {
   if (status === "published" && !wasPublished) {
     const category = before?.category ?? null;
     const softwareNeed = before?.software_need ?? null;
+    const timeline = before?.timeline ?? null;
+    const answers = (before?.answers as Record<string, string | string[] | undefined>) ?? {};
     // Scheduled via after() rather than awaited or fire-and-forget: this is a
     // server action invoked from a serverless function, which can freeze
     // once the action returns, and a bare un-awaited promise risks never
@@ -39,7 +41,7 @@ export async function setLeadStatus(id: string, status: LeadStatus) {
     // admin UI from waiting on partner-count-many email sends while still
     // guaranteeing they run to completion.
     after(() =>
-      notifyPartnersOfPublishedLead(id, category, softwareNeed).catch((err) =>
+      notifyPartnersOfPublishedLead(id, category, softwareNeed, timeline, answers).catch((err) =>
         console.error("Failed to notify partners of published lead", id, err),
       ),
     );
@@ -58,6 +60,8 @@ async function notifyPartnersOfPublishedLead(
   leadId: string,
   category: string | null,
   softwareNeed: string | null,
+  timeline: string | null,
+  answers: Record<string, string | string[] | undefined>,
 ) {
   const supabase = createAdminClient();
 
@@ -76,7 +80,12 @@ async function notifyPartnersOfPublishedLead(
 
   if (matching.length === 0) return;
 
-  const { subject, html } = buildLeadPublishedPartnerEmail({ category, softwareNeed: softwareNeed || "" });
+  const { subject, html } = buildLeadPublishedPartnerEmail({
+    category,
+    softwareNeed: softwareNeed || "",
+    timeline,
+    classification: partnerNotificationClassification(category, answers),
+  });
   await Promise.allSettled(matching.map((p) => sendEmail({ to: p.contact_email, subject, html })));
 }
 

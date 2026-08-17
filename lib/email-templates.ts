@@ -81,21 +81,31 @@ export function buildNewLeadAdminEmail(input: {
 
 // TRIGGER 2: a lead was just published, sent individually to every matching,
 // non-excluded partner. Content is deliberately narrower than everything
-// get_partner_leads() exposes pre-unlock: category and a general summary
-// only. No company name, contact details, current vendor, budget, or
-// timeline, since this is the same paywalled data the portal gates behind
-// payment, sent to an inbox instead of a page it's easier to reason about
-// as private.
+// get_partner_leads() exposes pre-unlock: category, timeline, one
+// category-specific classification field (see
+// partnerNotificationClassification() in lib/finder-config.ts), and a
+// general summary only. No company name, contact details, current vendor,
+// budget, or the raw answers blob, since this is the same paywalled data
+// the portal gates behind payment, sent to an inbox instead of a page it's
+// easier to reason about as private. current_vendor specifically stays out
+// on purpose — that's the field the exclusion feature protects.
 export function buildLeadPublishedPartnerEmail(input: {
   category: string | null;
   softwareNeed: string;
+  timeline: string | null;
+  classification: { label: string; value: string } | null;
 }): { subject: string; html: string } {
   const categoryLabel = input.category || "your category";
+  const rows: string[] = [];
+  if (input.classification) rows.push(fieldRow(input.classification.label, input.classification.value));
+  if (input.timeline) rows.push(fieldRow("Timeline", input.timeline));
+
   const bodyHtml = `
     <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#3d4653;">
-      A new brief was just published in <strong>${escapeHtml(categoryLabel)}</strong>. Here is a
-      general summary of what the buyer is looking for:
+      A new brief was just published in <strong>${escapeHtml(categoryLabel)}</strong>.
     </p>
+    ${rows.length ? `<table style="width:100%;border-collapse:collapse;margin:0 0 20px;">${rows.join("")}</table>` : ""}
+    <p style="margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Requirement summary</p>
     <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#0d1117;background:#f6f7fb;border-radius:12px;padding:16px;">
       ${escapeHtml(input.softwareNeed || "See your portal for details.")}
     </p>

@@ -9,6 +9,7 @@ export interface FinderStep {
   help: string;
   options?: string[];
   placeholder?: string;
+  optional?: boolean;
 }
 
 export interface ContactAnswers {
@@ -68,53 +69,18 @@ const CONTACT_STEP: FinderStep = {
   help: "All fields are required. Please use your work email so we can match you to a company.",
 };
 
-function usingSoftwareStep(help: string): FinderStep {
-  return {
-    id: "usingSoftware",
-    kind: "single",
-    title: "Are you currently using software for this?",
-    help,
-    options: ["Yes", "No"],
-  };
-}
-
-function vendorStep(placeholder: string): FinderStep {
+function currentVendorStep(placeholder: string): FinderStep {
   return {
     id: "vendor",
     kind: "text",
-    title: "Which vendor?",
-    help: "The name of the system or provider you use today.",
+    title: "What software do you currently use for this, if any?",
+    help: "The name of the system or provider you use today, if you use one.",
     placeholder,
+    optional: true,
   };
 }
 
-const CONTRACT_END_STEP: FinderStep = {
-  id: "contractEnd",
-  kind: "single",
-  title: "When does your current contract or partnership end?",
-  help: "A rough timeframe is fine.",
-  options: ["Less than 3 months", "3–6 months", "6–12 months", "More than 12 months", "Not sure"],
-};
-
-// If they said they're currently using software, ask which vendor and when
-// that contract/partnership ends; otherwise skip straight past both.
-function currentSoftwareSteps(
-  usingSoftwareAnswer: string | undefined,
-  helpText: string,
-  vendorPlaceholder: string,
-): FinderStep[] {
-  const steps: FinderStep[] = [usingSoftwareStep(helpText)];
-  if (usingSoftwareAnswer === "Yes") {
-    steps.push(vendorStep(vendorPlaceholder), CONTRACT_END_STEP);
-  }
-  return steps;
-}
-
-export function getSteps(
-  category: string | null,
-  catPreset: boolean,
-  usingSoftwareAnswer?: string,
-): FinderStep[] {
+export function getSteps(category: string | null, catPreset: boolean): FinderStep[] {
   const cat = category || "";
   const isEudr = cat.indexOf("EUDR") > -1;
   const isDbp = cat.indexOf("Battery") > -1;
@@ -172,11 +138,7 @@ export function getSteps(
         help: "Polygons or coordinates for the plots of land your goods come from.",
         options: ["Yes, for most suppliers", "For some suppliers", "Not yet", "Not sure"],
       },
-      ...currentSoftwareSteps(
-        usingSoftwareAnswer,
-        "This helps providers understand what they'd be replacing or integrating with.",
-        "e.g. your ERP or procurement system provider",
-      ),
+      currentVendorStep("e.g. your ERP or procurement system provider"),
       {
         id: "missing",
         kind: "text",
@@ -274,11 +236,7 @@ export function getSteps(
   const questions: FinderStep[] = [
     profile,
     scope,
-    ...currentSoftwareSteps(
-      usingSoftwareAnswer,
-      "Helps providers understand what they'd be replacing or working alongside.",
-      vendorPlaceholder,
-    ),
+    currentVendorStep(vendorPlaceholder),
     {
       id: "missing",
       kind: "text",
@@ -327,6 +285,7 @@ export function validateStep(
     return a ? null : "Pick one option to continue.";
   }
   if (step.kind === "text") {
+    if (step.optional) return null;
     return typeof a === "string" && a.trim().length > 1 ? null : "A short answer here is required.";
   }
   if (step.kind === "contact") {
@@ -381,14 +340,6 @@ export function leadDetailRows(
     if (Array.isArray(v)) return v.length ? v.join(", ") : "Not given";
     return v && String(v).trim() ? v : "Not given";
   };
-  const currentSoftwareRows = (): { label: string; value: string }[] => {
-    const rows = [{ label: "Currently using software", value: val(answers.usingSoftware) }];
-    if (answers.usingSoftware === "Yes") {
-      rows.push({ label: "Vendor", value: val(answers.vendor) });
-      rows.push({ label: "Contract/partnership ends", value: val(answers.contractEnd) });
-    }
-    return rows;
-  };
   const cat = category || "";
   if (cat.indexOf("EUDR") > -1) {
     return [
@@ -398,7 +349,7 @@ export function leadDetailRows(
       { label: "SKUs in scope", value: val(answers.skus) },
       { label: "Sourcing regions", value: val(answers.regions) },
       { label: "Geolocation data", value: val(answers.geo) },
-      ...currentSoftwareRows(),
+      { label: "Current vendor", value: val(answers.vendor) },
       { label: "Hardest part", value: val(answers.missing) },
       { label: "Compliance deadline", value: val(answers.timing) },
     ];
@@ -407,9 +358,28 @@ export function leadDetailRows(
   return [
     { label: isDbp ? "Position in chain" : "Company type", value: val(answers.industry) },
     { label: isDbp ? "Passport must carry" : "Needs to manage", value: val(answers.manage) },
-    ...currentSoftwareRows(),
+    { label: "Current vendor", value: val(answers.vendor) },
     { label: "What's missing", value: val(answers.missing) },
     { label: "Users", value: val(answers.users) },
     { label: "Timeline", value: val(answers.timing) },
   ];
+}
+
+// The one classification field surfaced in the Trigger 2 partner
+// notification email — deliberately narrower than leadDetailRows above.
+// All three categories store their classification answer under the same
+// `industry` key (each a multi-select), just with a different meaning and
+// label per category; see the `industry`-keyed step in getSteps() above.
+export function partnerNotificationClassification(
+  category: string | null,
+  answers: Record<string, string | string[] | undefined>,
+): { label: string; value: string } | null {
+  const raw = answers.industry;
+  const value = Array.isArray(raw) ? raw.filter(Boolean).join(", ") : typeof raw === "string" ? raw : "";
+  if (!value) return null;
+  const cat = category || "";
+  if (cat.indexOf("EUDR") > -1) return { label: "Commodities", value };
+  if (cat.indexOf("PLM") > -1) return { label: "Company type", value };
+  if (cat.indexOf("Battery") > -1) return { label: "Position in the value chain", value };
+  return null;
 }

@@ -60,7 +60,7 @@ export async function POST(request: Request) {
     (typeof answers.industry !== "undefined" ? String(answers.industry) : "") ||
     "";
   const currentVendor =
-    answers.usingSoftware === "Yes" && typeof answers.vendor === "string" ? answers.vendor : null;
+    typeof answers.vendor === "string" && answers.vendor.trim() ? answers.vendor.trim() : null;
   const timeline = typeof answers.timing === "string" ? answers.timing : null;
 
   // Service-role client: this insert is fully validated above and never

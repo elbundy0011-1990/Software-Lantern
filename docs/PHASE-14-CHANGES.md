@@ -73,18 +73,34 @@ something else entirely.
 `/api/stripe/checkout`, `/admin/partners`, `/admin/partners/[id]` all present, no other route's
 static/dynamic classification changed).
 
-**Live testing against a real pending partner account is pending the schema change being applied.**
-The user applies schema changes to Supabase directly, same as every prior phase; this section will be
-updated with the actual results (not a prediction) once that's done and the test below has actually
-run:
-- Create a real test partner via Supabase Auth signup + `create_partner()`, landing in `'pending'` by
-  the column default. Sign in as that account to get a real session, not a service-role bypass.
-- Call `get_partner_leads()` with that real session against a published lead with no exclusions:
-  confirm zero rows, specifically ruling out the left-join gap described above (not just "no
-  category match").
-- Admin-approve the same partner, re-call `get_partner_leads()` with the same session: confirm the
-  published lead now appears, ruling out the gate over-blocking an approved partner.
-- Reset the partner back to `'pending'`, then call `/api/stripe/checkout` with that partner's real
-  session against the same lead: confirm `403` before Stripe is reached.
-- Approve the partner again and repeat the same checkout call: confirm a real Stripe session `url`
+**Live-tested against real pending and approved partner accounts, not just reviewed in code**, after
+the schema change was applied. Method: created real Supabase Auth users via the admin API
+(`email_confirm: true`, sidesteps confirmation-flow ambiguity), signed in normally to get a real
+session, called `create_partner()` with that session exactly as `requirePartner()` does, then drove
+both gates directly, `get_partner_leads()` and `get_partner_leads()`-adjacent checks via the anon key
++ user JWT (identical RLS path a cookie-based session takes), and `/api/stripe/checkout` via a
+correctly-constructed `@supabase/ssr`-format session cookie against the live deployed route (not a
+mock, the actual HTTP endpoint).
+
+**Gate #1**: pending partner, real published lead, no exclusions, `get_partner_leads()` returned zero
+rows, confirming the left-join fix (a bare CTE filter alone would have returned the lead with fields
+nulled, not zero rows). Approved the same partner, same session, re-called: the lead appeared.
+
+**Gate #2**: pending partner, same lead, `/api/stripe/checkout` returned `403` with
+`"Your provider application has not been approved yet."` before Stripe was ever reached. Approved the
+partner, repeated the call: got back a real Stripe test-mode checkout session `url`.
+
+**A deployment gap surfaced and was resolved during this verification, worth recording.** The first
+attempt at this exact test (against commit `199a3dc`, confirmed by Vercel's dashboard as
+Production/Ready) showed Gate #2 not blocking a pending partner. Root-caused as follows, not guessed:
+`199a3dc`'s own diff was confirmed to contain the real Gate #2 check; a direct database query using
+the identical anon-key-plus-JWT path proved the test partner's `status` was genuinely `'pending'` at
+the moment of the failing call; a follow-up diagnostic commit (`1f7882e`) was confirmed present on
+`origin/main` via `git ls-remote` (a live query straight to GitHub, not local cache) yet never
+appeared in Vercel's Deployments list at all, not building, not failed, absent, pointing at a missed
+webhook or similar GitHub-to-Vercel integration gap for that one push rather than anything in this
+repository. A subsequent commit (`649bb5b`) deployed normally. Rather than infer deployment freshness
+from response behavior again, `/api/debug-env` now reports Vercel's own `VERCEL_GIT_COMMIT_SHA`
+(auto-populated at build time), polled directly until it matched `649bb5b` before this verification
+ran. Both gates passed against that confirmed-live commit.
   comes back, ruling out the gate blocking a legitimate approved-partner checkout.

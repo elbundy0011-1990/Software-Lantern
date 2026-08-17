@@ -26,6 +26,9 @@ export default async function PortalLayout({ children }: { children: React.React
               </span>
               {partner.company_name}
             </span>
+            <Link href="/portal/account" className="text-[14px] font-semibold text-[#5c6573] hover:text-[#4f46e5]">
+              Account
+            </Link>
             <PortalSignOutButton />
           </div>
         </div>

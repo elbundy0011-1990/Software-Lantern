@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -54,7 +55,7 @@ export default function AdminLoginPage() {
             className="w-full bg-[#f6f7fb] border border-[#0d1117]/[0.12] rounded-full px-5 py-[12px] text-[15px] outline-none focus:border-[#4f46e5]"
           />
         </label>
-        <label className="block mb-6">
+        <label className="block mb-3">
           <span className="block text-[13px] font-bold text-[#5c6573] mb-[7px]">Password</span>
           <input
             type="password"
@@ -64,6 +65,11 @@ export default function AdminLoginPage() {
             className="w-full bg-[#f6f7fb] border border-[#0d1117]/[0.12] rounded-full px-5 py-[12px] text-[15px] outline-none focus:border-[#4f46e5]"
           />
         </label>
+        <p className="mb-6 text-right">
+          <Link href="/reset-password/request?role=admin" className="text-[13px] font-semibold text-[#4f46e5]">
+            Forgot password?
+          </Link>
+        </p>
 
         {error && <p className="mb-4 text-[14px] font-semibold text-[#c0451f]">{error}</p>}
 

@@ -19,6 +19,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Link href="/admin/partners" className="hover:text-[#4f46e5]">
               Partners
             </Link>
+            <Link href="/admin/settings" className="hover:text-[#4f46e5]">
+              Settings
+            </Link>
           </nav>
           <span className="ml-auto text-[14px] text-[#5c6573]">{user.email}</span>
           <SignOutButton />

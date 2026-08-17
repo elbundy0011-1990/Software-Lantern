@@ -51,6 +51,14 @@ This document is the reference for *who* the site should be built for. It intent
 
 Any future work on copy, messaging, landing pages, features, or the provider portal should treat this section as binding, not just directional.
 
+**Buyer-side pages and provider-side pages must never target the same keywords.** Confirmed via live SERP research (see the provider-acquisition research recorded against `/providers` and its proposed category sub-pages): buyer intent and provider intent are genuinely distinct query shapes, and letting a provider page compete for a buyer page's terms (or vice versa) both dilutes SEO signal and confuses which audience a page is actually written for.
+
+- **Buyer-facing pages** (`/eudr`, `/plm`, `/battery-passport`, the homepage, `/finder`) own **software / providers / compliance / comparison** intent: "EUDR compliance software," "EUDR software providers," "fashion PLM software," "battery passport software," "compare providers," "how to choose [category] software."
+- **Provider-facing pages** (`/providers` and any category sub-pages under it) own **leads / buyers / lead-generation / customer-acquisition** intent: "EUDR software leads," "EUDR software buyers," "fashion PLM leads," "battery passport software leads," "lead generation," "qualified leads." A provider page's title, H1, and meta description should never lead with the buyer page's own primary term (e.g. a provider page should not title itself around "EUDR software providers," even though that exact phrase may appear naturally in body copy addressed to that audience, e.g. "if you're one of the EUDR software providers looking for buyer leads").
+- Do not target the generic, high-competition B2B lead-gen market ("software lead generation," "qualified software leads," "SaaS leads," "B2B leads") as a primary keyword anywhere on the site. This is a crowded space dominated by generic lead-gen tooling and data providers, off-positioning for a category specialist, and not worth fighting for head-on.
+
+This split should hold for any future page on either side of the funnel, not just the pages that exist today.
+
 ---
 
 ## 2. Overall Software Lantern ICP

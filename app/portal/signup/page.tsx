@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const CATEGORY_OPTIONS = [
@@ -11,12 +11,22 @@ const CATEGORY_OPTIONS = [
   { code: "DBP", label: "Battery Passport software" },
 ] as const;
 
-export default function PartnerSignupPage() {
+const CATEGORY_CODES = CATEGORY_OPTIONS.map((c) => c.code) as readonly string[];
+
+function PartnerSignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // Lets /providers' category cards pre-check the relevant category
+  // (?category=EUDR|PLM|DBP) so a provider CTA lands them one click closer
+  // to done, rather than a generic signup form. Ignored if absent or not a
+  // real category code.
+  const preselected = searchParams.get("category");
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>(() =>
+    preselected && CATEGORY_CODES.includes(preselected) ? [preselected] : [],
+  );
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -154,5 +164,13 @@ export default function PartnerSignupPage() {
         </p>
       </form>
     </main>
+  );
+}
+
+export default function PartnerSignupPage() {
+  return (
+    <Suspense fallback={null}>
+      <PartnerSignupForm />
+    </Suspense>
   );
 }

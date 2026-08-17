@@ -322,8 +322,18 @@ export default function EudrPage() {
                 "Do I have to speak to all of them?",
                 "No. You choose which providers to talk to, if any. There's no obligation and no sales pressure from us.",
               ],
+              [
+                "Are you an EUDR software provider?",
+                <>
+                  We connect EUDR software providers with buyers who have already described what they
+                  need.{" "}
+                  <Link href="/providers#eudr" className="text-[#4f46e5] font-semibold">
+                    See how to get EUDR software leads →
+                  </Link>
+                </>,
+              ],
             ].map(([q, a]) => (
-              <div key={q}>
+              <div key={q as string}>
                 <h3 className="font-sans font-semibold text-[21px] mb-[7px]">{q}</h3>
                 <p className="text-[16px] text-[#3d4653]">{a}</p>
               </div>

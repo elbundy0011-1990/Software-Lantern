@@ -181,8 +181,18 @@ export default function BatteryPassportPage() {
                 "How long does it take?",
                 "The questions take a few minutes. Provider replies arrive by email within 24 hours.",
               ],
+              [
+                "Are you a Battery Passport software provider?",
+                <>
+                  We connect Battery Passport software providers with buyers who have already described
+                  what they need.{" "}
+                  <Link href="/providers#battery-passport" className="text-[#4f46e5] font-semibold">
+                    See how to get Battery Passport leads →
+                  </Link>
+                </>,
+              ],
             ].map(([q, a]) => (
-              <div key={q}>
+              <div key={q as string}>
                 <h3 className="font-sans font-semibold text-[21px] mb-[7px]">{q}</h3>
                 <p className="text-[16px] text-[#3d4653]">{a}</p>
               </div>

@@ -31,6 +31,8 @@ export interface Partner {
   categories: string[];
 }
 
+export type UnlockOutcome = "unknown" | "won" | "lost";
+
 export interface Unlock {
   id: string;
   lead_id: string;
@@ -38,6 +40,9 @@ export interface Unlock {
   stripe_payment_id: string | null;
   amount_paid: number | null;
   unlocked_at: string;
+  outcome: UnlockOutcome;
+  outcome_set_by: "partner" | "admin" | null;
+  outcome_updated_at: string | null;
 }
 
 export interface PartnerLead {
@@ -57,4 +62,6 @@ export interface PartnerLead {
   contact_email: string | null;
   contact_phone: string | null;
   unlocked: boolean;
+  unlock_id: string | null;
+  outcome: UnlockOutcome | null;
 }

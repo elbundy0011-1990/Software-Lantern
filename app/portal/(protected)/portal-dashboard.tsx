@@ -51,6 +51,9 @@ export function PortalDashboard({
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>(() => defaultFilter(partnerCategories));
   const [openLeadId, setOpenLeadId] = useState<string | null>(unlockedParam);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [expandedOutcomeId, setExpandedOutcomeId] = useState<string | null>(null);
+  const [outcomeSaving, setOutcomeSaving] = useState<string | null>(null);
+  const [outcomeOverrides, setOutcomeOverrides] = useState<Partial<Record<string, "won" | "lost">>>({});
 
   useEffect(() => {
     if (unlockedParam) {
@@ -75,6 +78,23 @@ export function PortalDashboard({
       { label: "Max buyers per lead", value: "3", color: "#0d1117" },
     ];
   }, [leads]);
+
+  const setOutcome = async (unlockId: string, outcome: "won" | "lost") => {
+    setOutcomeSaving(unlockId);
+    try {
+      const res = await fetch("/api/unlocks/outcome", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ unlockId, outcome }),
+      });
+      if (res.ok) {
+        setOutcomeOverrides((cur) => ({ ...cur, [unlockId]: outcome }));
+        setExpandedOutcomeId(null);
+      }
+    } finally {
+      setOutcomeSaving(null);
+    }
+  };
 
   const startCheckout = async (leadId: string) => {
     setCheckoutLoading(true);
@@ -168,6 +188,9 @@ export function PortalDashboard({
         {visibleLeads.map((lead) => {
           const soldOut = !lead.unlocked && lead.unlock_count >= lead.max_unlocks;
           const status = lead.unlocked ? "Unlocked" : soldOut ? "Sold out" : "Available";
+          const effectiveOutcome = lead.unlock_id
+            ? outcomeOverrides[lead.unlock_id] || lead.outcome
+            : null;
           const statusBg = lead.unlocked
             ? "rgba(16,185,129,0.12)"
             : soldOut
@@ -212,12 +235,65 @@ export function PortalDashboard({
                   ))}
                 </div>
               </div>
-              <span
-                className="justify-self-start rounded-full px-[14px] py-[6px] text-[13px] font-semibold whitespace-nowrap"
-                style={{ background: statusBg, color: statusColor }}
-              >
-                {status}
-              </span>
+              <div className="justify-self-start">
+                <span
+                  className="inline-block rounded-full px-[14px] py-[6px] text-[13px] font-semibold whitespace-nowrap"
+                  style={{ background: statusBg, color: statusColor }}
+                >
+                  {status}
+                </span>
+                {lead.unlocked && lead.unlock_id && (
+                  <div className="mt-[6px]" onClick={(e) => e.stopPropagation()}>
+                    {expandedOutcomeId === lead.unlock_id ? (
+                      <div className="flex flex-wrap items-center gap-[10px] text-[12px] font-semibold">
+                        <button
+                          disabled={outcomeSaving === lead.unlock_id}
+                          onClick={() => setOutcome(lead.unlock_id as string, "won")}
+                          className="text-[#047857] hover:underline disabled:opacity-50"
+                        >
+                          Won
+                        </button>
+                        <button
+                          disabled={outcomeSaving === lead.unlock_id}
+                          onClick={() => setOutcome(lead.unlock_id as string, "lost")}
+                          className="text-[#c0451f] hover:underline disabled:opacity-50"
+                        >
+                          Lost
+                        </button>
+                        {(!effectiveOutcome || effectiveOutcome === "unknown") && (
+                          <button
+                            onClick={() => setExpandedOutcomeId(null)}
+                            className="text-[#79818f] hover:underline"
+                          >
+                            Still in progress
+                          </button>
+                        )}
+                      </div>
+                    ) : effectiveOutcome === "won" ? (
+                      <button
+                        onClick={() => setExpandedOutcomeId(lead.unlock_id as string)}
+                        className="text-[12px] font-semibold text-[#047857] hover:underline"
+                      >
+                        Won
+                      </button>
+                    ) : effectiveOutcome === "lost" ? (
+                      <button
+                        onClick={() => setExpandedOutcomeId(lead.unlock_id as string)}
+                        className="text-[12px] font-semibold text-[#c0451f] hover:underline"
+                      >
+                        Lost
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setExpandedOutcomeId(lead.unlock_id as string)}
+                        className="text-[12px] font-medium text-[#79818f] hover:underline"
+                      >
+                        Mark outcome
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           );
         })}

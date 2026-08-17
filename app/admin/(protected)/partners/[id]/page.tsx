@@ -2,10 +2,18 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Partner, Unlock, Lead } from "@/lib/types";
+import { timeAgo } from "@/lib/dates";
+import { OutcomeSelect } from "./outcome-select";
 
 function formatEuro(amount: number): string {
   return `€${amount.toFixed(2)}`;
 }
+
+const OUTCOME_COLOR: Record<string, string> = {
+  won: "#047857",
+  lost: "#c0451f",
+  unknown: "#79818f",
+};
 
 export default async function AdminPartnerPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -15,14 +23,14 @@ export default async function AdminPartnerPage({ params }: { params: Promise<{ i
     supabase.from("partners").select("*").eq("id", id).maybeSingle(),
     supabase
       .from("unlocks")
-      .select("id, lead_id, amount_paid, unlocked_at")
+      .select("id, lead_id, amount_paid, unlocked_at, outcome, outcome_set_by, outcome_updated_at")
       .eq("partner_id", id)
       .order("unlocked_at", { ascending: false }),
   ]);
 
   if (!partner) notFound();
 
-  const unlockRows = (unlocks as Pick<Unlock, "id" | "lead_id" | "amount_paid" | "unlocked_at">[] | null) || [];
+  const unlockRows = (unlocks as Unlock[] | null) || [];
   const leadIds = unlockRows.map((u) => u.lead_id);
 
   const { data: leads } =
@@ -93,18 +101,19 @@ export default async function AdminPartnerPage({ params }: { params: Promise<{ i
 
       <h2 className="font-sans font-semibold text-[20px] mb-3">Purchase history</h2>
       <div className="bg-white border border-[#0d1117]/[0.08] rounded-2xl overflow-hidden">
-        <div className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-4 px-6 py-3 bg-[#f6f7fb] border-b border-[#0d1117]/[0.07] text-[11px] font-bold uppercase tracking-[0.06em] text-[#79818f]">
+        <div className="grid grid-cols-[1fr_1.8fr_1fr_1fr_1.4fr] gap-4 px-6 py-3 bg-[#f6f7fb] border-b border-[#0d1117]/[0.07] text-[11px] font-bold uppercase tracking-[0.06em] text-[#79818f]">
           <span>Category</span>
           <span>Requirement summary</span>
           <span>Amount paid</span>
           <span>Unlocked</span>
+          <span>Outcome</span>
         </div>
         {unlockRows.map((u) => {
           const lead = leadsById.get(u.lead_id);
           return (
             <div
               key={u.id}
-              className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-4 items-center px-6 py-4 border-b border-[#0d1117]/[0.05] text-[14px]"
+              className="grid grid-cols-[1fr_1.8fr_1fr_1fr_1.4fr] gap-4 items-center px-6 py-4 border-b border-[#0d1117]/[0.05] text-[14px]"
             >
               <span className="text-[#3d4653]">{lead?.category || "N/A"}</span>
               <span className="text-[#5c6573] truncate">{lead?.software_need || "Not given"}</span>
@@ -112,6 +121,14 @@ export default async function AdminPartnerPage({ params }: { params: Promise<{ i
                 {u.amount_paid != null ? formatEuro(Number(u.amount_paid)) : "Unknown"}
               </span>
               <span className="text-[#5c6573]">{new Date(u.unlocked_at).toLocaleDateString()}</span>
+              <div>
+                <OutcomeSelect unlockId={u.id} partnerId={id} outcome={u.outcome} />
+                {u.outcome_set_by && u.outcome_updated_at && (
+                  <p className="mt-1 text-[12px]" style={{ color: OUTCOME_COLOR[u.outcome] }}>
+                    Set by {u.outcome_set_by}, {timeAgo(u.outcome_updated_at)}
+                  </p>
+                )}
+              </div>
             </div>
           );
         })}

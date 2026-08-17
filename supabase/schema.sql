@@ -74,6 +74,25 @@ set amount_paid = l.price_per_unlock
 from public.leads l
 where u.lead_id = l.id and u.amount_paid is null;
 
+-- Win/loss self-reporting: partner-set as the low-key default, admin
+-- override as the fallback (see update_unlock_outcome() and the admin
+-- setUnlockOutcome() server action below/elsewhere). 'unknown' forever is
+-- the expected steady state for most rows — this is opt-in, not required.
+alter table public.unlocks add column if not exists outcome text not null default 'unknown'
+  check (outcome in ('unknown', 'won', 'lost'));
+alter table public.unlocks add column if not exists outcome_set_by text
+  check (outcome_set_by in ('partner', 'admin'));
+alter table public.unlocks add column if not exists outcome_updated_at timestamptz;
+
+-- Hard DB-level invariant, not just app-level convention: these two columns
+-- are null exactly when outcome is 'unknown', and both set otherwise.
+alter table public.unlocks drop constraint if exists unlocks_outcome_fields_consistent;
+alter table public.unlocks add constraint unlocks_outcome_fields_consistent
+  check (
+    (outcome = 'unknown' and outcome_set_by is null and outcome_updated_at is null)
+    or (outcome <> 'unknown' and outcome_set_by is not null and outcome_updated_at is not null)
+  );
+
 create index if not exists leads_status_idx on public.leads (status);
 create index if not exists leads_category_idx on public.leads (category);
 create index if not exists unlocks_partner_idx on public.unlocks (partner_id);
@@ -200,6 +219,11 @@ create policy "partners read own unlocks"
 -- category or simply not yet published: no separate flag, no visible gap.
 -- ─────────────────────────────────────────────────────────────────────────
 
+-- Signature changed (added unlock_id, outcome) after initial launch — drop
+-- the old version explicitly, same reason as create_partner() below: a bare
+-- create or replace can't change an existing function's return type.
+drop function if exists public.get_partner_leads();
+
 create or replace function public.get_partner_leads()
 returns table (
   id uuid,
@@ -217,7 +241,9 @@ returns table (
   contact_name text,
   contact_email text,
   contact_phone text,
-  unlocked boolean
+  unlocked boolean,
+  unlock_id uuid,
+  outcome text
 )
 language sql
 security definer
@@ -245,7 +271,9 @@ as $$
     case when u.id is not null then l.contact_name else null end,
     case when u.id is not null then l.contact_email else null end,
     case when u.id is not null then l.contact_phone else null end,
-    (u.id is not null) as unlocked
+    (u.id is not null) as unlocked,
+    u.id as unlock_id,
+    u.outcome
   from public.leads l
   left join me on true
   left join public.unlocks u on u.lead_id = l.id and u.partner_id = me.partner_id
@@ -261,6 +289,52 @@ $$;
 -- just "from public".
 revoke execute on function public.get_partner_leads() from public, anon;
 grant execute on function public.get_partner_leads() to authenticated;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- update_unlock_outcome(): the only way a partner can record win/loss.
+-- Rejects 'unknown' outright (a partner can flip between won/lost but never
+-- reset to unknown once set — that's admin-only, via the service-role
+-- client). Ownership check mirrors get_partner_leads()'s "me" CTE: resolve
+-- auth.uid() to the calling partner's id, then scope the UPDATE to that
+-- partner's own row via UPDATE ... FROM me. `not found` (set by any DML)
+-- covers both "no such unlock" and "unlock belongs to someone else"
+-- identically, so the error never reveals which case occurred.
+-- ─────────────────────────────────────────────────────────────────────────
+
+create or replace function public.update_unlock_outcome(p_unlock_id uuid, p_outcome text)
+returns public.unlocks
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  result public.unlocks;
+begin
+  if p_outcome not in ('won', 'lost') then
+    raise exception 'p_outcome must be won or lost';
+  end if;
+
+  with me as (
+    select p.id as partner_id from public.partners p where p.auth_user_id = auth.uid()
+  )
+  update public.unlocks u
+  set outcome = p_outcome,
+      outcome_set_by = 'partner',
+      outcome_updated_at = now()
+  from me
+  where u.id = p_unlock_id and u.partner_id = me.partner_id
+  returning u.* into result;
+
+  if not found then
+    raise exception 'Unlock not found or not owned by you';
+  end if;
+
+  return result;
+end;
+$$;
+
+revoke execute on function public.update_unlock_outcome(uuid, text) from public, anon;
+grant execute on function public.update_unlock_outcome(uuid, text) to authenticated;
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- create_partner(): called right after Supabase Auth signup so the new

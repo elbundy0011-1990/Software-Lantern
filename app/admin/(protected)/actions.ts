@@ -7,7 +7,27 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { categoryShortCode, partnerNotificationClassification } from "@/lib/finder-config";
 import { sendEmail } from "@/lib/resend";
 import { buildLeadPublishedPartnerEmail } from "@/lib/email-templates";
-import type { LeadStatus } from "@/lib/types";
+import type { LeadStatus, UnlockOutcome } from "@/lib/types";
+
+// Admin override: unlike update_unlock_outcome() (partner-facing, RPC-gated,
+// 'won'/'lost' only), admin can set outcome back to 'unknown' and always
+// stamps outcome_set_by = 'admin', overwriting whatever a partner set
+// before. Runs through the service-role client like every other admin
+// action here, no new RLS/grant needed.
+export async function setUnlockOutcome(unlockId: string, partnerId: string, outcome: UnlockOutcome) {
+  await requireAdmin();
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from("unlocks")
+    .update({
+      outcome,
+      outcome_set_by: outcome === "unknown" ? null : "admin",
+      outcome_updated_at: outcome === "unknown" ? null : new Date().toISOString(),
+    })
+    .eq("id", unlockId);
+  if (error) throw new Error(error.message);
+  revalidatePath(`/admin/partners/${partnerId}`);
+}
 
 export async function setLeadStatus(id: string, status: LeadStatus) {
   await requireAdmin();

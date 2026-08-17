@@ -20,7 +20,11 @@ export async function POST(request: Request) {
   }
 
   if (event.type === "checkout.session.completed") {
-    const session = event.data.object as { metadata?: Record<string, string>; payment_intent?: string | null };
+    const session = event.data.object as {
+      metadata?: Record<string, string>;
+      payment_intent?: string | null;
+      amount_total?: number | null;
+    };
     const leadId = session.metadata?.lead_id;
     const partnerId = session.metadata?.partner_id;
 
@@ -30,6 +34,11 @@ export async function POST(request: Request) {
         lead_id: leadId,
         partner_id: partnerId,
         stripe_payment_id: session.payment_intent || null,
+        // Stripe's own amount for this specific completed session, in cents
+        // (checkout/route.ts always creates the session in eur), not a live
+        // lookup of the lead's current price_per_unlock, so this stays
+        // accurate even if the lead's price changes later.
+        amount_paid: session.amount_total != null ? session.amount_total / 100 : null,
       });
       // Ignore "already unlocked" (unique constraint) so Stripe's automatic
       // webhook retries stay idempotent. Anything else, surface it so Stripe

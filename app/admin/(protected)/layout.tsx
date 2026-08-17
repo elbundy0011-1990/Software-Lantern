@@ -12,6 +12,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin" className="font-sans font-semibold text-[18px] text-[#0d1117]">
             Software Lantern <span className="text-[#4f46e5]">Admin</span>
           </Link>
+          <nav className="flex items-center gap-5 text-[14px] font-semibold text-[#5c6573]">
+            <Link href="/admin" className="hover:text-[#4f46e5]">
+              Leads
+            </Link>
+            <Link href="/admin/partners" className="hover:text-[#4f46e5]">
+              Partners
+            </Link>
+          </nav>
           <span className="ml-auto text-[14px] text-[#5c6573]">{user.email}</span>
           <SignOutButton />
         </div>

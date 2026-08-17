@@ -57,6 +57,23 @@ create table if not exists public.unlocks (
   unique (lead_id, partner_id)
 );
 
+-- amount_paid: captured directly from the completed Stripe session's
+-- amount_total at checkout time (app/api/stripe/webhook/route.ts), not
+-- looked up live from leads.price_per_unlock, so historical spend stays
+-- accurate even if a lead's price is edited after the fact.
+alter table public.unlocks add column if not exists amount_paid numeric(10, 2);
+
+-- Backfill only, for unlocks that predate this column: best-effort, using
+-- each lead's CURRENT price_per_unlock, since the original Stripe
+-- transaction amount was never recorded for these pre-existing rows. This
+-- is wrong for any of these rows where the lead's price changed since the
+-- unlock happened. New unlocks going forward get the real amount from
+-- Stripe, not this approximation.
+update public.unlocks u
+set amount_paid = l.price_per_unlock
+from public.leads l
+where u.lead_id = l.id and u.amount_paid is null;
+
 create index if not exists leads_status_idx on public.leads (status);
 create index if not exists leads_category_idx on public.leads (category);
 create index if not exists unlocks_partner_idx on public.unlocks (partner_id);

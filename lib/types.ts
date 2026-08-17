@@ -21,6 +21,25 @@ export interface Lead {
   price_per_unlock: number | null;
 }
 
+export interface Partner {
+  id: string;
+  created_at: string;
+  company_name: string;
+  contact_email: string;
+  auth_user_id: string;
+  stripe_customer_id: string | null;
+  categories: string[];
+}
+
+export interface Unlock {
+  id: string;
+  lead_id: string;
+  partner_id: string;
+  stripe_payment_id: string | null;
+  amount_paid: number | null;
+  unlocked_at: string;
+}
+
 export interface PartnerLead {
   id: string;
   created_at: string;

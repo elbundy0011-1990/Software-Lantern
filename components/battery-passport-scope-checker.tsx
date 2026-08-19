@@ -135,6 +135,33 @@ function DeadlineResultCard() {
   );
 }
 
+// Shared conversion block for the in-scope result (not shown on the
+// out-of-scope path, which keeps its own unchanged CTA in the bottom bar
+// below). Matches the exact "publish your brief... up to 3 who believe
+// they're a fit will respond" sentence and "Find battery passport software
+// →" button already live in this page's own hero copy, and the exact
+// trust-line text already live in that same hero, rather than inventing
+// new phrasing.
+function InScopeCta() {
+  return (
+    <div className="mt-6 text-center">
+      <p className="text-[15px] text-[#3d4653] mb-4">
+        We&apos;ll publish your brief to battery passport software providers in the category. Up to
+        3 who believe they&apos;re a fit will respond.
+      </p>
+      <Link
+        href={`/finder?category=${encodeURIComponent("Digital Battery Passport (DBP)")}`}
+        className="inline-block bg-[#4f46e5] text-white rounded-full px-6 py-[13px] font-sans font-semibold text-[15px] hover:bg-[#4338ca]"
+      >
+        Find battery passport software →
+      </Link>
+      <p className="mt-4 text-[13px] font-semibold text-[#5c6573]">
+        Free for buyers · No obligation · Providers respond by email within 24 hours
+      </p>
+    </div>
+  );
+}
+
 const backButtonClass =
   "rounded-full px-5 py-[10px] font-sans font-semibold text-[14px] text-[#5c6573] border border-[#0d1117]/[0.14] hover:bg-[#0d1117]/[0.05]";
 
@@ -204,12 +231,15 @@ export function BatteryPassportScopeChecker() {
       );
     }
 
+    const days = daysUntil(BATTERY_PASSPORT_DEADLINE.date);
+
     return (
       <>
         <DeadlineResultCard />
         <p className="text-[16px] text-[#3d4653] text-center mb-4">
           Based on your answers, the digital battery passport requirement likely applies to you
-          {categoryPhrase}.
+          {categoryPhrase}. Your deadline is {BATTERY_PASSPORT_DEADLINE.display}, {days} days from
+          today.
           {notSure &&
             " Confirm which of the categories above your product falls into: if any apply, this deadline applies to you, regardless of company size."}
         </p>
@@ -218,6 +248,7 @@ export function BatteryPassportScopeChecker() {
           The deadline applies uniformly once a battery is in scope: there&apos;s no separate date by
           company size or position in the value chain.
         </p>
+        <InScopeCta />
       </>
     );
   };
@@ -229,7 +260,11 @@ export function BatteryPassportScopeChecker() {
           Does the battery passport requirement apply to you?
         </h2>
         <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-10">
-          A few questions to check your scope and deadline, based on the regulation&apos;s published
+          A few questions to check whether the digital battery passport requirement applies to you:
+          EV batteries, LMT batteries (e-bikes and e-scooters), and industrial batteries above 2 kWh
+          are in scope, with a single deadline of 18 February 2027 regardless of company size or
+          where you sit in the value chain (cell manufacturer, pack assembler, automotive OEM, energy
+          storage, materials supplier, or recycler). Based on the regulation&apos;s published
           categories and dates, not a guess.
         </p>
 
@@ -282,12 +317,14 @@ export function BatteryPassportScopeChecker() {
             <div key="result" className="step-in">
               {renderResult()}
               <div className="mt-7 pt-6 border-t border-[#0d1117]/[0.08] flex flex-wrap items-center justify-center gap-4">
-                <Link
-                  href={`/finder?category=${encodeURIComponent("Digital Battery Passport (DBP)")}`}
-                  className="bg-[#4f46e5] text-white rounded-full px-6 py-[13px] font-sans font-semibold text-[15px] hover:bg-[#4338ca]"
-                >
-                  Ready to look at software options? Tell us what you need →
-                </Link>
+                {onlyOutOfScope && (
+                  <Link
+                    href={`/finder?category=${encodeURIComponent("Digital Battery Passport (DBP)")}`}
+                    className="bg-[#4f46e5] text-white rounded-full px-6 py-[13px] font-sans font-semibold text-[15px] hover:bg-[#4338ca]"
+                  >
+                    Ready to look at software options? Tell us what you need →
+                  </Link>
+                )}
                 <button
                   onClick={restart}
                   className="text-[14px] font-semibold text-[#5c6573] underline underline-offset-2"

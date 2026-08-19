@@ -167,6 +167,32 @@ function DeadlineResultCard({ deadlineKey }: { deadlineKey: EudrDeadlineKey }) {
   );
 }
 
+// Shared conversion block for every in-scope result (not shown on the
+// out-of-scope path, which keeps its own unchanged CTA in the bottom bar
+// below). Matches the exact "publish your brief... up to 3 who believe
+// they're a fit will respond" sentence and "Find EUDR software →" button
+// already live in this page's own hero copy, and the exact trust-line text
+// already live in that same hero, rather than inventing new phrasing.
+function InScopeCta() {
+  return (
+    <div className="mt-6 text-center">
+      <p className="text-[15px] text-[#3d4653] mb-4">
+        We&apos;ll publish your brief to EUDR software providers in the category. Up to 3 who
+        believe they&apos;re a fit will respond.
+      </p>
+      <Link
+        href="/finder?category=EUDR%20Software"
+        className="inline-block bg-[#4f46e5] text-white rounded-full px-6 py-[13px] font-sans font-semibold text-[15px] hover:bg-[#4338ca]"
+      >
+        Find EUDR software →
+      </Link>
+      <p className="mt-4 text-[13px] font-semibold text-[#5c6573]">
+        Free for buyers · No obligation · Providers respond by email within 24 hours
+      </p>
+    </div>
+  );
+}
+
 const backButtonClass =
   "rounded-full px-5 py-[10px] font-sans font-semibold text-[14px] text-[#5c6573] border border-[#0d1117]/[0.14] hover:bg-[#0d1117]/[0.05]";
 
@@ -239,11 +265,14 @@ export function EudrScopeChecker() {
         <>
           <DeadlineResultCard deadlineKey="largeMedium" />
           <p className="text-[16px] text-[#3d4653] text-center mb-4">
-            Based on your answers, EUDR likely applies to you as a trader{commodityPhrase}. The
-            later SME date in the regulation applies only to operators, not traders.
+            Based on your answers, EUDR likely applies to you as a trader{commodityPhrase}. Your
+            deadline is {EUDR_DEADLINES.largeMedium.display}, {daysUntil(EUDR_DEADLINES.largeMedium.date)}{" "}
+            days from today. The later SME date in the regulation applies only to operators, not
+            traders.
           </p>
           <p className="text-[14px] text-[#5c6573] text-center mb-4">{riskNote}</p>
           <p className="text-[14px] text-[#79818f] text-center">{BOTH_ROLES_NOTE}</p>
+          <InScopeCta />
         </>
       );
     }
@@ -256,10 +285,12 @@ export function EudrScopeChecker() {
           <DeadlineResultCard deadlineKey="largeMedium" />
           <p className="text-[16px] text-[#3d4653] text-center mb-4">
             Based on your answers, EUDR likely applies to you as {roleWord}
-            {commodityPhrase}.
+            {commodityPhrase}. Your deadline is {EUDR_DEADLINES.largeMedium.display},{" "}
+            {daysUntil(EUDR_DEADLINES.largeMedium.date)} days from today.
           </p>
           <p className="text-[14px] text-[#5c6573] text-center mb-4">{riskNote}</p>
           <p className="text-[14px] text-[#79818f] text-center">{BOTH_ROLES_NOTE}</p>
+          <InScopeCta />
         </>
       );
     }
@@ -270,17 +301,22 @@ export function EudrScopeChecker() {
           <DeadlineResultCard deadlineKey="microSmall" />
           <p className="text-[16px] text-[#3d4653] text-center mb-4">
             Based on your answers, EUDR likely applies to you as {roleWord}
-            {commodityPhrase}. This applies if your business qualifies as micro or small and was
-            established as such by <strong>31 December 2024</strong>, otherwise the general{" "}
+            {commodityPhrase}. Your deadline is {EUDR_DEADLINES.microSmall.display},{" "}
+            {daysUntil(EUDR_DEADLINES.microSmall.date)} days from today. This applies if your
+            business qualifies as micro or small and was established as such by{" "}
+            <strong>31 December 2024</strong>, otherwise the general{" "}
             {EUDR_DEADLINES.largeMedium.display} deadline applies.
           </p>
           <p className="text-[14px] text-[#5c6573] text-center mb-4">{riskNote}</p>
           <p className="text-[14px] text-[#79818f] text-center">{BOTH_ROLES_NOTE}</p>
+          <InScopeCta />
         </>
       );
     }
 
     // not sure
+    const daysLargeMedium = daysUntil(EUDR_DEADLINES.largeMedium.date);
+    const daysMicroSmall = daysUntil(EUDR_DEADLINES.microSmall.date);
     return (
       <>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
@@ -289,13 +325,15 @@ export function EudrScopeChecker() {
         </div>
         <p className="text-[16px] text-[#3d4653] text-center mb-3">
           Based on your answers, EUDR likely applies to you as {roleWord}
-          {commodityPhrase}. Your deadline depends on company size: the earlier date if you&apos;re
-          large or medium, the later date if you&apos;re micro or small and were established as
-          such by 31 December 2024.
+          {commodityPhrase}. Your deadline depends on company size: {EUDR_DEADLINES.largeMedium.display}{" "}
+          ({daysLargeMedium} days from today) if you&apos;re large or medium, or{" "}
+          {EUDR_DEADLINES.microSmall.display} ({daysMicroSmall} days from today) if you&apos;re micro
+          or small and were established as such by 31 December 2024.
         </p>
         <p className="text-[14px] text-[#5c6573] text-center mb-4">{EUDR_SME_SIZE_NOTE}</p>
         <p className="text-[14px] text-[#5c6573] text-center mb-4">{riskNote}</p>
         <p className="text-[14px] text-[#79818f] text-center">{BOTH_ROLES_NOTE}</p>
+        <InScopeCta />
       </>
     );
   };
@@ -307,8 +345,10 @@ export function EudrScopeChecker() {
           Does EUDR apply to you?
         </h2>
         <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-10">
-          A few questions to check your scope and deadline, based on the regulation&apos;s
-          published dates, not a guess.
+          A few questions to check whether EUDR applies to you, whether you&apos;re an operator,
+          trader, or exporter of cattle, cocoa, coffee, palm oil, rubber, soy, or wood products, and
+          which deadline applies: 30 December 2026 for large and medium businesses, or 30 June 2027
+          for micro and small operators. Based on the regulation&apos;s published dates, not a guess.
         </p>
 
         <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-6 sm:p-10 overflow-hidden">
@@ -411,12 +451,14 @@ export function EudrScopeChecker() {
             <div key="result" className="step-in">
               {renderResult()}
               <div className="mt-7 pt-6 border-t border-[#0d1117]/[0.08] flex flex-wrap items-center justify-center gap-4">
-                <Link
-                  href="/finder?category=EUDR%20Software"
-                  className="bg-[#4f46e5] text-white rounded-full px-6 py-[13px] font-sans font-semibold text-[15px] hover:bg-[#4338ca]"
-                >
-                  Ready to look at software options? Tell us what you need →
-                </Link>
+                {role === "none" && (
+                  <Link
+                    href="/finder?category=EUDR%20Software"
+                    className="bg-[#4f46e5] text-white rounded-full px-6 py-[13px] font-sans font-semibold text-[15px] hover:bg-[#4338ca]"
+                  >
+                    Ready to look at software options? Tell us what you need →
+                  </Link>
+                )}
                 <button
                   onClick={restart}
                   className="text-[14px] font-semibold text-[#5c6573] underline underline-offset-2"

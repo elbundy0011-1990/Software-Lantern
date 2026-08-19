@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
+import { PlmReadinessChecker } from "@/components/plm-readiness-checker";
 import {
   SwatchIcon,
   ChecklistIcon,
@@ -125,6 +126,8 @@ export default function PlmPage() {
         </div>
       </section>
 
+      <PlmReadinessChecker />
+
       <section className="border-b border-[#0d1117]/[0.07]">
         <div className="max-w-[1160px] mx-auto px-5 sm:px-8 py-21">
           <div className="max-w-[860px]">
@@ -157,7 +160,7 @@ export default function PlmPage() {
         </div>
       </section>
 
-      <section className="border-b border-[#0d1117]/[0.07]">
+      <section id="how-to-choose" className="border-b border-[#0d1117]/[0.07]">
         <div className="max-w-[1160px] mx-auto px-5 sm:px-8 py-21">
           <div className="max-w-[860px] mb-14">
             <h2 className="font-sans font-semibold text-[clamp(28px,3.8vw,40px)] leading-[1.1] tracking-[-0.03em] mb-4">

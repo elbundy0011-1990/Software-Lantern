@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Instrument_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { SITE_URL, SITE_NAME } from "@/lib/site";
+import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION } from "@/lib/site";
 import "./globals.css";
 
 const instrumentSans = Instrument_Sans({
@@ -10,9 +10,8 @@ const instrumentSans = Instrument_Sans({
   weight: ["400", "500", "600", "700"],
 });
 
-const TITLE = "Software Lantern | Tell us what software you need";
-const DESCRIPTION =
-  "Tell us what software you need. We'll connect you with up to 3 providers that believe they have the right solution. Free for buyers, no obligation.";
+const TITLE = SITE_TITLE;
+const DESCRIPTION = SITE_DESCRIPTION;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

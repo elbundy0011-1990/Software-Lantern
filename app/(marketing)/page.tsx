@@ -2,12 +2,14 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { LeafIcon, ShirtIcon, BatteryIcon, MagnifyingGlassIcon, TargetIcon, HandshakeIcon, TagIcon } from "@/components/icons";
+import { pageMetadata } from "@/lib/metadata";
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/lib/site";
 
-export const metadata: Metadata = {
-  alternates: {
-    canonical: "/",
-  },
-};
+export const metadata: Metadata = pageMetadata({
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  path: "/",
+});
 
 const heroCategories = [
   { label: "EUDR Software", href: "/eudr" },

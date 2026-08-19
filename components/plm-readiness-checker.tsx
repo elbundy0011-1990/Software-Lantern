@@ -5,11 +5,23 @@ import Link from "next/link";
 
 type Process = "spreadsheets" | "mixed" | "workingPlm" | "outgrowingPlm" | "notSure";
 type Brand = "single" | "multi" | "notSure";
-type Skus = "under50" | "50to200" | "200plus" | "notSure";
-type Suppliers = "under5" | "5to20" | "20plus" | "notSure";
-type Screen = "process" | "brand" | "skus" | "suppliers" | "pain" | "result";
+type ProcessLevel = "centralized" | "mixed" | "manual" | "inconsistent";
+type Frequency = "rarely" | "occasionally" | "weekly" | "almostDaily";
+type ReconcileTime = "little" | "fewHours" | "severalHours" | "significant";
+type Screen =
+  | "process"
+  | "brand"
+  | "info"
+  | "techpacks"
+  | "boms"
+  | "supplierComm"
+  | "chasing"
+  | "conflicting"
+  | "reconciling"
+  | "improve"
+  | "result";
 
-const NONE_OF_THESE = "none";
+const NONE_IMPROVE = "none";
 
 const PROCESS_OPTIONS: { value: Process; label: string }[] = [
   { value: "spreadsheets", label: "Mostly spreadsheets, email, and shared drives" },
@@ -25,71 +37,140 @@ const BRAND_OPTIONS: { value: Brand; label: string }[] = [
   { value: "notSure", label: "Not sure yet / early stage" },
 ];
 
-const SKU_OPTIONS: { value: Skus; label: string }[] = [
-  { value: "under50", label: "Under ~50" },
-  { value: "50to200", label: "50–200" },
-  { value: "200plus", label: "200+" },
-  { value: "notSure", label: "Not sure" },
+const INFO_OPTIONS: { value: ProcessLevel; label: string }[] = [
+  { value: "centralized", label: "Centralized in a PLM or similar system, one place, one version" },
+  { value: "mixed", label: "Some of it lives in shared tools, but it's not fully centralized" },
+  { value: "manual", label: "Mostly spreadsheets and shared drives" },
+  { value: "inconsistent", label: "Inconsistent, it depends who you ask" },
 ];
 
-const SUPPLIER_OPTIONS: { value: Suppliers; label: string }[] = [
-  { value: "under5", label: "Fewer than 5" },
-  { value: "5to20", label: "5–20" },
-  { value: "20plus", label: "More than 20" },
-  { value: "notSure", label: "Not sure" },
+const TECHPACK_OPTIONS: { value: ProcessLevel; label: string }[] = [
+  { value: "centralized", label: "Centralized and versioned in a system, factories see the live version" },
+  { value: "mixed", label: "Digital files, but versioning is manual (filenames, folders)" },
+  { value: "manual", label: "Mostly static documents emailed to factories" },
+  { value: "inconsistent", label: "Inconsistent, it depends on the developer" },
+];
+
+const BOM_OPTIONS: { value: ProcessLevel; label: string }[] = [
+  { value: "centralized", label: "Centralized in a system, copied and adjusted from existing styles" },
+  { value: "mixed", label: "Spreadsheets, but with a consistent template" },
+  { value: "manual", label: "Rebuilt from scratch each season in spreadsheets" },
+  { value: "inconsistent", label: "Inconsistent, varies by person or team" },
+];
+
+const SUPPLIER_OPTIONS: { value: ProcessLevel; label: string }[] = [
+  { value: "centralized", label: "Suppliers work directly in a shared system with us" },
+  { value: "mixed", label: "A mix of email and shared files" },
+  { value: "manual", label: "Almost entirely over email" },
+  { value: "inconsistent", label: "Inconsistent, depends on the supplier" },
+];
+
+const FREQUENCY_OPTIONS: { value: Frequency; label: string }[] = [
+  { value: "rarely", label: "Rarely" },
+  { value: "occasionally", label: "Occasionally" },
+  { value: "weekly", label: "Weekly" },
+  { value: "almostDaily", label: "Almost daily" },
+];
+
+const RECONCILE_OPTIONS: { value: ReconcileTime; label: string }[] = [
+  { value: "little", label: "Little to none" },
+  { value: "fewHours", label: "A few hours a week" },
+  { value: "severalHours", label: "Several hours a week" },
+  { value: "significant", label: "A significant, ongoing drain" },
 ];
 
 // "short" is used only in the result recap; "label" is the full option text
-// shown on the question screen.
-const PAIN_OPTIONS: { value: string; label: string; short: string }[] = [
-  {
-    value: "techpacks",
-    label: "Tech packs going out of date or getting lost before reaching the factory",
-    short: "tech pack version control",
-  },
-  {
-    value: "bom",
-    label: "Rebuilding BOMs from scratch each season instead of adjusting an existing one",
-    short: "BOM rebuilding",
-  },
-  {
-    value: "sampling",
-    label: "Losing track of sample rounds and approval history",
-    short: "sample tracking",
-  },
-  {
-    value: "costing",
-    label: "Costing surprises that show up after decisions are already made",
-    short: "costing visibility",
-  },
-  { value: "deadlines", label: "Missed critical-path deadlines", short: "critical-path deadlines" },
-  {
-    value: "suppliers",
-    label: "Suppliers hard to coordinate without constant email back-and-forth",
-    short: "supplier coordination",
-  },
+// shown on the multi-select screen. Every option here traces to a pain
+// point or "how to choose" factor already documented in /docs/ICP.md or
+// this page's own content, not an invented buyer concern.
+const IMPROVE_OPTIONS: { value: string; label: string; short: string }[] = [
+  { value: "info", label: "Centralizing product information in one place", short: "centralizing product information" },
+  { value: "techpacks", label: "Tech pack accuracy and version control", short: "tech pack accuracy" },
+  { value: "bom", label: "BOM management", short: "BOM management" },
+  { value: "supplier", label: "Supplier and factory communication", short: "supplier communication" },
+  { value: "sampling", label: "Sample tracking and approvals", short: "sample tracking" },
+  { value: "costing", label: "Costing accuracy and visibility", short: "costing visibility" },
+  { value: "criticalpath", label: "Critical-path and deadline tracking", short: "critical-path tracking" },
+  { value: "handover", label: "Production handover accuracy", short: "production handover" },
+  { value: "reporting", label: "Reporting and visibility across the business", short: "reporting and visibility" },
 ];
 
-function skuPoints(s: Skus): number {
-  if (s === "200plus") return 2;
-  if (s === "50to200") return 1;
-  return 0;
+const INFO_PHRASES: Record<ProcessLevel, string> = {
+  centralized: "your product information lives in one place",
+  mixed: "product information split across a few different tools",
+  manual: "product information mostly living in spreadsheets and shared drives",
+  inconsistent: "product information that depends on who you ask",
+};
+
+const TECHPACK_PHRASES: Record<ProcessLevel, string> = {
+  centralized: "tech packs are versioned and factories see the live copy",
+  mixed: "tech pack versions tracked by hand, in filenames and folders",
+  manual: "tech packs that are mostly static documents emailed to factories",
+  inconsistent: "a tech pack process that varies by developer",
+};
+
+const BOM_PHRASES: Record<ProcessLevel, string> = {
+  centralized: "BOMs get copied and adjusted from existing styles instead of rebuilt",
+  mixed: "BOMs kept in spreadsheets, even with a consistent template",
+  manual: "BOMs rebuilt from scratch every season",
+  inconsistent: "a BOM process that varies by person or team",
+};
+
+const SUPPLIER_PHRASES: Record<ProcessLevel, string> = {
+  centralized: "suppliers work directly in a shared system with you",
+  mixed: "supplier communication split between email and shared files",
+  manual: "supplier communication that's almost entirely over email",
+  inconsistent: "supplier communication that varies by supplier",
+};
+
+const CHASING_PHRASES: Record<Frequency, string> = {
+  rarely: "you're rarely chasing people down for information",
+  occasionally: "occasionally chasing people down for product information",
+  weekly: "chasing people down for product information weekly",
+  almostDaily: "chasing people down for product information almost daily",
+};
+
+const CONFLICTING_PHRASES: Record<Frequency, string> = {
+  rarely: "conflicting or outdated versions are rare for you",
+  occasionally: "occasionally running into conflicting or outdated versions",
+  weekly: "running into conflicting or outdated versions weekly",
+  almostDaily: "running into conflicting or outdated versions almost daily",
+};
+
+const RECONCILE_PHRASES: Record<ReconcileTime, string> = {
+  little: "not much time lost reconciling data by hand",
+  fewHours: "a few hours a week spent reconciling data by hand",
+  severalHours: "several hours a week lost reconciling data by hand",
+  significant: "a significant, ongoing drain reconciling data by hand",
+};
+
+function processPoints(level: ProcessLevel): number {
+  if (level === "centralized") return 0;
+  if (level === "mixed") return 1;
+  return 2; // manual or inconsistent
 }
 
-function supplierPoints(s: Suppliers): number {
-  if (s === "20plus") return 2;
-  if (s === "5to20") return 1;
-  return 0;
+function frequencyPoints(f: Frequency): number {
+  if (f === "rarely") return 0;
+  if (f === "occasionally") return 1;
+  if (f === "weekly") return 2;
+  return 3; // almostDaily
 }
 
-// "None of these, really" is deliberately non-scoring: it contributes 0
-// points, the same as if the pain screen were skipped, rather than being
-// treated as a confirmed-zero-pain signal that pulls toward the low band.
-// Someone whose real pain isn't on this list shouldn't score the same as
-// someone who checked and found nothing.
-function painPoints(pain: string[]): number {
-  const real = pain.filter((p) => p !== NONE_OF_THESE);
-  if (real.length >= 3) return 2;
+function reconcilePoints(r: ReconcileTime): number {
+  if (r === "little") return 0;
+  if (r === "fewHours") return 1;
+  if (r === "severalHours") return 2;
+  return 3; // significant
+}
+
+// "Nothing in particular right now" is deliberately non-scoring: it
+// contributes 0, the same as leaving the question at zero real
+// selections, rather than being treated as a confirmed-zero-signal that
+// pulls toward the low band.
+function improvePoints(items: string[]): number {
+  const real = items.filter((v) => v !== NONE_IMPROVE);
+  if (real.length >= 4) return 2;
   if (real.length >= 1) return 1;
   return 0;
 }
@@ -101,38 +182,48 @@ function joinWithAnd(items: string[]): string {
   return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
 }
 
-function buildDrivers(brand: Brand | null, skus: Skus | null, suppliers: Suppliers | null, pain: string[]): string[] {
-  const drivers: string[] = [];
-  if (brand === "multi") drivers.push("running multiple brands or labels");
-  if (skus === "200plus") drivers.push("200+ styles a season");
-  else if (skus === "50to200") drivers.push("50–200 styles a season");
-  if (suppliers === "20plus") drivers.push("coordinating more than 20 suppliers");
-  else if (suppliers === "5to20") drivers.push("coordinating 5–20 suppliers");
-  const realPain = pain.filter((p) => p !== NONE_OF_THESE);
-  if (realPain.length > 0) {
-    const shorts = realPain.map((v) => PAIN_OPTIONS.find((o) => o.value === v)!.short);
-    drivers.push(`friction around ${joinWithAnd(shorts)}`);
-  }
-  return drivers;
-}
-
 type Band = "low" | "emerging" | "strong";
 
+// Low ceiling is deliberately 2, not higher: the minimum possible
+// contribution from Q3-Q6 when all four are non-centralized is 4 (the
+// mildest non-centralized tier, "mixed", scores 1, across 4 questions),
+// which sits 2 points clear of this ceiling. A genuinely manual process
+// across all four core questions can never land in "low", regardless of
+// how mild the frequency-of-pain answers are, without needing the
+// frequency or improve-list answers to do any of that work.
 function scoreBand(score: number): Band {
-  if (score <= 1) return "low";
-  if (score <= 4) return "emerging";
+  if (score <= 2) return "low";
+  if (score <= 10) return "emerging";
   return "strong";
 }
 
-const MAIN_PATH_STEPS = 5;
+const MAIN_PATH_STEPS = 10;
 
 function stepNumber(screen: Screen): number {
-  if (screen === "process") return 1;
-  if (screen === "brand") return 2;
-  if (screen === "skus") return 3;
-  if (screen === "suppliers") return 4;
-  if (screen === "pain") return 5;
-  return 0;
+  switch (screen) {
+    case "process":
+      return 1;
+    case "brand":
+      return 2;
+    case "info":
+      return 3;
+    case "techpacks":
+      return 4;
+    case "boms":
+      return 5;
+    case "supplierComm":
+      return 6;
+    case "chasing":
+      return 7;
+    case "conflicting":
+      return 8;
+    case "reconciling":
+      return 9;
+    case "improve":
+      return 10;
+    default:
+      return 0;
+  }
 }
 
 function ProgressIndicator({ screen, total }: { screen: Screen; total: number }) {
@@ -211,66 +302,136 @@ const backButtonClass =
   "rounded-full px-5 py-[10px] font-sans font-semibold text-[14px] text-[#5c6573] border border-[#0d1117]/[0.14] hover:bg-[#0d1117]/[0.05]";
 
 const finderHref = `/finder?category=${encodeURIComponent("Product Lifecycle Management (PLM)")}`;
-const findProvidersCta = "See fashion PLM providers that fit your scale →";
+
+// Matches the established sitewide "publish a brief, providers self-select"
+// pattern (see /plm's own hero copy and FAQ) rather than any phrasing that
+// implies Software Lantern determines or performs the matching.
+const publishBriefSentence =
+  "Tell us what you're trying to manage, and we'll publish your brief to fashion PLM providers in the category. Up to 3 who believe they're a fit will respond.";
 
 export function PlmReadinessChecker() {
   const [screen, setScreen] = useState<Screen>("process");
   const [process, setProcess] = useState<Process | null>(null);
   const [brand, setBrand] = useState<Brand | null>(null);
-  const [skus, setSkus] = useState<Skus | null>(null);
-  const [suppliers, setSuppliers] = useState<Suppliers | null>(null);
-  const [pain, setPain] = useState<string[]>([]);
+  const [info, setInfo] = useState<ProcessLevel | null>(null);
+  const [techpacks, setTechpacks] = useState<ProcessLevel | null>(null);
+  const [boms, setBoms] = useState<ProcessLevel | null>(null);
+  const [supplierComm, setSupplierComm] = useState<ProcessLevel | null>(null);
+  const [chasing, setChasing] = useState<Frequency | null>(null);
+  const [conflicting, setConflicting] = useState<Frequency | null>(null);
+  const [reconciling, setReconciling] = useState<ReconcileTime | null>(null);
+  const [improve, setImprove] = useState<string[]>([]);
 
   const pickProcess = (p: Process) => {
     setProcess(p);
-    if (p === "workingPlm" || p === "outgrowingPlm") {
-      setScreen("result");
-    } else {
-      setScreen("brand");
-    }
+    setScreen(p === "workingPlm" || p === "outgrowingPlm" ? "result" : "brand");
   };
-
   const pickBrand = (b: Brand) => {
     setBrand(b);
-    setScreen("skus");
+    setScreen("info");
+  };
+  const pickInfo = (v: ProcessLevel) => {
+    setInfo(v);
+    setScreen("techpacks");
+  };
+  const pickTechpacks = (v: ProcessLevel) => {
+    setTechpacks(v);
+    setScreen("boms");
+  };
+  const pickBoms = (v: ProcessLevel) => {
+    setBoms(v);
+    setScreen("supplierComm");
+  };
+  const pickSupplierComm = (v: ProcessLevel) => {
+    setSupplierComm(v);
+    setScreen("chasing");
+  };
+  const pickChasing = (v: Frequency) => {
+    setChasing(v);
+    setScreen("conflicting");
+  };
+  const pickConflicting = (v: Frequency) => {
+    setConflicting(v);
+    setScreen("reconciling");
+  };
+  const pickReconciling = (v: ReconcileTime) => {
+    setReconciling(v);
+    setScreen("improve");
   };
 
-  const pickSkus = (s: Skus) => {
-    setSkus(s);
-    setScreen("suppliers");
-  };
-
-  const pickSuppliers = (s: Suppliers) => {
-    setSuppliers(s);
-    setScreen("pain");
-  };
-
-  const togglePain = (value: string) => {
-    setPain((cur) => {
-      if (value === NONE_OF_THESE) return cur.includes(NONE_OF_THESE) ? [] : [NONE_OF_THESE];
-      const withoutNone = cur.filter((x) => x !== NONE_OF_THESE);
+  const toggleImprove = (value: string) => {
+    setImprove((cur) => {
+      if (value === NONE_IMPROVE) return cur.includes(NONE_IMPROVE) ? [] : [NONE_IMPROVE];
+      const withoutNone = cur.filter((x) => x !== NONE_IMPROVE);
       return withoutNone.includes(value) ? withoutNone.filter((x) => x !== value) : [...withoutNone, value];
     });
   };
-
-  const finishPain = () => setScreen("result");
+  const finishImprove = () => setScreen("result");
 
   const restart = () => {
     setScreen("process");
     setProcess(null);
     setBrand(null);
-    setSkus(null);
-    setSuppliers(null);
-    setPain([]);
+    setInfo(null);
+    setTechpacks(null);
+    setBoms(null);
+    setSupplierComm(null);
+    setChasing(null);
+    setConflicting(null);
+    setReconciling(null);
+    setImprove([]);
   };
 
   const isShortCircuit = process === "workingPlm" || process === "outgrowingPlm";
   const total = isShortCircuit ? 1 : MAIN_PATH_STEPS;
 
   const score =
-    (brand === "multi" ? 2 : 0) + skuPoints(skus ?? "notSure") + supplierPoints(suppliers ?? "notSure") + painPoints(pain);
+    (brand === "multi" ? 2 : 0) +
+    processPoints(info ?? "centralized") +
+    processPoints(techpacks ?? "centralized") +
+    processPoints(boms ?? "centralized") +
+    processPoints(supplierComm ?? "centralized") +
+    frequencyPoints(chasing ?? "rarely") +
+    frequencyPoints(conflicting ?? "rarely") +
+    reconcilePoints(reconciling ?? "little") +
+    improvePoints(improve);
   const band = scoreBand(score);
-  const drivers = buildDrivers(brand, skus, suppliers, pain);
+
+  const frictionDrivers = (): string[] => {
+    const items: { text: string; weight: number }[] = [];
+    if (info && info !== "centralized") items.push({ text: INFO_PHRASES[info], weight: processPoints(info) });
+    if (techpacks && techpacks !== "centralized")
+      items.push({ text: TECHPACK_PHRASES[techpacks], weight: processPoints(techpacks) });
+    if (boms && boms !== "centralized") items.push({ text: BOM_PHRASES[boms], weight: processPoints(boms) });
+    if (supplierComm && supplierComm !== "centralized")
+      items.push({ text: SUPPLIER_PHRASES[supplierComm], weight: processPoints(supplierComm) });
+    if (chasing && chasing !== "rarely") items.push({ text: CHASING_PHRASES[chasing], weight: frequencyPoints(chasing) });
+    if (conflicting && conflicting !== "rarely")
+      items.push({ text: CONFLICTING_PHRASES[conflicting], weight: frequencyPoints(conflicting) });
+    if (reconciling && reconciling !== "little")
+      items.push({ text: RECONCILE_PHRASES[reconciling], weight: reconcilePoints(reconciling) });
+    items.sort((a, b) => b.weight - a.weight);
+    return items.slice(0, 4).map((i) => i.text);
+  };
+
+  const positiveDrivers = (): string[] => {
+    const items: string[] = [];
+    if (info === "centralized") items.push(INFO_PHRASES.centralized);
+    if (techpacks === "centralized") items.push(TECHPACK_PHRASES.centralized);
+    if (boms === "centralized") items.push(BOM_PHRASES.centralized);
+    if (supplierComm === "centralized") items.push(SUPPLIER_PHRASES.centralized);
+    if (chasing === "rarely") items.push(CHASING_PHRASES.rarely);
+    if (conflicting === "rarely") items.push(CONFLICTING_PHRASES.rarely);
+    if (reconciling === "little") items.push(RECONCILE_PHRASES.little);
+    return items.slice(0, 3);
+  };
+
+  const improveClause = (): string | null => {
+    const real = IMPROVE_OPTIONS.filter((o) => improve.includes(o.value));
+    if (real.length === 0) return null;
+    const labels = real.slice(0, 3).map((o) => o.short);
+    return `You also flagged wanting to improve ${joinWithAnd(labels)}.`;
+  };
 
   const renderResult = () => {
     if (process === "workingPlm") {
@@ -295,17 +456,18 @@ export function PlmReadinessChecker() {
       return (
         <>
           <ResultHeadline>This sounds like a replacement question, not a first-PLM question</ResultHeadline>
-          <p className="text-[16px] text-[#5c6573] text-center mb-6">
+          <p className="text-[16px] text-[#5c6573] text-center mb-4">
             Outgrowing an existing system is one of the most common reasons fashion brands switch
             providers. The right next step is usually the same as evaluating PLM for the first time: get
             clear on where the current one is falling short, then compare options against that gap.
           </p>
+          <p className="text-[15px] text-[#3d4653] text-center mb-6">{publishBriefSentence}</p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
               href={finderHref}
               className="bg-[#4f46e5] text-white rounded-full px-6 py-[13px] font-sans font-semibold text-[15px] hover:bg-[#4338ca]"
             >
-              See fashion PLM providers that fit what you need →
+              Find my PLM →
             </Link>
             <Link
               href="/resources/blog/fashion-plm-software-questions-to-ask-providers"
@@ -319,39 +481,46 @@ export function PlmReadinessChecker() {
     }
 
     if (band === "low") {
+      const positives = positiveDrivers();
       return (
         <>
-          <ResultHeadline>Not many signals yet</ResultHeadline>
+          <ResultHeadline>Sounds like your process is holding up</ResultHeadline>
           <p className="text-[16px] text-[#5c6573] text-center mb-6">
-            Based on your answers, your current setup doesn&apos;t show many of the signals that usually
-            push a growing fashion brand toward PLM software. Spreadsheets and email are probably still
-            functional for you. Worth revisiting as your SKU count, supplier network, or team grows.
+            Based on your answers{positives.length > 0 ? `, ${joinWithAnd(positives)}` : ""}. That&apos;s
+            a genuinely good sign. Plenty of fashion brands run on spreadsheets and email far longer than
+            they&apos;d guess, without real damage. Worth revisiting if that changes: more SKUs, more
+            suppliers, or a process that starts falling short at the wrong moment.
           </p>
           <div className="flex justify-center">
             <a href="#how-to-choose" className="text-[14px] font-semibold text-[#4f46e5] underline underline-offset-2">
-              Curious anyway? See what fashion PLM software typically covers ↓
+              Curious what a more structured process typically includes? See what fashion PLM software
+              covers ↓
             </a>
           </div>
         </>
       );
     }
 
+    const friction = frictionDrivers();
+    const improveNote = improveClause();
+
     if (band === "emerging") {
       return (
         <>
-          <ResultHeadline>A few signals worth watching</ResultHeadline>
-          <p className="text-[16px] text-[#3d4653] text-center mb-6">
-            Your answers show some of the complexity that tends to make spreadsheet-based product
-            development harder to sustain{drivers.length > 0 ? `, particularly ${joinWithAnd(drivers)}` : ""}.
-            This doesn&apos;t mean you need PLM software right now, but it&apos;s a reasonable point to
-            start understanding what&apos;s out there before the pain compounds.
+          <ResultHeadline>Some of this is exactly the friction PLM is designed to remove</ResultHeadline>
+          <p className="text-[16px] text-[#3d4653] text-center mb-3">
+            Based on your answers{friction.length > 0 ? ` — ${joinWithAnd(friction)}` : ""} — that&apos;s
+            real day-to-day friction, though on its own it doesn&apos;t mean you need to go looking.
+            It&apos;s a reasonable point to start understanding what&apos;s out there before it compounds.
           </p>
+          {improveNote && <p className="text-[15px] text-[#3d4653] text-center mb-3">{improveNote}</p>}
+          <p className="text-[15px] text-[#3d4653] text-center mb-6">{publishBriefSentence}</p>
           <div className="flex justify-center">
             <Link
               href={finderHref}
               className="bg-[#4f46e5] text-white rounded-full px-6 py-[13px] font-sans font-semibold text-[15px] hover:bg-[#4338ca]"
             >
-              {findProvidersCta}
+              Find my PLM →
             </Link>
           </div>
         </>
@@ -361,19 +530,21 @@ export function PlmReadinessChecker() {
     // strong
     return (
       <>
-        <ResultHeadline>Several signals point the same direction</ResultHeadline>
-        <p className="text-[16px] text-[#3d4653] text-center mb-6">
-          Based on your answers{drivers.length > 0 ? `, ${joinWithAnd(drivers)},` : ""} your product
-          development process is carrying a lot of the complexity fashion PLM software is built to
-          handle. That&apos;s not a determination that you need to buy something, but it&apos;s the
-          pattern we typically see in brands actively evaluating PLM.
+        <ResultHeadline>This is the kind of complexity fashion PLM software is designed to handle</ResultHeadline>
+        <p className="text-[16px] text-[#3d4653] text-center mb-3">
+          Based on your answers{friction.length > 0 ? ` — ${joinWithAnd(friction)}` : ""} — that&apos;s a
+          lot of the friction fashion PLM software exists to solve. That&apos;s not a determination that
+          you need to buy something, but it&apos;s the pattern we typically see in brands actively
+          evaluating PLM.
         </p>
+        {improveNote && <p className="text-[15px] text-[#3d4653] text-center mb-3">{improveNote}</p>}
+        <p className="text-[15px] text-[#3d4653] text-center mb-6">{publishBriefSentence}</p>
         <div className="flex justify-center">
           <Link
             href={finderHref}
             className="bg-[#4f46e5] text-white rounded-full px-6 py-[13px] font-sans font-semibold text-[15px] hover:bg-[#4338ca]"
           >
-            {findProvidersCta}
+            Find my PLM →
           </Link>
         </div>
       </>
@@ -387,8 +558,8 @@ export function PlmReadinessChecker() {
           Is fashion PLM worth looking into yet?
         </h2>
         <p className="text-[17px] leading-[1.6] text-[#3d4653] mb-10">
-          A handful of quick questions about your brand&apos;s complexity. Not a determination, just a
-          signal worth weighing before you start evaluating providers.
+          A handful of quick questions about your process and how it feels day to day. Not a
+          determination, just a signal worth weighing before you start evaluating providers.
         </p>
 
         <div className="bg-[#f6f7fb] border border-[#0d1117]/[0.08] rounded-2xl p-6 sm:p-10 overflow-hidden">
@@ -431,19 +602,18 @@ export function PlmReadinessChecker() {
             </div>
           )}
 
-          {screen === "skus" && (
-            <div key="skus" className="step-in">
-              <h3 className="font-sans font-semibold text-[21px] mb-2">
-                About how many styles are actively in development at once?
+          {screen === "info" && (
+            <div key="info" className="step-in">
+              <h3 className="font-sans font-semibold text-[21px] mb-5">
+                How is your core product information (specs, materials, approvals) managed?
               </h3>
-              <p className="text-[14px] text-[#5c6573] mb-5">Per season, roughly.</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-7">
-                {SKU_OPTIONS.map((opt) => (
+              <div className="grid gap-3 mb-7">
+                {INFO_OPTIONS.map((opt) => (
                   <OptionCard
                     key={opt.value}
                     label={opt.label}
-                    selected={skus === opt.value}
-                    onClick={() => pickSkus(opt.value)}
+                    selected={info === opt.value}
+                    onClick={() => pickInfo(opt.value)}
                   />
                 ))}
               </div>
@@ -453,53 +623,161 @@ export function PlmReadinessChecker() {
             </div>
           )}
 
-          {screen === "suppliers" && (
-            <div key="suppliers" className="step-in">
+          {screen === "techpacks" && (
+            <div key="techpacks" className="step-in">
               <h3 className="font-sans font-semibold text-[21px] mb-5">
-                How many suppliers or factories do you coordinate with regularly?
+                How are tech packs created, versioned, and shared with factories?
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-7">
-                {SUPPLIER_OPTIONS.map((opt) => (
+              <div className="grid gap-3 mb-7">
+                {TECHPACK_OPTIONS.map((opt) => (
                   <OptionCard
                     key={opt.value}
                     label={opt.label}
-                    selected={suppliers === opt.value}
-                    onClick={() => pickSuppliers(opt.value)}
+                    selected={techpacks === opt.value}
+                    onClick={() => pickTechpacks(opt.value)}
                   />
                 ))}
               </div>
-              <button onClick={() => setScreen("skus")} className={backButtonClass}>
+              <button onClick={() => setScreen("info")} className={backButtonClass}>
                 ← Back
               </button>
             </div>
           )}
 
-          {screen === "pain" && (
-            <div key="pain" className="step-in">
-              <h3 className="font-sans font-semibold text-[21px] mb-5">Where does it hurt most right now?</h3>
+          {screen === "boms" && (
+            <div key="boms" className="step-in">
+              <h3 className="font-sans font-semibold text-[21px] mb-5">
+                How are bills of materials built and maintained?
+              </h3>
               <div className="grid gap-3 mb-7">
-                {PAIN_OPTIONS.map((opt) => (
+                {BOM_OPTIONS.map((opt) => (
                   <OptionCard
                     key={opt.value}
                     label={opt.label}
-                    selected={pain.includes(opt.value)}
-                    onClick={() => togglePain(opt.value)}
+                    selected={boms === opt.value}
+                    onClick={() => pickBoms(opt.value)}
+                  />
+                ))}
+              </div>
+              <button onClick={() => setScreen("techpacks")} className={backButtonClass}>
+                ← Back
+              </button>
+            </div>
+          )}
+
+          {screen === "supplierComm" && (
+            <div key="supplierComm" className="step-in">
+              <h3 className="font-sans font-semibold text-[21px] mb-5">
+                How do you communicate with suppliers and factories about specs, samples, and approvals?
+              </h3>
+              <div className="grid gap-3 mb-7">
+                {SUPPLIER_OPTIONS.map((opt) => (
+                  <OptionCard
+                    key={opt.value}
+                    label={opt.label}
+                    selected={supplierComm === opt.value}
+                    onClick={() => pickSupplierComm(opt.value)}
+                  />
+                ))}
+              </div>
+              <button onClick={() => setScreen("boms")} className={backButtonClass}>
+                ← Back
+              </button>
+            </div>
+          )}
+
+          {screen === "chasing" && (
+            <div key="chasing" className="step-in">
+              <h3 className="font-sans font-semibold text-[21px] mb-5">
+                How often do you (or your team) have to chase someone down for product information?
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-7">
+                {FREQUENCY_OPTIONS.map((opt) => (
+                  <OptionCard
+                    key={opt.value}
+                    label={opt.label}
+                    selected={chasing === opt.value}
+                    onClick={() => pickChasing(opt.value)}
+                  />
+                ))}
+              </div>
+              <button onClick={() => setScreen("supplierComm")} className={backButtonClass}>
+                ← Back
+              </button>
+            </div>
+          )}
+
+          {screen === "conflicting" && (
+            <div key="conflicting" className="step-in">
+              <h3 className="font-sans font-semibold text-[21px] mb-5">
+                How often do you run into conflicting or outdated versions of a spec, BOM, or tech pack?
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-7">
+                {FREQUENCY_OPTIONS.map((opt) => (
+                  <OptionCard
+                    key={opt.value}
+                    label={opt.label}
+                    selected={conflicting === opt.value}
+                    onClick={() => pickConflicting(opt.value)}
+                  />
+                ))}
+              </div>
+              <button onClick={() => setScreen("chasing")} className={backButtonClass}>
+                ← Back
+              </button>
+            </div>
+          )}
+
+          {screen === "reconciling" && (
+            <div key="reconciling" className="step-in">
+              <h3 className="font-sans font-semibold text-[21px] mb-5">
+                About how much team time goes into manually reconciling data across spreadsheets, email,
+                and files?
+              </h3>
+              <div className="grid gap-3 mb-7">
+                {RECONCILE_OPTIONS.map((opt) => (
+                  <OptionCard
+                    key={opt.value}
+                    label={opt.label}
+                    selected={reconciling === opt.value}
+                    onClick={() => pickReconciling(opt.value)}
+                  />
+                ))}
+              </div>
+              <button onClick={() => setScreen("conflicting")} className={backButtonClass}>
+                ← Back
+              </button>
+            </div>
+          )}
+
+          {screen === "improve" && (
+            <div key="improve" className="step-in">
+              <h3 className="font-sans font-semibold text-[21px] mb-5">
+                Which of these would you most like to improve?
+              </h3>
+              <div className="grid gap-3 mb-7">
+                {IMPROVE_OPTIONS.map((opt) => (
+                  <OptionCard
+                    key={opt.value}
+                    label={opt.label}
+                    selected={improve.includes(opt.value)}
+                    onClick={() => toggleImprove(opt.value)}
                     multi
                   />
                 ))}
                 <OptionCard
-                  label={"None of these, really"}
-                  selected={pain.includes(NONE_OF_THESE)}
-                  onClick={() => togglePain(NONE_OF_THESE)}
+                  label="Nothing in particular right now"
+                  selected={improve.includes(NONE_IMPROVE)}
+                  onClick={() => toggleImprove(NONE_IMPROVE)}
                 />
               </div>
               <div className="flex items-center gap-3">
-                <button onClick={() => setScreen("suppliers")} className={backButtonClass}>
+                <button onClick={() => setScreen("reconciling")} className={backButtonClass}>
                   ← Back
                 </button>
                 <button
-                  onClick={finishPain}
-                  disabled={pain.length === 0}
+                  onClick={finishImprove}
+                  disabled={improve.length === 0}
                   className="ml-auto bg-[#4f46e5] text-white rounded-full px-6 py-[13px] font-sans font-semibold text-[15px] hover:bg-[#4338ca] disabled:opacity-40"
                 >
                   Continue →

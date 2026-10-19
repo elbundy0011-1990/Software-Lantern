@@ -169,6 +169,7 @@ export function OtEnquiryForm({
           value={form.name}
           onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
           placeholder="Your name"
+          aria-label="Your name"
           required
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px]"
         />
@@ -176,6 +177,7 @@ export function OtEnquiryForm({
           value={form.company}
           onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))}
           placeholder="Company name"
+          aria-label="Company name"
           required
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px]"
         />
@@ -184,6 +186,7 @@ export function OtEnquiryForm({
             value={form.email}
             onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
             placeholder="Work email (required)"
+            aria-label="Work email, required"
             type="email"
             required
             aria-required="true"
@@ -197,12 +200,14 @@ export function OtEnquiryForm({
           value={form.phone}
           onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
           placeholder="Phone number"
+          aria-label="Phone number"
           required
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px]"
         />
         <select
           value={form.role}
           onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}
+          aria-label="Your role"
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px] text-[#1a1d22]"
         >
           <option value="">Your role</option>
@@ -213,6 +218,7 @@ export function OtEnquiryForm({
         <select
           value={country}
           onChange={(e) => setCountry(e.target.value as Nis2Country)}
+          aria-label="Country"
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px] text-[#1a1d22]"
         >
           <option value="">Country</option>
@@ -224,6 +230,7 @@ export function OtEnquiryForm({
         <select
           value={form.sector}
           onChange={(e) => setForm((f) => ({ ...f, sector: e.target.value }))}
+          aria-label="Sector"
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px] text-[#1a1d22]"
         >
           <option value="">Sector</option>
@@ -235,11 +242,13 @@ export function OtEnquiryForm({
           value={form.currentRemoteAccess}
           onChange={(e) => setForm((f) => ({ ...f, currentRemoteAccess: e.target.value }))}
           placeholder="What do you use for remote access today, if anything?"
+          aria-label="What do you use for remote access today, if anything?"
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px]"
         />
         <select
           value={form.timeline}
           onChange={(e) => setForm((f) => ({ ...f, timeline: e.target.value }))}
+          aria-label="Timeline"
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px] text-[#1a1d22]"
         >
           <option value="">Timeline</option>
@@ -251,6 +260,7 @@ export function OtEnquiryForm({
           value={form.freeText}
           onChange={(e) => setForm((f) => ({ ...f, freeText: e.target.value }))}
           placeholder="Anything else you'd like to add"
+          aria-label="Anything else you'd like to add"
           rows={3}
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px]"
         />

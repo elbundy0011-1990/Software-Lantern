@@ -44,8 +44,12 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     display: NIS2_DATES.luxembourg.inForceDisplay,
     label: "NIS2 in force in Luxembourg (Loi du 5 mai 2026)",
     status: "in_force",
-    citationLabel: "Journal Officiel du Grand-Duché de Luxembourg",
-    citationUrl: "https://nis-2-directive.com/Transposition/Luxembourg.html",
+    // 2026-10-19 audit fix: this previously linked to a secondary tracker
+    // (nis-2-directive.com) while the label claimed the primary source.
+    // Found and confirmed resolving (HTTP 200): Legilux, Luxembourg's own
+    // official legal publication portal, Mémorial A n° 225 de 2026.
+    citationLabel: "Legilux (Mémorial A n° 225 de 2026)",
+    citationUrl: "https://legilux.public.lu/eli/etat/leg/loi/2026/05/05/a225/jo",
     lastVerified: "2026-10-19",
     verified: false,
   },

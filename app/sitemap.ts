@@ -18,7 +18,6 @@ const OT_ROUTES = [
   "/guides/cyber-resilience-act-for-machine-builders",
   "/guides/machinery-regulation-cybersecurity",
   "/guides/iec-62443-explained",
-  "/who-runs-this",
   "/enquiry",
   "/privacy",
 ];

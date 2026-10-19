@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
+import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 
+// 2026-10-19 audit finding: this page was missing the noindex gate every
+// other OT page has, so it was indexable even while the rest of the site
+// was in preview. Fixed for consistency with lib/site-config.ts's single
+// flag controlling all OT-page indexability.
 export const metadata: Metadata = pageMetadata({
   title: "Privacy Policy",
   description: "How this site collects, uses, and protects personal data, for both the OT cybersecurity resource and the legacy EUDR/PLM/Battery Passport marketplace.",
   path: "/privacy",
+  noindex: !OT_SITE_INDEXABLE,
   siteName: "Software Lantern",
 });
 
@@ -149,7 +155,7 @@ export default function PrivacyPolicyPage() {
               default.
             </li>
             <li>
-              <strong>Legacy marketplace only &mdash; software providers (partners):</strong> if you
+              <strong>Legacy marketplace only. Software providers (partners):</strong> if you
               submit a marketplace buyer requirements form, an anonymized summary (your requirement,
               budget range, timeline, industry) may be shown to relevant partners. Your name,
               company name, email, and phone number are only revealed to a partner after they choose

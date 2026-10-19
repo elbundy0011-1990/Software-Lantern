@@ -60,7 +60,7 @@ export default function SupplyChainArticlePage() {
 
           <h2 className={h2}>What NIS2 does not require</h2>
           <p className={p}>
-            NIS2 is technology-neutral. It does not name a required product, architecture, or
+            NIS2 does not specify any particular technology. It does not name a required product, architecture, or
             vendor, for remote access or anything else. It requires &ldquo;appropriate and
             proportionate&rdquo; measures and leaves the specific implementation to the entity,
             based on its own risk assessment.

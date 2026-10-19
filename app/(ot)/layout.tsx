@@ -61,14 +61,15 @@ export default function OtLayout({ children }: { children: React.ReactNode }) {
             <div className="grid gap-2">
               <Link href="/checker" className="text-[#9a3412] hover:underline">Check your situation</Link>
               <Link href="/guides" className="text-[#9a3412] hover:underline">Guides</Link>
-              <Link href="/who-runs-this" className="text-[#9a3412] hover:underline">Who runs this</Link>
             </div>
           </div>
           <div>
             <p className="mb-2 font-bold text-[12px] uppercase tracking-[0.07em] text-[#3f4b52]">Legal</p>
             <div className="grid gap-2">
               <Link href="/privacy" className="text-[#9a3412] hover:underline">Privacy Policy</Link>
-              <a href="mailto:info@softwarelantern.com" className="text-[#9a3412] hover:underline">Contact</a>
+              <a href="mailto:info@softwarelantern.com" className="text-[#9a3412] hover:underline">
+                Contact: info@softwarelantern.com
+              </a>
             </div>
           </div>
         </div>

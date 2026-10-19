@@ -48,7 +48,7 @@ export const NIS2_DATES = {
   // Grand-Duché de Luxembourg, not yet directly read.
   luxembourg: {
     lawName: "Loi du 5 mai 2026 concernant des mesures destinées à assurer un niveau élevé de cybersécurité",
-    citation: "Journal Officiel du Grand-Duché de Luxembourg [VERIFY, direct read still owed]",
+    citation: "Legilux, Memorial A n. 225 de 2026 [VERIFY, direct read still owed]",
     inForceDate: "2026-05-10",
     inForceDisplay: "10 May 2026",
     registrationDeadlineDisplay: "10 July 2026 [VERIFY]",

@@ -8,7 +8,11 @@ import { ComplianceLedger } from "@/components/compliance-ledger";
 // can be reinstated once the real disclosure text is ready.
 
 export const metadata: Metadata = pageMetadata({
-  title: "Secure Remote Access to Machines, Under NIS2, the CRA, and the Machinery Regulation",
+  // 54 chars, ~497px at 20px Arial (same ~9.2px/char ratio lib/site.ts's
+  // SITE_TITLE comment measured), comfortably under the ~600px SERP
+  // truncation threshold. The original 83-char version measured ~764px by
+  // the same ratio, well past it — shortened for the 2026-10-19 audit.
+  title: "Secure Remote Access: NIS2, CRA & Machinery Regulation",
   description:
     "What NIS2/Cyberbeveiligingswet, the Cyber Resilience Act, and the Machinery Regulation mean for machine builders, factory operators, and system integrators in the Netherlands, Belgium, and Luxembourg.",
   path: "/",
@@ -112,32 +116,20 @@ export default function OtHomePage() {
       </section>
 
       <section>
-        <div className="max-w-[900px] mx-auto px-5 sm:px-8 py-16 grid grid-cols-1 sm:grid-cols-2 gap-10">
-          <div>
-            <h2 className="font-sans font-semibold text-[22px] mb-4 text-[#1a1d22]">Guides</h2>
-            <div className="grid gap-2 text-[15px]">
-              <Link href="/guides/nis2-supply-chain-and-remote-access" className="text-[#9a3412] hover:underline">
-                NIS2 supply chain and remote access, explained
-              </Link>
-              <Link href="/guides/cyber-resilience-act-for-machine-builders" className="text-[#9a3412] hover:underline">
-                The Cyber Resilience Act for machine builders
-              </Link>
-              <Link href="/guides/machinery-regulation-cybersecurity" className="text-[#9a3412] hover:underline">
-                The Machinery Regulation&apos;s cybersecurity requirements
-              </Link>
-              <Link href="/guides/iec-62443-explained" className="text-[#9a3412] hover:underline">
-                IEC 62443, explained
-              </Link>
-            </div>
-          </div>
-          <div>
-            <h2 className="font-sans font-semibold text-[22px] mb-4 text-[#1a1d22]">Who runs this</h2>
-            <p className="text-[15px] text-[#3f4b52] mb-3">
-              This site is run by one person, not a company with a sales team. Read the full page for
-              why this exists and how enquiries are actually handled.
-            </p>
-            <Link href="/who-runs-this" className="text-[#9a3412] font-semibold hover:underline">
-              Who runs this →
+        <div className="max-w-[900px] mx-auto px-5 sm:px-8 py-16">
+          <h2 className="font-sans font-semibold text-[22px] mb-4 text-[#1a1d22]">Guides</h2>
+          <div className="grid gap-2 text-[15px]">
+            <Link href="/guides/nis2-supply-chain-and-remote-access" className="text-[#9a3412] hover:underline">
+              NIS2 supply chain and remote access, explained
+            </Link>
+            <Link href="/guides/cyber-resilience-act-for-machine-builders" className="text-[#9a3412] hover:underline">
+              The Cyber Resilience Act for machine builders
+            </Link>
+            <Link href="/guides/machinery-regulation-cybersecurity" className="text-[#9a3412] hover:underline">
+              The Machinery Regulation&apos;s cybersecurity requirements
+            </Link>
+            <Link href="/guides/iec-62443-explained" className="text-[#9a3412] hover:underline">
+              IEC 62443, explained
             </Link>
           </div>
         </div>

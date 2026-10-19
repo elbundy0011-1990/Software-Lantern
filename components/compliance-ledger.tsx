@@ -16,12 +16,17 @@ export function ComplianceLedger({ limit }: { limit?: number }) {
 
   return (
     <div
-      className="rounded border border-[#3f4b52]/[0.25] bg-[#1a1d22] px-5 py-4 overflow-x-auto"
+      className="rounded border border-[#3f4b52]/[0.25] bg-[#1a1d22] px-5 py-4"
       style={{ fontFamily: "var(--font-ibm-plex-mono), monospace" }}
     >
-      <ul className="grid gap-[7px] text-[13px] leading-[1.5] whitespace-nowrap">
+      {/* 2026-10-19 audit fix: this used to be a single whitespace-nowrap
+          line per entry inside an overflow-x-auto container, which just
+          cut rows off at the edge on a 375px screen with no visible
+          scroll affordance. Each row now wraps naturally (flex-wrap)
+          instead of requiring horizontal scroll at all. */}
+      <ul className="grid gap-[10px] text-[13px] leading-[1.5]">
         {entries.map((entry) => (
-          <li key={entry.id} className="flex items-baseline gap-3 text-[#f6f5f1]">
+          <li key={entry.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-[2px] text-[#f6f5f1]">
             <span className="text-[#9ca3af]">{entry.display.toUpperCase()}</span>
             <span style={{ color: STATUS_COLOR[entry.status] }}>
               {entry.status === "in_force" ? "●" : "○"}

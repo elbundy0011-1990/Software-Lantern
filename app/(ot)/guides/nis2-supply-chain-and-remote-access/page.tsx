@@ -19,7 +19,6 @@ const h2 = "font-sans font-semibold text-[24px] leading-[1.2] tracking-[-0.02em]
 const p = "text-[16px] leading-[1.7] text-[#3f4b52] mb-4";
 const ul = "list-disc pl-6 mb-4 grid gap-1.5 text-[16px] leading-[1.7] text-[#3f4b52]";
 const link = "font-semibold underline text-[#9a3412]";
-const verify = "text-[13px] text-[#78350f] font-semibold";
 
 export default function SupplyChainArticlePage() {
   return (
@@ -38,24 +37,13 @@ export default function SupplyChainArticlePage() {
 
           <h2 className={h2}>What NIS2 requires (Article 21(2))</h2>
           <p className={p}>
-            Directive (EU) 2022/2555 (&ldquo;NIS2&rdquo;), Article 21(2), sets out ten minimum
-            cybersecurity risk-management measures for in-scope entities. Among them:
-          </p>
-          <ul className={ul}>
-            <li>
-              <strong>Supply-chain security</strong> (Article 21(2)(d)): assessing the security
-              practices of direct suppliers and service providers, including, for a manufacturer, a
-              machine builder or integrator with remote access into its systems.
-            </li>
-            <li>
-              <strong>Access management and multi-factor authentication</strong> (Article
-              21(2)(i)&ndash;(j)): personnel security, access control, and multi-factor or
-              continuous authentication, applied where appropriate, including for remote access.
-            </li>
-          </ul>
-          <p className={verify}>
-            [VERIFY] The exact wording of Article 21(2)(a)&ndash;(j) should be read directly against
-            EUR-Lex before this is treated as final.
+            Directive (EU) 2022/2555 (&ldquo;NIS2&rdquo;), Article 21(2), sets out minimum
+            cybersecurity risk-management measures for in-scope entities, including supply-chain
+            security (assessing the security practices of direct suppliers and service providers,
+            such as a machine builder or integrator with remote access into its systems) and access
+            management, including multi-factor or continuous authentication where appropriate. The
+            exact sub-clause wording is pending primary-source verification against the official
+            EUR-Lex text.
           </p>
 
           <h2 className={h2}>What NIS2 does not require</h2>

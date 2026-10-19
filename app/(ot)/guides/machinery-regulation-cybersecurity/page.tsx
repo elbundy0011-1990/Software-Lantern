@@ -5,7 +5,7 @@ import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { COMPLIANCE_LEDGER } from "@/lib/compliance-ledger";
 
 const TITLE = "The Machinery Regulation's Cybersecurity Requirements";
-const DESCRIPTION = "What Regulation (EU) 2023/1230 requires on cybersecurity and safety, applying from 20 January 2027 with no transition period.";
+const DESCRIPTION = "What Regulation (EU) 2023/1230 means for cybersecurity and safety in machinery, with sources cited.";
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -17,8 +17,6 @@ export const metadata: Metadata = pageMetadata({
 
 const h2 = "font-sans font-semibold text-[24px] leading-[1.2] tracking-[-0.02em] mt-12 mb-4 text-[#1a1d22]";
 const p = "text-[16px] leading-[1.7] text-[#3f4b52] mb-4";
-const ul = "list-disc pl-6 mb-4 grid gap-1.5 text-[16px] leading-[1.7] text-[#3f4b52]";
-const verify = "text-[13px] text-[#78350f] font-semibold";
 
 export default function MachineryRegulationGuidePage() {
   const entry = COMPLIANCE_LEDGER.find((e) => e.id === "machinery-regulation")!;
@@ -32,9 +30,7 @@ export default function MachineryRegulationGuidePage() {
           </h1>
 
           <p className={p}>
-            Regulation (EU) 2023/1230 replaces the Machinery Directive 2006/42/EC. It applies from{" "}
-            <strong>{entry.display}</strong>, with no transition period, meaning no EU Declaration
-            of Conformity under the new regulation can be issued before that date.{" "}
+            Regulation (EU) 2023/1230 replaces the Machinery Directive 2006/42/EC.{" "}
             <a href={entry.citationUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline text-[#9a3412]">
               {entry.citationLabel}
             </a>
@@ -42,16 +38,9 @@ export default function MachineryRegulationGuidePage() {
 
           <h2 className={h2}>What&apos;s new</h2>
           <p className={p}>
-            For the first time, the regulation makes protection against corruption and the security
-            of safety-related control systems part of the essential health and safety requirements,
-            at Annex III, sections 1.1.9 and 1.2.1.
-          </p>
-          <ul className={ul}>
-            <li>Manufacturers must show a cyberattack or data corruption cannot create a hazardous situation.</li>
-            <li>Security-relevant software updates must be provided for 10 years after the machine is placed on the market.</li>
-          </ul>
-          <p className={verify}>
-            [VERIFY] Exact Annex III section numbers and wording still need a direct EUR-Lex read.
+            For the first time, the regulation adds cybersecurity-related essential health and
+            safety requirements for machinery. Its application date and the specific requirements
+            are pending primary-source verification against the official text linked above.
           </p>
 
           <h2 className={h2}>It&apos;s a Regulation, not a Directive</h2>

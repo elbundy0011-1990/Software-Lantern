@@ -128,6 +128,16 @@ function countryInfo(country: Nis2Country | null) {
   return null;
 }
 
+// Gates the in-force date/citation sentence in Nis2OrgStatus below: only
+// render it once the matching Compliance Ledger entry is verified, so an
+// unquoted claim never renders publicly. Flip when lib/compliance-ledger.ts
+// flips, no separate edit needed here.
+function countryDateVerified(country: Nis2Country | null): boolean {
+  const id = country === "NL" ? "nis2-nl" : country === "BE" ? "nis2-be" : country === "LU" ? "nis2-lu" : null;
+  if (!id) return false;
+  return COMPLIANCE_LEDGER.find((e) => e.id === id)?.verified ?? false;
+}
+
 function OfficialToolNote({ country }: { country: Nis2Country | null }) {
   const tool = country === "NL" ? OFFICIAL_SCOPE_TOOLS.NL : country === "BE" ? OFFICIAL_SCOPE_TOOLS.BE : null;
   return (
@@ -145,7 +155,7 @@ function OfficialToolNote({ country }: { country: Nis2Country | null }) {
       ) : country === "LU" ? (
         <p className="text-[13px]">
           No Luxembourg-specific self-evaluation tool was found as of this writing. The competent
-          authority is the Institut Luxembourgeois de Régulation (ILR). Source: {NIS2_DATES.luxembourg.citation}.
+          authority is the Institut Luxembourgeois de Régulation (ILR).
         </p>
       ) : (
         <>
@@ -209,7 +219,6 @@ function Iec62443Note() {
 // the "placing a product on the market" side of this.
 function ProductRulesNote() {
   const cra = COMPLIANCE_LEDGER.find((e) => e.id === "cra-reporting")!;
-  const craFull = COMPLIANCE_LEDGER.find((e) => e.id === "cra-full")!;
   const machinery = COMPLIANCE_LEDGER.find((e) => e.id === "machinery-regulation")!;
   return (
     <div className="rounded border border-[#3f4b52]/[0.2] bg-white p-5 text-[14px] text-[#3f4b52] mb-4">
@@ -217,17 +226,16 @@ function ProductRulesNote() {
       <p className="mb-2">
         Your company&apos;s size mainly affects whether NIS2&apos;s organizational rules apply to you. It
         generally does not affect two separate, product-level rules that apply to manufacturers
-        regardless of size: the Cyber Resilience Act (vulnerability reporting obligations begin{" "}
-        <strong>{cra.display}</strong>, full application <strong>{craFull.display}</strong>,{" "}
+        regardless of size: the Cyber Resilience Act (
         <a href={cra.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
           {cra.citationLabel}
         </a>
-        {!cra.verified && " [VERIFY]"}) and the Machinery Regulation (applies from{" "}
-        <strong>{machinery.display}</strong>, no transition period,{" "}
+        ) and the Machinery Regulation (
         <a href={machinery.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
           {machinery.citationLabel}
         </a>
-        {!machinery.verified && " [VERIFY]"}).
+        ). Specific obligation dates for both are pending primary-source verification; the official
+        texts linked above have the current timeline.
       </p>
       <p>
         Neither names or requires any specific product or vendor. Both set outcomes (secure by
@@ -272,7 +280,7 @@ function Nis2OrgStatus({ country, size, audience }: { country: Nis2Country | nul
         {audience === "operator"
           ? "Whether NIS2 applies to you as an organization depends on your specific sector among its 18 covered sectors, which this checker doesn't attempt to classify (the official tool below does). Size is generally the first gate: at medium or large, you clear that threshold if your sector is covered."
           : "Machinery and equipment manufacturing (NACE division 28) sits in NIS2 Annex II, which generally produces important-entity status for medium and large companies, not essential."}
-        {info && country !== "other" && country !== "not_sure" && (
+        {info && country !== "other" && country !== "not_sure" && countryDateVerified(country) && (
           <>
             {" "}In{" "}
             {country === "NL" ? "the Netherlands" : country === "BE" ? "Belgium" : "Luxembourg"}, this

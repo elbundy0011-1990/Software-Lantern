@@ -5,7 +5,7 @@ import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { COMPLIANCE_LEDGER } from "@/lib/compliance-ledger";
 
 const TITLE = "The Cyber Resilience Act for Machine Builders";
-const DESCRIPTION = "What Regulation (EU) 2024/2847 requires of manufacturers of connected machinery, with dates and sources cited.";
+const DESCRIPTION = "What Regulation (EU) 2024/2847 requires of manufacturers of connected machinery, with sources cited.";
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -17,13 +17,10 @@ export const metadata: Metadata = pageMetadata({
 
 const h2 = "font-sans font-semibold text-[24px] leading-[1.2] tracking-[-0.02em] mt-12 mb-4 text-[#1a1d22]";
 const p = "text-[16px] leading-[1.7] text-[#3f4b52] mb-4";
-const ul = "list-disc pl-6 mb-4 grid gap-1.5 text-[16px] leading-[1.7] text-[#3f4b52]";
 const link = "font-semibold underline text-[#9a3412]";
-const verify = "text-[13px] text-[#78350f] font-semibold";
 
 export default function CraGuidePage() {
   const reporting = COMPLIANCE_LEDGER.find((e) => e.id === "cra-reporting")!;
-  const full = COMPLIANCE_LEDGER.find((e) => e.id === "cra-full")!;
 
   return (
     <main data-screen-label="CRA guide for machine builders">
@@ -39,23 +36,14 @@ export default function CraGuidePage() {
           </p>
 
           <h2 className={h2}>Dates that matter</h2>
-          <ul className={ul}>
-            <li>
-              <strong>{reporting.display}</strong>: vulnerability and incident reporting obligations
-              begin (24-hour reporting of actively exploited vulnerabilities, for products already
-              on the market too).{" "}
-              <a href={reporting.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
-                {reporting.citationLabel}
-              </a>
-            </li>
-            <li>
-              <strong>{full.display}</strong>: the regulation fully applies.{" "}
-              <a href={full.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
-                {full.citationLabel}
-              </a>
-            </li>
-          </ul>
-          <p className={verify}>[VERIFY] Exact article wording still needs a direct EUR-Lex read.</p>
+          <p className={p}>
+            The regulation phases in vulnerability/incident reporting obligations ahead of full
+            application. Specific dates and exact article wording are pending primary-source
+            verification against the official text.{" "}
+            <a href={reporting.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
+              {reporting.citationLabel}
+            </a>
+          </p>
 
           <h2 className={h2}>Scope</h2>
           <p className={p}>

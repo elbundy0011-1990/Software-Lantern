@@ -1,14 +1,19 @@
 // Single source of truth for every entry the Compliance Ledger (see
-// components/compliance-ledger.tsx) renders anywhere on the site. Per the
-// 2026-10-19 build instruction: every entry comes from this one file, with
-// a citation URL and a "last verified" date, and [VERIFY] wherever the
-// primary text itself hasn't been read directly yet. No invented log
-// events, customers, counts, or sample data — every row below is a real,
-// dated regulatory fact, sourced in docs/OT-CYBER-PLAN.md Part A §1 and
-// Part B §B.2.1.
+// components/compliance-ledger.tsx) renders anywhere on the site. Every
+// entry comes from this one file, with a citation URL and a "last
+// verified" date. No invented log events, customers, counts, or sample
+// data — every row below is a real, dated regulatory fact, sourced in
+// docs/OT-CYBER-PLAN.md Part A §1 and Part B §B.2.1.
 //
 // LAST VERIFIED (whole file, as a pass): 2026-10-19. Re-check before any
 // go-live and periodically after, same discipline as lib/eudr-dates.ts.
+//
+// 2026-10-19 pull: entries below with verified: false have no quoted
+// primary-source sentence on file yet. components/compliance-ledger.tsx
+// and components/nis2-scope-checker.tsx withhold them from public
+// rendering entirely (no inline "[VERIFY]") until verified flips true —
+// at which point set verified: true, update lastVerified, and add the
+// quoted sentence as a comment on that entry.
 
 import { NIS2_DATES } from "./nis2-dates";
 
@@ -23,7 +28,7 @@ export interface LedgerEntry {
   citationLabel: string;
   citationUrl: string;
   lastVerified: string; // ISO date this specific entry was last checked
-  verified: boolean; // false => render inline [VERIFY]
+  verified: boolean; // false => withheld from public rendering entirely, pending a quoted primary-source sentence
 }
 
 export const COMPLIANCE_LEDGER: LedgerEntry[] = [
@@ -36,7 +41,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     citationLabel: "Moniteur belge / eJustice ELI 2024202344",
     citationUrl: "https://www.ejustice.just.fgov.be/eli/loi/2024/04/26/2024202344/justel",
     lastVerified: "2026-10-19",
-    verified: false,
+    verified: false, // pending — no quoted primary-source sentence on file; withheld from public pages 2026-10-19
   },
   {
     id: "nis2-lu",
@@ -51,7 +56,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     citationLabel: "Legilux (Mémorial A n° 225 de 2026)",
     citationUrl: "https://legilux.public.lu/eli/etat/leg/loi/2026/05/05/a225/jo",
     lastVerified: "2026-10-19",
-    verified: false,
+    verified: false, // pending — no quoted primary-source sentence on file; withheld from public pages 2026-10-19
   },
   {
     id: "nis2-nl",
@@ -73,7 +78,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     citationLabel: "Regulation (EU) 2024/2847",
     citationUrl: "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ:L_202402847",
     lastVerified: "2026-10-19",
-    verified: false,
+    verified: false, // pending — no quoted primary-source sentence on file; withheld from public pages 2026-10-19
   },
   {
     id: "machinery-regulation",
@@ -84,7 +89,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     citationLabel: "Regulation (EU) 2023/1230",
     citationUrl: "https://eur-lex.europa.eu/eli/reg/2023/1230/oj",
     lastVerified: "2026-10-19",
-    verified: false,
+    verified: false, // pending — no quoted primary-source sentence on file; withheld from public pages 2026-10-19
   },
   {
     id: "cra-full",
@@ -95,7 +100,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     citationLabel: "Regulation (EU) 2024/2847",
     citationUrl: "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ:L_202402847",
     lastVerified: "2026-10-19",
-    verified: false,
+    verified: false, // pending — no quoted primary-source sentence on file; withheld from public pages 2026-10-19
   },
 ];
 

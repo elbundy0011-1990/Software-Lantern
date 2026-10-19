@@ -1,0 +1,76 @@
+import Link from "next/link";
+import { DisclosureSlot } from "@/components/disclosure-slot";
+
+// New site identity, deliberately separate from components/site-header.tsx
+// / components/site-footer.tsx (the EUDR/PLM/Battery-Passport marketplace
+// nav) — per the 2026-10-19 instruction, this is the site's new public
+// identity, and /admin, /portal, and the marketplace pages are
+// deliberately not linked from here (constraint 8), while staying
+// reachable at their existing URLs for anyone who already has them.
+const NAV = [
+  { label: "Machine builders", href: "/machine-builders" },
+  { label: "Factory operators", href: "/factory-operators" },
+  { label: "System integrators", href: "/system-integrators" },
+  { label: "Guides", href: "/guides" },
+];
+
+export default function OtLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen flex flex-col" style={{ background: "#f6f5f1" }}>
+      <header className="border-b border-[#3f4b52]/[0.15] bg-[#f6f5f1]">
+        <div className="max-w-[1100px] mx-auto px-5 sm:px-8 py-4 flex items-center gap-8">
+          <Link href="/" className="font-sans font-semibold text-[17px] text-[#1a1d22] whitespace-nowrap">
+            [Product name]
+          </Link>
+          <nav className="hidden min-[900px]:flex items-center gap-6 ml-auto text-[14px] font-semibold text-[#3f4b52]">
+            {NAV.map((item) => (
+              <Link key={item.href} href={item.href} className="hover:text-[#9a3412]">
+                {item.label}
+              </Link>
+            ))}
+            <Link
+              href="/checker"
+              className="rounded px-4 py-[9px] font-semibold text-white"
+              style={{ background: "#9a3412" }}
+            >
+              Check your situation
+            </Link>
+          </nav>
+        </div>
+      </header>
+
+      <div className="flex-1">{children}</div>
+
+      <footer className="border-t border-[#3f4b52]/[0.15] mt-10">
+        <div className="max-w-[1100px] mx-auto px-5 sm:px-8 py-10 grid grid-cols-1 sm:grid-cols-4 gap-8 text-[14px]">
+          <div className="sm:col-span-2">
+            <p className="font-sans font-semibold text-[16px] text-[#1a1d22] mb-2">[Product name]</p>
+            <p className="text-[#3f4b52] max-w-[36ch]">
+              Secure remote access to machines and OT, and what NIS2, the Cyber Resilience Act, and
+              the Machinery Regulation mean for machine builders, factory operators, and system
+              integrators in the Netherlands, Belgium, and Luxembourg.
+            </p>
+          </div>
+          <div>
+            <p className="mb-2 font-bold text-[12px] uppercase tracking-[0.07em] text-[#3f4b52]">Site</p>
+            <div className="grid gap-2">
+              <Link href="/checker" className="text-[#9a3412] hover:underline">Check your situation</Link>
+              <Link href="/guides" className="text-[#9a3412] hover:underline">Guides</Link>
+              <Link href="/who-runs-this" className="text-[#9a3412] hover:underline">Who runs this</Link>
+            </div>
+          </div>
+          <div>
+            <p className="mb-2 font-bold text-[12px] uppercase tracking-[0.07em] text-[#3f4b52]">Legal</p>
+            <div className="grid gap-2">
+              <Link href="/privacy" className="text-[#9a3412] hover:underline">Privacy Policy</Link>
+              <a href="mailto:info@softwarelantern.com" className="text-[#9a3412] hover:underline">Contact</a>
+            </div>
+          </div>
+        </div>
+        <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pb-8">
+          <DisclosureSlot />
+        </div>
+      </footer>
+    </div>
+  );
+}

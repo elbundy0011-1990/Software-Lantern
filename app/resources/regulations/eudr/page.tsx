@@ -17,6 +17,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     "What EUDR is, who it applies to, what it requires, and the current compliance deadlines, explained in plain language, verified against the regulation text.",
   path: "/resources/regulations/eudr",
+  noindex: true, // 2026-10-19 wind-down: keep live, noindex, unlinked, out of sitemap
 });
 
 const h2 = "font-sans font-semibold text-[26px] leading-[1.2] tracking-[-0.02em] mt-16 mb-4";

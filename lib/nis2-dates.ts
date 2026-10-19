@@ -35,22 +35,36 @@ export const NIS2_DATES = {
   belgium: {
     lawName: "Law of 26 April 2024 + Royal Decree of 9 June 2024",
     citation:
-      "Moniteur belge, published 17 May 2024 (eJustice ELI 2024202344) [VERIFY — direct eJustice read still owed]",
+      "Moniteur belge, published 17 May 2024 (eJustice ELI 2024202344) [VERIFY, direct eJustice read still owed]",
     inForceDate: "2024-10-18",
     inForceDisplay: "18 October 2024",
     registrationDeadlineDisplay: "18 March 2025 [VERIFY]",
     complianceEvidenceDeadlineDisplay: "18 April 2026 [VERIFY]",
     certificationDeadlineDisplay: "18 April 2027 [VERIFY]",
   },
+  // [VERIFY] — secondary-sourced only (Deloitte Luxembourg, Elvinger Hoss,
+  // PwC Luxembourg, Luxgap, dataguidance.com, all mutually agreeing).
+  // Primary source would be Luxembourg's own Journal Officiel du
+  // Grand-Duché de Luxembourg, not yet directly read.
+  luxembourg: {
+    lawName: "Loi du 5 mai 2026 concernant des mesures destinées à assurer un niveau élevé de cybersécurité",
+    citation: "Journal Officiel du Grand-Duché de Luxembourg [VERIFY, direct read still owed]",
+    inForceDate: "2026-05-10",
+    inForceDisplay: "10 May 2026",
+    registrationDeadlineDisplay: "10 July 2026 [VERIFY]",
+    authority: "Institut Luxembourgeois de Régulation (ILR)",
+  },
 } as const;
 
-export type Nis2Country = "NL" | "BE" | "other" | "not_sure";
+export type Nis2Country = "NL" | "BE" | "LU" | "other" | "not_sure";
 
 // Official government self-evaluation tools. Ours is deliberately narrower
 // and different in kind: machine-builder-specific, Benelux-framed, and the
 // only one of the three that walks through the Article 21(2)(d)
 // supply-chain/commercial-pressure branch for businesses that are outside
 // NIS2's own scope. Link out to these, don't duplicate or shadow them.
+// No Luxembourg-specific self-evaluation tool was found in this pass — the
+// checker says so plainly rather than inventing one or silently omitting it.
 export const OFFICIAL_SCOPE_TOOLS = {
   NL: {
     name: "NIS2 Zelfevaluatie (Rijksoverheid / RDI)",

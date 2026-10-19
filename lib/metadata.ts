@@ -14,6 +14,8 @@ export function pageMetadata({
   description,
   path,
   ogDescription,
+  noindex,
+  siteName,
 }: {
   title: string;
   description: string;
@@ -22,17 +24,28 @@ export function pageMetadata({
   // A few pages want a shorter, OG-specific description than their <meta
   // name="description">; defaults to the same description otherwise.
   ogDescription?: string;
+  // Set true for a page that should carry robots noindex/nofollow — used
+  // both for the legacy marketplace pages (2026-10-19 wind-down decision:
+  // keep live, noindex, unlinked, out of sitemap) and, via
+  // lib/site-config.ts's OT_SITE_INDEXABLE flag, for the OT pages before
+  // that flag is flipped on in production.
+  noindex?: boolean;
+  // Override SITE_NAME for a page/section with its own brand identity
+  // distinct from the sitewide default (e.g. the OT pages, which are not
+  // "Software Lantern"-branded) — defaults to SITE_NAME otherwise.
+  siteName?: string;
 }): Metadata {
   const ogDesc = ogDescription ?? description;
   return {
     title,
     description,
     ...(path ? { alternates: { canonical: path } } : {}),
+    ...(noindex ? { robots: { index: false, follow: false } } : {}),
     openGraph: {
       title,
       description: ogDesc,
       ...(path ? { url: path } : {}),
-      siteName: SITE_NAME,
+      siteName: siteName ?? SITE_NAME,
       type: "website",
     },
     twitter: {

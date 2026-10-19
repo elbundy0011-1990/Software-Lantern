@@ -45,12 +45,23 @@ create table if not exists public.ot_enquiries (
   -- publish it *to*. 'reviewed' just means you've looked at it.
   status text not null default 'new' check (status in ('new', 'reviewed', 'discarded')),
 
-  country text,  -- 'NL' | 'BE' | 'other' | 'not_sure' — self-reported in the checker
+  country text,  -- 'NL' | 'BE' | 'LU' | 'other' | 'not_sure' — self-reported
   company_name text,
   contact_name text,
   contact_email text,
   contact_phone text,
   answers jsonb not null default '{}'::jsonb,  -- full checker answer dump
+
+  -- Added for the 2026-10-19 full-site build. Table had not been applied
+  -- yet at that point, so these are written directly into the create
+  -- table statement rather than as separate alter table statements —
+  -- there's no existing data to migrate around.
+  role text,                        -- free-text job role
+  sector text,
+  builder_or_operator text,         -- 'builder' | 'operator' | 'integrator' | 'not_sure', from the checker
+  current_remote_access text,       -- free text, deliberately open-ended, never a product dropdown
+  timeline text,
+  free_text text,
 
   -- Records that the person was told, at submission time, that their
   -- answers would be reviewed and that sharing only ever happens after a

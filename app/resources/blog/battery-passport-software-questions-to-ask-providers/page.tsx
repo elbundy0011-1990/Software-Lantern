@@ -9,6 +9,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     "Questions to ask battery passport software providers before you buy, organized by where you sit in the value chain, with a sequential guide to what actually matters for your product and role.",
   path: "/resources/blog/battery-passport-software-questions-to-ask-providers",
+  noindex: true, // 2026-10-19 wind-down: keep live, noindex, unlinked, out of sitemap
 });
 
 const h2 = "font-sans font-semibold text-[26px] leading-[1.2] tracking-[-0.02em] mt-16 mb-4";

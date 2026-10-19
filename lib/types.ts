@@ -64,6 +64,12 @@ export interface OtEnquiry {
   contact_email: string | null;
   contact_phone: string | null;
   answers: Record<string, string | string[]>;
+  role: string | null;
+  sector: string | null;
+  builder_or_operator: string | null;
+  current_remote_access: string | null;
+  timeline: string | null;
+  free_text: string | null;
   consent_review_given: boolean;
   shared_with: string | null;
   shared_at: string | null;

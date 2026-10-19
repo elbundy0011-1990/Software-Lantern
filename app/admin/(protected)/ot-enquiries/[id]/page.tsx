@@ -34,6 +34,12 @@ export default async function AdminOtEnquiryPage({ params }: { params: Promise<{
         {fieldRow("Email", e.contact_email || "—")}
         {fieldRow("Phone", e.contact_phone || "—")}
         {fieldRow("Country", e.country || "—")}
+        {fieldRow("Role", e.role || "—")}
+        {fieldRow("Sector", e.sector || "—")}
+        {fieldRow("Builder/operator/integrator", e.builder_or_operator || "—")}
+        {fieldRow("Current remote access", e.current_remote_access || "—")}
+        {fieldRow("Timeline", e.timeline || "—")}
+        {fieldRow("Free text", e.free_text || "—")}
         {fieldRow("Review consent given", e.consent_review_given ? "Yes" : "No")}
       </div>
 

@@ -9,6 +9,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     "Questions to ask EUDR software providers before you buy, organized by whether you're an enterprise operator or an SME trader, with a sequential guide to what actually matters for your situation.",
   path: "/resources/blog/eudr-software-questions-to-ask-providers",
+  noindex: true, // 2026-10-19 wind-down: keep live, noindex, unlinked, out of sitemap
 });
 
 const h2 = "font-sans font-semibold text-[26px] leading-[1.2] tracking-[-0.02em] mt-16 mb-4";

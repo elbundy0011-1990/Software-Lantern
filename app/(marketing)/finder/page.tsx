@@ -1,58 +1,57 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
-import { FinderWizard } from "@/components/finder-wizard";
+import Link from "next/link";
+import { pageMetadata } from "@/lib/metadata";
 
-const CATEGORY_META: Record<string, { title: string; description: string; canonical: string }> = {
-  "EUDR Software": {
-    title: "EUDR Software Finder | Software Lantern",
-    description:
-      "Answer a few questions about your supply chain and we'll connect you with up to 3 EUDR compliance software providers that believe they can help.",
-    canonical: "/eudr",
-  },
-  "Product Lifecycle Management (PLM)": {
-    title: "Fashion PLM Software Finder | Software Lantern",
-    description:
-      "Answer a few questions about your brand and we'll connect you with up to 3 fashion PLM providers that believe they can help.",
-    canonical: "/plm",
-  },
-  "Digital Battery Passport (DBP)": {
-    title: "Battery Passport Software Finder | Software Lantern",
-    description:
-      "Answer a few questions about your product and we'll connect you with up to 3 battery passport software providers that believe they can help.",
-    canonical: "/battery-passport",
-  },
-};
-
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<{ category?: string }>;
-}): Promise<Metadata> {
-  const { category } = await searchParams;
-  const meta = category ? CATEGORY_META[category] : undefined;
-
-  if (meta) {
-    // Canonicalize back to the category landing page: the wizard state for a
-    // given category shouldn't compete with that page's own indexing/ranking.
-    return {
-      title: meta.title,
-      description: meta.description,
-      alternates: { canonical: meta.canonical },
-    };
-  }
-
-  return {
-    title: "Find Your Software Match | Software Lantern",
-    description:
-      "Tell us what software you need and we'll connect you with up to 3 providers that believe they have a fitting solution.",
-    alternates: { canonical: "/finder" },
-  };
-}
+// Disabled per the 2026-10-19 site-replacement instruction: this form
+// previously promised "up to 3 providers will respond," which the
+// marketplace's current state (3 total leads, 3 pending unreviewed
+// partner applications, see docs/OT-CYBER-PLAN.md Part B §B.1.1) cannot
+// actually deliver reliably. Replaced with a short notice rather than
+// removed, so /finder and /finder?category=... links already out in the
+// world (emails, bookmarks, old search results) land somewhere honest
+// instead of a dead page. The wizard component (components/finder-
+// wizard.tsx) and /api/leads are untouched and still work — nothing here
+// deletes or modifies any stored lead, partner, or payment data.
+export const metadata: Metadata = pageMetadata({
+  title: "Software Finder: No Longer Accepting New Requests",
+  description: "This form is no longer accepting new requests.",
+  path: "/finder",
+  noindex: true,
+});
 
 export default function FinderPage() {
   return (
-    <Suspense fallback={null}>
-      <FinderWizard />
-    </Suspense>
+    <main data-screen-label="Finder disabled notice">
+      <section className="border-b border-[#0d1117]/[0.07]">
+        <div className="max-w-[640px] mx-auto px-5 sm:px-8 pt-20 pb-24 text-center">
+          <h1 className="font-sans font-semibold text-[clamp(26px,3.6vw,34px)] leading-[1.15] mb-4">
+            This form is no longer accepting new requests
+          </h1>
+          <p className="text-[16px] leading-[1.6] text-[#5c6573] mb-8">
+            If you already submitted a requirement here, it&apos;s still being handled and nothing
+            about your existing submission has changed. We&apos;re no longer taking new EUDR,
+            Fashion PLM, or Battery Passport software requests through this form.
+          </p>
+          <p className="text-[16px] leading-[1.6] text-[#5c6573] mb-8">
+            Looking for help with industrial cybersecurity, secure remote access to machines, or
+            NIS2/the Cyber Resilience Act/the Machinery Regulation instead?
+          </p>
+          <Link
+            href="/"
+            className="inline-block bg-[#9a3412] text-white rounded px-6 py-[13px] font-sans font-semibold text-[15px]"
+          >
+            Go to the new site →
+          </Link>
+          <p className="mt-8 text-[14px] text-[#79818f]">
+            Already a software provider/partner? Your account and existing enquiries still work as
+            before &mdash; see{" "}
+            <a href="mailto:info@softwarelantern.com" className="text-[#4f46e5] font-semibold">
+              info@softwarelantern.com
+            </a>{" "}
+            if you have questions.
+          </p>
+        </div>
+      </section>
+    </main>
   );
 }

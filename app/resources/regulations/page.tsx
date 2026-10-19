@@ -7,6 +7,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     "Plain-language explainers on the EU regulations behind Software Lantern's categories: what they require, who they apply to, and current deadlines.",
   path: "/resources/regulations",
+  noindex: true, // 2026-10-19 wind-down: keep live, noindex, unlinked, out of sitemap
 });
 
 const ARTICLES = [

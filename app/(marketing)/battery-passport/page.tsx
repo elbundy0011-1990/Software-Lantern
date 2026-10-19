@@ -10,6 +10,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     "Looking for battery passport software? Tell us about your product and data requirements, and we'll connect you with up to 3 digital battery passport software providers that believe they can help.",
   path: "/battery-passport",
+  noindex: true, // 2026-10-19 wind-down: keep live, noindex, unlinked, out of sitemap
   ogDescription:
     "Tell us about your product and data requirements, and we'll connect you with up to 3 battery passport software providers that believe they can help.",
 });

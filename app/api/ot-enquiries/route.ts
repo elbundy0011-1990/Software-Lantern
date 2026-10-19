@@ -4,11 +4,18 @@ import { verifyTurnstile } from "@/lib/turnstile";
 import { sendEmail } from "@/lib/resend";
 import { buildNewOtEnquiryAdminEmail } from "@/lib/email-templates";
 import { isProductionDeploy } from "@/lib/environment";
+import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
 
 interface OtEnquirySubmission {
   country: string | null;
-  answers: Record<string, string | string[]>;
+  answers: Record<string, unknown>;
   contact: { name?: string; company?: string; email?: string; phone?: string };
+  role?: string;
+  sector?: string;
+  builderOrOperator?: string | null;
+  currentRemoteAccess?: string;
+  timeline?: string;
+  freeText?: string;
   consentReviewGiven: boolean;
   website?: string; // honeypot — must arrive empty
   turnstileToken?: string;
@@ -44,6 +51,12 @@ export async function POST(request: Request) {
   if (!/^[^\s@]+@[^\s@.]+\.[^\s@]{2,}$/.test(email)) {
     return NextResponse.json({ error: "A valid email address is required." }, { status: 400 });
   }
+  // Work emails only — same shared list and check as /api/leads uses,
+  // reused here rather than duplicated, per the 2026-10-19 instruction.
+  const domain = email.split("@")[1];
+  if (FREE_EMAIL_DOMAINS.includes(domain)) {
+    return NextResponse.json({ error: "Please use your work email address." }, { status: 400 });
+  }
   if (phoneDigits.length < 7) {
     return NextResponse.json({ error: "A valid phone number is required." }, { status: 400 });
   }
@@ -57,11 +70,11 @@ export async function POST(request: Request) {
   // PREVIEW SAFETY: preview deployments (and local dev) share the same
   // production Supabase/Resend credentials as the live site, per
   // docs/OT-CYBER-PLAN.md §6.5. Everything above still runs for real on a
-  // preview — bot verification, field validation, the consent gate — only
-  // the two steps that would touch real production state (writing a row,
-  // sending an email) are skipped outside an actual production deploy. The
-  // caller gets the identical success response either way, so this is
-  // invisible to anyone testing the form.
+  // preview — bot verification, field validation, the work-email check,
+  // the consent gate — only the two steps that would touch real
+  // production state (writing a row, sending an email) are skipped
+  // outside an actual production deploy. The caller gets the identical
+  // success response either way.
   if (!isProductionDeploy()) {
     return NextResponse.json({ ok: true, dryRun: true });
   }
@@ -77,6 +90,12 @@ export async function POST(request: Request) {
       contact_email: email,
       contact_phone: contact.phone || null,
       answers: body.answers || {},
+      role: body.role || null,
+      sector: body.sector || null,
+      builder_or_operator: body.builderOrOperator || null,
+      current_remote_access: body.currentRemoteAccess || null,
+      timeline: body.timeline || null,
+      free_text: body.freeText || null,
       consent_review_given: true,
     })
     .select("id")

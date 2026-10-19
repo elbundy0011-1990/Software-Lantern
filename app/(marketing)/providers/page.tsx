@@ -8,6 +8,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     "EUDR, Fashion PLM and Battery Passport buyers already describe what they need here. Apply as a Software Lantern provider and pay only for the leads you choose to unlock.",
   path: "/providers",
+  noindex: true, // 2026-10-19 wind-down: keep live, noindex, unlinked, out of sitemap
 });
 
 // Provider type descriptions are software-category descriptions (what the

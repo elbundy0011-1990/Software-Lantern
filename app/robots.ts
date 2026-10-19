@@ -12,17 +12,23 @@ export default function robots(): MetadataRoute.Robots {
         "/portal",
         "/portal/",
         "/api/",
-        "/finder/done",
+        "/finder",
+        "/finder/",
         "/auth/",
         "/reset-password",
         "/reset-password/",
-        // Preview-only, pre-approval build (docs/OT-CYBER-PLAN.md §3/§7):
-        // not yet on its own domain, not yet announced. Each page under
-        // here also carries its own `robots: { index: false }` metadata
-        // directly, on top of this disallow and Vercel's own preview
-        // noindex header.
-        "/ot-cyber",
-        "/ot-cyber/",
+        // 2026-10-19 wind-down decision (docs/OT-CYBER-PLAN.md Part B
+        // §B.1.5): keep every legacy marketplace page live, noindex,
+        // unlinked from the new site's nav, out of the sitemap. Each page
+        // also carries its own `robots: { index: false }` metadata
+        // directly (lib/metadata.ts's pageMetadata(noindex: true)), on top
+        // of this disallow.
+        "/eudr",
+        "/plm",
+        "/battery-passport",
+        "/providers",
+        "/resources",
+        "/resources/",
       ],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,

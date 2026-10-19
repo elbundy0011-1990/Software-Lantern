@@ -1,29 +1,38 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
+import { OT_SITE_INDEXABLE } from "@/lib/site-config";
+
+// 2026-10-19 site replacement: the legacy marketplace routes (/eudr, /plm,
+// /battery-passport, /providers, /finder, /resources/*) are deliberately
+// left out of this sitemap per docs/OT-CYBER-PLAN.md Part B §B.1.5 (keep
+// live, noindex, unlinked, out of sitemap) — they still work for anyone
+// with an existing link, they just aren't advertised for (re)crawling.
+const OT_ROUTES = [
+  "/",
+  "/machine-builders",
+  "/factory-operators",
+  "/system-integrators",
+  "/checker",
+  "/guides",
+  "/guides/nis2-supply-chain-and-remote-access",
+  "/guides/cyber-resilience-act-for-machine-builders",
+  "/guides/machinery-regulation-cybersecurity",
+  "/guides/iec-62443-explained",
+  "/who-runs-this",
+  "/enquiry",
+  "/privacy",
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = [
-    "/",
-    "/eudr",
-    "/plm",
-    "/battery-passport",
-    "/providers",
-    "/finder",
-    "/privacy",
-    "/resources/regulations",
-    "/resources/regulations/eudr",
-    "/resources/regulations/battery-passport",
-    "/resources/blog",
-    "/resources/blog/eudr-software-questions-to-ask-providers",
-    "/resources/blog/fashion-plm-software-questions-to-ask-providers",
-    "/resources/blog/battery-passport-software-questions-to-ask-providers",
-    "/resources/blog/why-battery-passport-software-market-is-fragmented",
-  ];
+  // If the OT pages aren't indexable yet (lib/site-config.ts), an empty
+  // sitemap is more honest than one advertising noindexed URLs for
+  // crawling — Search Console treats that as a real inconsistency to flag.
+  if (!OT_SITE_INDEXABLE) return [];
 
-  return routes.map((route) => ({
+  return OT_ROUTES.map((route) => ({
     url: `${SITE_URL}${route}`,
     lastModified: new Date(),
     changeFrequency: route === "/" ? "weekly" : "monthly",
-    priority: route === "/" ? 1 : route === "/finder" ? 0.6 : 0.9,
+    priority: route === "/" ? 1 : route === "/checker" ? 0.9 : 0.7,
   }));
 }

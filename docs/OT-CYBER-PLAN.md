@@ -321,3 +321,322 @@ Explicitly sequenced as a second pass, after the English checker is built and ve
 - No Secomea name, logo, or product claim anywhere in the built pages or components.
 - No implied official status: every page states plainly it is not the government's own tool and links to the real one; the footer states this is an unannounced preview build.
 - No algorithmic-matching language in the built copy — the consent text is "we'll review," "we ask you first," never "matched" or "identified by us."
+
+---
+---
+
+# PART B — Full Public-Site Replacement (2026-10-19 instruction)
+
+**Status: Phase 0 (impact report) and Phase 1 (research and design plan) only. Nothing in Part B has been built. Per the instruction, this stops here for your approval of both phases before any Phase 2 build work starts.**
+
+**Pivot from Part A, stated explicitly:** Part A recommended a separate domain for the OT offering (§3, Option C), with the marketplace staying softwarelantern.com's main public identity. This instruction overrides that: the OT offering becomes softwarelantern.com's main public identity instead, and the marketplace gets unlinked and noindexed rather than the other way around. This is your call to make directly, not something Part A's recommendation should be read as blocking. The `/ot-cyber` preview code from Part A is reused below, not rebuilt, but its URLs move: `/ot-cyber` was always a provisional placeholder path (Part A §3's own interim-build note), and since it was never indexed or linked anywhere, moving it to clean root-level paths in Phase 2 costs nothing SEO-wise.
+
+**Research conducted this pass:** 19 October 2026 (continued session). Network access that was unavailable earlier in this session (DNS resolution failures) is now working, confirmed by reaching Supabase's REST API directly. This is flagged explicitly in §B.1.1 because it changes what could be verified compared to Part A.
+
+---
+
+## B.1 PHASE 0 — Impact Report
+
+### B.1.1 Live figures, pulled this pass (read-only, aggregate/non-PII fields only)
+
+Network access to the production Supabase project worked this time. Queried directly via its REST API using the service-role key already in `.env.local` (the same access path `lib/supabase/admin.ts` uses from server code) — only counts, status breakdowns, dates, and the one non-PII `amount_paid` figure were requested; no name, email, phone, or company name was pulled into this document or this conversation.
+
+| Table | Figures |
+|---|---|
+| `leads` | **3 total.** 1 `new`, 2 `published`, 0 `discarded`. All 3 are category `"EUDR Software"` — zero PLM or Battery Passport leads have ever been submitted. Earliest: 15 August 2026. Latest: 17 August 2026. |
+| `partners` | **3 total, all 3 still `pending`.** Zero `approved`, zero `rejected`. Earliest application: 15 August 2026. Latest: 17 August 2026. |
+| `unlocks` | **1 total.** `amount_paid` **€49.00**, `outcome` still `unknown`, dated 17 August 2026. |
+| `ot_enquiries` | Table does not exist in production — confirmed the SQL from Part A has not been applied, as expected. |
+
+**Reading this plainly:** the marketplace is extremely early-stage, not an established revenue business. Lifetime revenue is €49. There has never been a PLM or Battery Passport lead despite both having live category pages. Three real companies applied as partners and **none has been approved, rejected, or evidently responded to** in the roughly two months since they applied. That last point matters independently of anything else in this report: those are real businesses that took the time to sign up and are sitting in limbo. Recommend reviewing and responding to those 3 pending applications (approve, reject, or a direct "we're pausing partner review for now" message) as a short, separate action, regardless of what happens to the public site — leaving them pending indefinitely is a bad outcome this instruction didn't ask for and that doing nothing would quietly cause.
+
+### B.1.2 A finding outside the scope of this instruction, flagged because constraint 3 made me look
+
+While reading the current homepage (`app/(marketing)/page.tsx`) to plan what the new homepage replaces, I found a "Trust logos" section displaying three real, named companies' logos (PHD, Meraas, Kawasaki) under the caption "Buyers who have used our matching service," and a testimonial quoting a named person ("Benoit Gorand, Marketing Manager at Kawasaki") claiming *"Without Software Lantern we would still be looking for the right software."*
+
+Set against B.1.1's actual figures — 3 leads ever, all EUDR, zero approved partners, €49 lifetime revenue — a genuine testimonial from a named Marketing Manager at Kawasaki describing a completed, satisfying matching experience is very hard to reconcile with what the data shows actually happened on this platform. I'm not asserting this is fabricated; I don't have the information to know whether there's a real relationship or conversation behind it that predates or sits outside what these three tables capture. But the arithmetic is uncomfortable enough that I think it needs your direct attention, independent of the OT project: **if this logo/testimonial isn't backed by a real, consenting relationship with that person and company, it should come down regardless of what happens to the rest of the site**, both as a matter of using a real identified person's name and because this exact pattern (a named company, a named person, an unverifiable quote) is precisely what constraint 3 on *this* task told me never to put on the new pages. It won't be carried over into anything built in Phase 2 either way.
+
+### B.1.3 Scheduled or automatic emails, audited
+
+Grepped every `sendEmail(` and `after(` call site in the codebase. There is no cron job and no time-based scheduled email anywhere in this repo (confirmed by searching for "cron"/"schedule" — the only hits were unrelated false positives in a blog post's body text and a code comment). Every email this system can send is triggered by one of these four events, and every one of them still works exactly as today if the public marketing pages are unlinked and noindexed (none of them depend on public navigation):
+
+| Trigger | Recipient | Still fires if marketplace pages are unlinked? |
+|---|---|---|
+| New lead submitted (`/api/leads`) | `ADMIN_EMAIL` only (you) | Yes, if someone reaches `/finder` by a direct/old link — internal notification only, no risk |
+| New partner signs up (`lib/portal-auth.ts`) | `ADMIN_EMAIL` only (you) | Yes, if someone reaches `/portal/signup` by a direct/old link — internal notification only, no risk |
+| Admin manually clicks "Publish" on a lead (`app/admin/(protected)/actions.ts`) | **Real partner companies**, matched by category | Yes — this is the one real external email path, but it only fires from your own explicit admin action, never automatically. The 2 already-`published` leads and the 1 `new` lead from B.1.1 are each one click away from triggering this for real, matched partners, whether or not the public site changes |
+| New OT enquiry submitted (Part A) | `ADMIN_EMAIL` only, production only | Unaffected by this instruction |
+
+No change needed to any of this for the site replacement to be safe — the risk surface here is unrelated to public navigation, it's about who has admin access and when they click "Publish."
+
+### B.1.4 SEO/Search Console equity, inbound links — still a genuine gap
+
+Unchanged from Part A: no Search Console, Ahrefs, or backlink-data access from this session. If you want this section filled in with real numbers before deciding what happens to each old page, pull and share: Search Console's Pages/Performance report for the last 16 months (impressions and clicks per URL — this tells us which old pages, if any, are actually earning search traffic worth protecting), and Search Console's Links report (or Ahrefs/Semrush if you have it) for inbound links per URL (this tells us which old pages have backlink equity a 410 would simply destroy). Absent that data, §B.1.5 below reasons from first principles (how Google generally treats each page-handling option) rather than from this site's actual traffic, which is the honest limitation to flag before you decide.
+
+### B.1.5 What happens to each old public page — options, trade-offs, recommendation per page
+
+All four of your listed options, explained once, then applied per page:
+
+- **Keep live, noindex, unlinked from new nav, removed from sitemap.** Reversible (flip noindex off, relink, re-add to sitemap, and it's exactly as before). Existing rankings fade over time since Google eventually drops pages it can't recrawl via links and sees noindex on, but nothing is destroyed instantly, and anyone with a direct link or bookmark still reaches a working page. Your stated default.
+- **301 redirect** (to the new homepage, or to a topically closest new page). Passes most link equity to the target, fastest way to consolidate authority onto the new site, but it's a real structural claim ("this URL is now that URL") that's awkward here because an EUDR page 301ing to an OT-cybersecurity page has no topical relationship for Google to credit, which risks the redirect being treated as low-quality/manipulative rather than passing equity cleanly. Not reversible without visible churn (undoing a 301 after months reads as flip-flopping to Google).
+- **410 Gone.** Fastest way to get a page fully out of the index, appropriate when a page's content is genuinely retired and you want Google to stop indexing it quickly. Destroys whatever ranking/link equity that specific URL held, with no reversibility (a 410'd-then-restored URL doesn't simply resume its old rankings).
+- **Move to another domain.** Clean separation if the marketplace becomes its own standalone thing again later, but it's the most work (new DNS/Vercel project/env vars) and still loses most of the current URLs' equity in the move (search engines treat a domain migration as a new site unless done with a careful 301 migration plan, which reintroduces the 301 trade-offs above anyway).
+
+| Page(s) | Recommendation | Why |
+|---|---|---|
+| Homepage `/` | **Replaced by the new OT homepage** (this instruction's whole point) | Not really an "old page to handle" — it's the thing being replaced |
+| `/eudr`, `/plm`, `/battery-passport` | **Keep live, noindex, unlinked, out of sitemap** (your default) | These earn whatever search equity they have from category-specific terms the new OT site shares zero overlap with (confirmed in Part A §4); there's no reason to destroy that equity with a 410 when it costs nothing to just stop pointing at them. If B.1.4's Search Console data later shows they earn real traffic, that's a reason to reconsider standalone-marketplace investment, covered in Part A §5.6, not a reason to 410 them now |
+| `/providers` | **Keep live, noindex, unlinked, out of sitemap** | Same reasoning; also the one page partners might still have bookmarked, and partner-facing flows (`/portal/*`) stay fully functional per constraint 8, so a partner clicking through from an old bookmark still lands somewhere coherent |
+| `/finder` (+ `/finder/done`) | **Keep live, noindex, unlinked, out of sitemap** | Needs to keep working regardless: it's the live lead-capture mechanism for the 3 existing categories, and per constraint 8 it must not break for anyone who already has the link |
+| `/resources/blog/*`, `/resources/regulations/*` | **Keep live, noindex, unlinked, out of sitemap** | Same reasoning as the category pages; these are informational content pages with their own potential search equity and zero topical relationship to redirect into |
+| `/privacy` | **Stays live, stays indexed** (it's not a marketing page and must remain reachable/linked from the new footer too) | Covered separately in §B.1.6, this page gets an addition, not noindex |
+
+**One page-handling item that is genuinely new work, not just a flag/noindex toggle:** the current homepage's "For providers" CTA and the footer's "Become a provider" / "Provider login" links need to come off whatever nav/footer the new homepage uses (constraint 8 already says this), while staying reachable at their existing URLs for anyone who already has them bookmarked, consistent with the table above.
+
+### B.1.6 Privacy policy plan — diff, not applied
+
+The current page (`app/(marketing)/privacy/page.tsx`) describes one service: the matchmaking marketplace. The moment the homepage changes, every new visitor to softwarelantern.com who clicks "Privacy Policy" reads a policy that doesn't describe what they just used. This needs fixing at the same time the homepage changes, not afterward.
+
+**Approach: restructure into two clearly-labeled parts under one policy, not two separate pages.** One controller (still Johannes Cornelis de Boer), two products, each section says which product it's about. Below is the diff against the live file, section by section. `[Product name]` is a literal placeholder, same convention as Part A's `[Owner name]` — no brand name has been chosen for the OT line yet (open question, carried into §B.2.3).
+
+**§1 "Who we are" — add a sentence, keep the rest:**
+> *(unchanged, then append:)* This site currently operates two separate services under the same controller: the OT cybersecurity enquiry resource described below, and a software-matchmaking marketplace for EUDR, Fashion PLM, and Battery Passport software, kept live for existing partners and in-progress enquiries. Sections 2 to 9 below describe the OT cybersecurity service specifically; Section 10 describes the marketplace, kept for as long as that data and those partner relationships exist.
+
+**§2 "What Software Lantern does" — replace entirely:**
+> *(new text)* `[Product name]` is a content and enquiry resource about industrial cybersecurity: secure remote access to machines and OT systems, and the NIS2/Cyberbeveiligingswet, Cyber Resilience Act, and Machinery Regulation obligations that affect machine builders, factory and plant operators, and system integrators in the Netherlands, Belgium, and Luxembourg. If you submit an enquiry, we (the site owner) review it personally. We do not share your details with any other company unless we ask you about that specific company first and you agree. See Section 10 for the separate, differently-run software-matchmaking marketplace this site also operates.
+
+**§3 "What personal data we collect" — add a new "(a) OT cybersecurity enquiries" subsection before the existing buyer/partner subsections, which get relabeled "(c)/(d), marketplace only":**
+> *(new)* **a) If you submit an OT cybersecurity enquiry:** name, work email, company name, role, country (Netherlands, Belgium, Luxembourg, or other), phone number if provided, sector, whether you're a machine builder or an operator, your current remote-access approach if provided, timeline, free-text details, and your answers to the scope checker if you used it.
+
+**§4 "legal basis" table — add one row:**
+> *(new row)* Reviewing your OT cybersecurity enquiry and, only if you separately agree, sharing it with a specific named company | Enquiry form data | Consent (given when you submit the form, and again before any specific sharing)
+
+**§5 "Who we share data with" — add, before the existing marketplace-specific sharing paragraph, which gets a "(marketplace only)" label:**
+> *(new)* **OT cybersecurity enquiries:** we do not share your details with any other company automatically. If, after reviewing your enquiry, we think a specific company might be relevant, we will ask you about that company by name and only share your details if you agree, every time, for every company. Nothing is shared by default.
+
+**§8 "Is this free to use?" — add a sentence:**
+> *(append)* Submitting an OT cybersecurity enquiry is free, with no payment or obligation at any point.
+
+**New §10, appended at the end (before "Contact us"):**
+> *(new section)* **10. The software-matchmaking marketplace (legacy, kept for existing data)**
+> Before this site became an OT cybersecurity resource, it operated as a matchmaking marketplace connecting buyers of EUDR, Fashion PLM, and Battery Passport software with software providers. That marketplace's pages are no longer linked from this site's navigation but remain reachable, unindexed, so that anyone with an existing link (including the providers who registered as partners) can still use them. We continue to: store and act on already-submitted buyer requirement forms; operate partner accounts, including reviewing pending applications; process lead-unlock payments via Stripe for partners who already have accounts; and honor every right described in Sections 6 to 9 of this policy for anyone whose data was collected through this marketplace. We will update this section if and when that data is fully wound down.
+
+This is a draft for your approval, not applied anywhere — `app/(marketing)/privacy/page.tsx` is untouched in this session's working tree.
+
+---
+
+## B.2 PHASE 1 — Research and Design Plan
+
+### B.2.1 Legal research: CRA, Machinery Regulation, IEC 62443 (new this pass)
+
+All of this is in addition to Part A §1's NIS2/Cbw/Belgium research, which stands unchanged. **EUR-Lex direct fetches failed again this pass** (the fetch tool returns blank content for EUR-Lex specifically, regardless of network state — confirmed this is a tool-rendering issue, not a connectivity one, since the same tool successfully read Staatsblad and NCSC.nl pages in Part A). Every figure below is corroborated across multiple independent, mutually-agreeing secondary sources, same standard as Part A's Belgium research, and is still marked `[VERIFY]` pending an actual EUR-Lex read.
+
+**Cyber Resilience Act — Regulation (EU) 2024/2847**, "horizontal cybersecurity requirements for products with digital elements." Adopted 23 October 2024, in force 12 November 2024. Staged application: notified-body provisions from 11 June 2026; **vulnerability/incident reporting obligations (24-hour reporting of actively exploited vulnerabilities) from 11 September 2026**; full application **11 December 2027**. Scope: products with digital elements whose intended or foreseeable use includes a direct or indirect network/device connection — this explicitly includes industrial control systems and connected machinery, and multiple independent sources (ei3.com, HMS Networks, machinerysafety101.com) specifically describe remote-access functionality on a machine as a "security-critical component" under the CRA, with responsibility for a weak or uncertified connection resting on the manufacturer. Excluded: medical devices, motor vehicles, civil aviation, marine equipment, defence. `[VERIFY against EUR-Lex 2024/2847 directly]`
+
+**EU Machinery Regulation — Regulation (EU) 2023/1230**, replacing the Machinery Directive 2006/42/EC. Applies from **20 January 2027**, with **no transition period** — confirmed by two independent-language source sets (English: Nemko, SGS, Checkmate Experts; Dutch: NEN, Samodi, TCPM) that a machine cannot carry an EU Declaration of Conformity under the new regulation before that date, and that it's a Regulation (direct effect in all member states) rather than a Directive (national transposition), unlike NIS2. New cybersecurity-adjacent essential health and safety requirements appear at **Annex III, sections 1.1.9 and 1.2.1**: manufacturers must show a cyberattack or data corruption cannot create a hazardous situation, and must provide security-relevant software updates for **10 years** after the machine is placed on the market. `[VERIFY exact Annex III section numbers and wording against EUR-Lex 2023/1230 directly]`
+
+**IEC 62443** (properly ISA/IEC 62443) is **a voluntary international standard, not a regulation** — confirmed directly, no ambiguity in the sources. No EU law makes conformance to it mandatory in itself. It becomes relevant commercially when a customer, insurer, or specific sector rule requires it contractually — the same "commercial pressure, not legal requirement" framing Part A established for NIS2 Article 21(2)(d) supply-chain pressure applies here too, and must be used identically: never "IEC 62443 is required," always "some customers or contracts may require it, even though no general law does."
+
+**The one-sentence distinction worth building real site copy around, independently arrived at from the sources rather than copied from any one of them:** NIS2 regulates the *organization* (is your company, as an entity, managing cyber risk); the CRA regulates the *product* (is the machine itself, as something placed on the market, built securely); the Machinery Regulation regulates *safety*, newly extended to cover cyberattacks that create physical hazards. A machine builder can face all three at once, for the same machine, for different reasons — stating this plainly, without naming any vendor's take on it, is itself useful, differentiated content.
+
+**Luxembourg NIS2 status** (needed since the enquiry form now includes LU as a country option, per the brief): transposed via the **Loi du 5 mai 2026** ("concernant des mesures destinées à assurer un niveau élevé de cybersécurité"), in force **10 May 2026**, competent authority the **Institut Luxembourgeois de Régulation (ILR)**, self-registration deadline **10 July 2026**. Corroborated across Deloitte Luxembourg, Elvinger Hoss, PwC Luxembourg, and Luxgap. `[VERIFY against Luxembourg's Journal Officiel directly]`
+
+### B.2.2 Keyword and SERP research, EN + NL, with A/B/C evidence
+
+Same evidence-label convention as Part A §2: **[A]** directly observed this pass, **[B]** a pattern inferred from several [A]s, **[C]** directional only, not verified by a rank-tracked or EU-located search. Single non-EU, non-rank-tracked search pass, 19 October 2026 — re-run before launch, same caveat as Part A.
+
+- **[A]** "Secure remote access OT/ICS" and "secure vendor/third-party access to industrial systems" queries are dominated by vendor content (Secomea, Dispel, Cyolo, Claroty, TeamViewer Industrial, Ewon, plus consultancy listicles like OT Ecosystem's "Best 20/15" pages) — unchanged from Part A, confirmed again.
+- **[A]** "Cyber Resilience Act machine builders" / "CRA for machine builders" is **also** vendor-and-consultancy dominated and more developed than Part A's narrower NIS2-only search suggested: ei3.com, IXON, HMS Networks, TXOne Europe, and machinerysafety101.com all have dedicated, fairly thorough CRA-for-machine-builders guides already live.
+- **[B]** Combining regulations (NIS2 + CRA, or NIS2 + CRA + Machinery Regulation, specifically for machine builders) is a real, already-occupied content angle, not an empty gap — multiple of the sources above (accans.com, accevo.com, teamknocknock.com) explicitly frame "NIS2 and the CRA together" as their hook. **This revises Part A's "Dutch angle looks comparatively open" finding downward**: once CRA is added to the query mix, even the Dutch-language results include real competitor guides (accans.com, ixon.cloud's own knowledge hub). The honest framing now: this is a real, legitimate content space with existing serious entrants, not an empty field — differentiation has to come from genuine quality, source citation, and the cross-regulation synthesis done well, not from being first.
+- **[C]** Directional only: whether a *lead-capture/enquiry-resource* site (as opposed to a vendor's own content marketing) exists yet in this exact Benelux/machine-builder/cross-regulation space is not confirmed either way by this pass's queries — none of the sources found are structured as a neutral enquiry funnel, all are vendor or consultancy content marketing, but a single search pass cannot rule out one existing that just didn't surface.
+- **[A]** Dutch-language machine-builder-specific content (Brainport, LINK Magazine, Ceteq) from Part A still stands as directly observed and still thinner than the English CRA-inclusive results above.
+
+**Keyword set to build around** (not a full A-E tiering like Part A's, since the brief asked for A/B/C evidence rather than a full keyword-priority table this time): "NIS2 machine builders" / "NIS2 machinebouwers," "Cyber Resilience Act machine builders" / "Cyber Resilience Act machinebouwers," "secure remote access machinery NIS2," "machineverordening cyberbeveiliging," "CE-markering cyberbeveiliging machines," "remote service machines NIS2 compliant." All [A]/[B] above; treat "best OT remote access software"-shaped bare vendor-comparison terms as [C]-tier/avoid, unchanged from Part A §2.4's tiering logic.
+
+### B.2.3 Information architecture
+
+**Reused, not rebuilt** (per the instruction): `components/nis2-scope-checker.tsx`, `components/ot-enquiry-form.tsx`, `components/ot-cyber-interactive.tsx`, `components/disclosure-slot.tsx`, `/api/ot-enquiries`, `supabase/ot-cyber-schema.sql`, `app/admin/(protected)/ot-enquiries/`, `lib/environment.ts`. Each gets extended (new checker branches for CRA/Machinery Regulation and the builder/operator/integrator split, new enquiry form fields, new SQL columns delivered as an additive migration, not a rewrite) rather than replaced.
+
+**Proposed page list** (final URLs, replacing the provisional `/ot-cyber/*` prefix since that was never indexed or linked):
+
+| Path | Purpose | Status |
+|---|---|---|
+| `/` | New homepage. Audience self-selection, the ledger signature element (§B.2.4), entry to the checker | Replaces current homepage |
+| `/machine-builders` | Audience path: product-level obligations (CRA, Machinery Regulation), remote-access-as-security-critical-component framing | New |
+| `/factory-operators` | Audience path: organizational obligations (NIS2/Cbw), vendor/supplier remote-access governance | New |
+| `/system-integrators` | Audience path: sits between the other two — advises both builders and operators, remote-access practices affect both of their obligations | New |
+| `/checker` | The NIS2/CRA/Machinery-Regulation scope checker, extended from `components/nis2-scope-checker.tsx`. Primary conversion tool, linked prominently from every audience path and the homepage | Extends existing |
+| `/guides` | Guides hub (index) | New |
+| `/guides/nis2-supply-chain-and-remote-access` | Extends the existing Part A article | Extends existing |
+| `/guides/cyber-resilience-act-for-machine-builders` | New, per §B.2.1 | New |
+| `/guides/machinery-regulation-cybersecurity` | New, per §B.2.1 | New |
+| `/guides/iec-62443-explained` | New — explicitly frames it as voluntary, never "required" | New |
+| `/who-runs-this` | Real "who runs this" page — name, background, why this exists, the disclosure slot's fuller context. This is the authority mechanism constraint 3 requires in place of stats/testimonials | New |
+| `/enquiry` | Direct enquiry form, reachable without going through the checker first, same form/fields extended per §B.2.5 | Extends existing (currently only reachable after the checker) |
+| `/privacy` | Updated per §B.1.6 | Extended |
+| (unlinked, noindex) `/eudr`, `/plm`, `/battery-passport`, `/providers`, `/finder`, `/resources/*` | Per §B.1.5 | Unchanged, just unlinked |
+
+**Lead flow:**
+```
+Homepage or audience path
+        |
+        v
+  Self-identify (builder / operator / integrator)
+        |
+        v
+   Scope checker (/checker) <------ reachable directly from guides too
+        |
+        v
+  Result: regulatory facts for their answers + relevant guide link(s)
+        |
+        v
+  CTA into /enquiry (same form, pre-filled with checker answers if they came from there)
+        |
+        v
+  POST /api/ot-enquiries (extended fields, same dry-run guard)
+        |
+        v
+  ot_enquiries row (production only) + admin email (production only)
+        |
+        v
+  /admin/ot-enquiries — manual review, manual share-with-consent only
+```
+
+### B.2.4 Design plan
+
+**Palette** (named hex, chosen explicitly against the current site's own gradient-hero/pill-button aesthetic, which is a generic B2B-SaaS template default):
+
+| Role | Hex | Use |
+|---|---|---|
+| Background | `#f6f5f1` | Warm paper white, not sterile SaaS white |
+| Ink | `#1a1d22` | Near-black graphite, body text and headlines |
+| Structural / secondary text | `#3f4b52` | Borders, captions, secondary copy |
+| Accent | `#9a3412` | Rust/burnt-orange, industrial-signage family. Links, CTAs, the ledger's timestamp marks. Used sparingly, never as a background fill |
+| Status: in force / compliant | `#166534` | Deep green, ledger status dots only |
+| Status: upcoming deadline | `#9a3412` | Same as accent, intentionally, so the ledger's "watch this" entries visually match the CTA color |
+| Status: not yet determined | `#6b7280` | Neutral gray, ledger status dots only |
+
+**Type:** keep **Instrument Sans** (already loaded, zero migration cost) for headlines and body. Add **IBM Plex Mono** (free, Google Fonts, via `next/font`) for dates, regulation citations, form field labels tied to technical data, and the ledger element itself. The pairing of a clean grotesk with a monospace for anything load-bearing/factual is the deliberate device that makes this read as a dossier, not a marketing page.
+
+**Layout:** rectangular controls with a small radius (4-6px, not the current site's full pill buttons), hairline rule lines between sections (like a spec sheet, not soft drop-shadow cards), left-aligned text blocks rather than centered hero-with-illustration, no photography and no stock imagery anywhere.
+
+**Signature element: the Compliance Ledger.** A recurring, monospace, terminal-log-styled strip of real regulatory milestones, styled like an actual OT remote-access session log (because that's the subject matter), populated only with real, cited dates, never fabricated activity:
+
+```
+10 MAY  2026  ●  Loi du 5 mai 2026 in force — Luxembourg (NIS2)        [VERIFY]
+15 AUG  2026  ●  Cyberbeveiligingswet in force — Netherlands (NIS2)
+11 SEP  2026  ○  CRA reporting obligations begin (EU-wide)             [VERIFY]
+20 JAN  2027  ○  Machinery Regulation applies, no transition (EU-wide) [VERIFY]
+11 DEC  2027  ○  CRA full application (EU-wide)                       [VERIFY]
+```
+(● = already in force, rendered in the "in force" green; ○ = upcoming, rendered in the "upcoming" rust; every row carries its own `[VERIFY]` tag inline exactly like this document does, not hidden in a footnote.) This appears, in full or truncated to 2-3 rows, in the homepage hero, at the top of the checker, and at the top of each audience path page — it's the one visual device that's unique to this specific subject (a real access/audit log, showing real regulatory events instead of fabricated activity), rather than a decorative pattern that could belong to any SaaS site.
+
+**ASCII wireframe, homepage:**
+```
++----------------------------------------------------------+
+| [wordmark]                    Machine builders  Operators |
+|                                Integrators   Guides  [EN|NL]|
++----------------------------------------------------------+
+|                                                            |
+|  Secure remote access to machines, under NIS2, the        |
+|  Cyber Resilience Act, and the Machinery Regulation        |
+|  ------------------------------------------------         |
+|  For machine builders, factory operators, and system      |
+|  integrators in the Netherlands, Belgium, and Luxembourg.  |
+|                                                            |
+|  [ Check your situation -> ]   [ Read the guides ]         |
+|                                                            |
+|  10 MAY 2026  . Loi du 5 mai 2026 in force (Luxembourg)    |
+|  15 AUG 2026  . Cyberbeveiligingswet in force (NL)         |
+|  11 SEP 2026  o CRA reporting obligations begin            |
+|  ---------------------------------------------- (ledger)   |
++----------------------------------------------------------+
+|  [ disclosure slot: placeholder text, full width ]          |
++----------------------------------------------------------+
+|  Which of these is you?                                    |
+|  +----------------+ +----------------+ +----------------+ |
+|  | Machine builder| | Factory/plant  | | System         | |
+|  | You build or   | | operator       | | integrator     | |
+|  | sell machines  | | You run        | | You install or | |
+|  |                | | production     | | service both   | |
+|  | -> /machine-   | | -> /factory-   | | -> /system-    | |
+|  |    builders    | |    operators   | |    integrators | |
+|  +----------------+ +----------------+ +----------------+ |
++----------------------------------------------------------+
+|  Three EU rules, three different things                    |
+|  NIS2: your organization | CRA: your product | Machinery   |
+|  Regulation: your product's safety                         |
+|  [ one short paragraph each, no vendor names ]              |
++----------------------------------------------------------+
+|  Guides                                    Who runs this    |
+|  - NIS2 supply chain & remote access       [1-2 sentences,  |
+|  - CRA for machine builders                 links to full   |
+|  - Machinery Regulation cybersecurity        /who-runs-this] |
+|  - IEC 62443, explained                                      |
++----------------------------------------------------------+
+|  [ disclosure slot again, full width ]                      |
++----------------------------------------------------------+
+|  footer: Guides  Who runs this  Privacy  [admin/portal NOT  |
+|  linked, but still reachable by direct URL]                 |
++----------------------------------------------------------+
+```
+
+**Self-critique, before you see it as finished:**
+- The dark-ink / single-rust-accent / monospace-for-data palette is itself becoming a recognizable "serious technical SaaS" convention (Vercel, Linear, Stripe's own docs all lean this direction now) — so the palette alone is not, by itself, a guarantee of standing out. What actually differentiates this is the **Compliance Ledger populated with real dates**, not the color choice. If the ledger gets cut or watered down in Phase 2 to save build time, this design degrades into exactly the generic technical-SaaS template it was trying to avoid, and that trade should not be made silently.
+- The three-audience-card row ("Which of these is you?") is structurally identical to the exact "three feature cards" pattern the current homepage already uses under "Why us" and that most SaaS templates default to. It's kept here because it's the honest, simplest way to do audience self-selection, not because it's novel — flagging this rather than pretending the layout itself is original.
+- Explicitly avoided and should stay avoided in Phase 2: a hero photo/illustration of "an engineer looking at a tablet in a factory" (the single most common stock-photo default for this exact subject matter), a certification-badge row, and any numeric stat tile ("X machines secured," "Y% faster") — all three would violate constraint 3 directly, and all three are also just generically overused regardless of the constraint.
+
+### B.2.5 Conversion design
+
+**Visitor journey, in order, matching the wireframe above:** (1) hero states the subject and the three regulations by name in one sentence, no feature list first; (2) the ledger immediately substantiates that this isn't vague marketing copy, it's dated and specific; (3) the disclosure slot appears before any persuasion happens, not buried at the bottom; (4) audience self-selection, three cards, no pre-judgment of which matters more; (5) the one-paragraph-each regulation framing (NIS2 vs CRA vs Machinery Regulation) answers "why three different things" before asking for anything; (6) guides and the "who runs this" link sit side by side, so authority-by-content and authority-by-transparency are presented together; (7) the checker is the primary conversion action, linked from the hero CTA, every audience page, and every guide, each time just below the main value proposition, not as an exit-intent popup or sticky bar.
+
+**Form placement:** the checker is embedded inline at `/checker`, same pattern as Part A's `eudr-scope-checker.tsx`-derived component, ending in a CTA into `/enquiry`. The enquiry form itself lives at its own page (so it's linkable and reachable cold, not just as a checker appendix) and is also embedded at the bottom of `/checker`'s result screen pre-filled with the checker's answers, exactly like Part A's lifted-state pattern (`ot-cyber-interactive.tsx`), extended to carry the new fields through.
+
+**Enquiry fields** (extends Part A's `ot_enquiries` schema additively, delivered as SQL for you to run, not applied):
+- name, work email *(reuses the existing free-email-domain block, both client-side in the form and server-side in `/api/ot-enquiries`, unchanged from the pattern already in `app/api/leads/route.ts`/`lib/finder-config.ts`)*, company — unchanged from Part A
+- **role** (new, free text or a short select: e.g. owner/founder, engineering, IT/security, operations, other)
+- **country** (new, replaces the old NL/BE/other/not-sure checker-only field): NL, BE, LU, other — and LU's facts from §B.2.1 get wired into the checker's country branch, same pattern as NL/BE
+- **sector** (new, short select, informs which guide to recommend)
+- **builder or operator** (new, select: machine builder, factory/plant operator, system integrator, not sure) — drives which audience framing the admin sees and which guide gets suggested in the auto-reply-free success state
+- **current remote-access method** (new, free text, optional, deliberately open-ended and non-leading, e.g. "What do you use today, if anything?" — never a dropdown of product categories, since constraint 1 forbids asserting or even implicitly ranking specific products)
+- timeline (new field, short select: already looking, within 6 months, within 12 months, no specific timeline)
+- free text (new, open "anything else" field)
+- consent (unchanged from the approved wording, Part A §6.2, `[Owner name]` placeholder retained)
+
+### B.2.6 Dutch plan
+
+**URL structure:** path-prefixed, `/nl/...` mirroring the English tree exactly (`/nl/machinebouwers`, `/nl/fabrieksoperators` or similar, `/nl/checker`, `/nl/gidsen/...`), not a subdomain or ccTLD, consistent with how a single Next.js app already handles everything here and with how Part A's own Dutch-second-pass instruction was framed.
+
+**hreflang:** `en` as the default/`x-default`, `nl` on its mirrored path, reciprocal `<link rel="alternate" hreflang="...">` tags on every paired page, added through the existing `pageMetadata()` helper (extended to accept an optional `alternates.languages` map) rather than a new helper.
+
+**Translation order, once English is verified (per the instruction, Dutch is a second pass, not simultaneous):** 1) the checker (highest-conversion page, and NL-specific legal facts already exist in English that just need translating, not re-researching), 2) `/enquiry` and the consent text (legal-adjacent, needs care, short), 3) homepage, 4) `/factory-operators` and `/machine-builders` (Dutch buyer-side search intent skews toward machine builders specifically per Part A and §B.2.2's SERP findings), 5) guides, lowest priority since they're the most time-consuming to translate well and least likely to be the first page a Dutch searcher lands on compared to the checker.
+
+### B.2.7 Analytics events
+
+Reuses the existing `track()` convention from `@vercel/analytics` already live in `components/finder-wizard.tsx` (`track("finder_start", ...)` / `track("finder_complete", ...)`), extended with new event names rather than a new analytics mechanism:
+
+- `checker_start` — fired when the first checker question is answered. Property: `audience` (builder/operator/integrator/not_sure) if already known from an audience-path entry point, nothing else.
+- `checker_complete` — fired on reaching a result screen. Properties: `country`, `sector`, `in_scope_result` (in_scope/out_of_scope_generally/not_sure) — category-level values only, matching exactly what Part A's checker already tracks internally as state, never free text.
+- `enquiry_submit` — fired on a successful (non-dry-run) submission. Property: `source` (checker/direct) only.
+
+No name, email, phone, company name, or free-text field content in any event property, in either the checker or the enquiry form, on either environment.
+
+### B.2.8 Parked: comparison table
+
+Not designed, not built, per the instruction. Noting it exists as a future idea requiring your employer's separate approval before any work starts on it, so it doesn't get silently picked up in Phase 2 under the cover of "guides."
+
+---
+---
+
+# PART C — Phase 2 Build (2026-10-19 approval)
+
+**Status: built on the `ot-cyber-build` branch, committed, not pushed, not merged.** Full change-by-change detail is in `docs/PHASE-16-CHANGES.md`, written to this repo's existing PHASE-doc convention rather than duplicated here. Highlights against each numbered addition in the approval:
+
+1. **Removed:** the old homepage file (named customer logos, the Kawasaki testimonial) is deleted outright as part of replacing the homepage, not edited — nothing from it was carried into any new page.
+2. **Done, not struck:** `/finder` now shows a short notice. `/admin`, `/portal`, `/api/stripe/*`, and the auth routes are untouched and still work.
+3. **Done:** `lib/compliance-ledger.ts` is the one file every ledger entry comes from, each with a citation URL, a `lastVerified` date, and a `verified` flag driving an inline `[VERIFY]`.
+4. **Done:** the homepage hero leads directly into the ledger; IEC 62443 is stated as voluntary on the checker, the homepage's "three rules" section, and its own guide; no page claims a rule requires a product category.
+5. **Done:** `[Owner name]` is now "Johannes Cornelis de Boer" everywhere in the consent text. The finalized privacy-policy diff was applied (not left unapplied this time, since the blocking placeholder was resolved) — see `app/(ot)/privacy/page.tsx` and §PHASE-16 item 5.
+6. Dutch not started. Nothing pushed, nothing merged.
+
+**Verified this pass, upgrading §B.1.4/§B.1.5's earlier "can't check" status:** network access worked in this session (it hadn't earlier), so every external citation URL used in the ledger and guides was actually fetched: all resolve (HTTP 200) except `atwork.safeonweb.be/nis2` (Belgium's official tool), which returns a 403 to automated requests with a tiny generic response body, consistent with the same domain's behavior throughout this research (ccb.belgium.be also blocked this session's tools). This reads as bot/geo protection, not a dead link, but a manual browser click-test before go-live is the honest way to be certain, not an assumption this document should make for you.

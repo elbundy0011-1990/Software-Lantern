@@ -49,6 +49,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     "Looking for EUDR compliance software? Tell us about your supply chain and requirements, and we'll connect you with up to 3 EUDR software providers that believe they can help, whether you're a large importer or a small business.",
   path: "/eudr",
+  noindex: true, // 2026-10-19 wind-down: keep live, noindex, unlinked, out of sitemap
   ogDescription:
     "Tell us about your supply chain and requirements, and we'll connect you with up to 3 EUDR software providers that believe they can help.",
 });

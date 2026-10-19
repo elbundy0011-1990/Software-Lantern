@@ -47,6 +47,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     "Looking for fashion PLM software? Tell us about your brand, products and requirements, and we'll connect you with up to 3 fashion PLM providers that believe they can help.",
   path: "/plm",
+  noindex: true, // 2026-10-19 wind-down: keep live, noindex, unlinked, out of sitemap
   ogDescription:
     "Tell us about your brand, products and requirements, and we'll connect you with up to 3 fashion PLM providers that believe they can help.",
 });

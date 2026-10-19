@@ -9,6 +9,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     "Run a battery passport software comparison search and you'll get market-research reports and vendor sites that all claim to do everything. Here's why the market is genuinely fragmented, and what that means before you start comparing providers.",
   path: "/resources/blog/why-battery-passport-software-market-is-fragmented",
+  noindex: true, // 2026-10-19 wind-down: keep live, noindex, unlinked, out of sitemap
 });
 
 const h2 = "font-sans font-semibold text-[26px] leading-[1.2] tracking-[-0.02em] mt-16 mb-4";

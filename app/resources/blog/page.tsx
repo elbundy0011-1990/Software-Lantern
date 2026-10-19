@@ -7,6 +7,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     "Guides and updates on EUDR, Fashion PLM, Battery Passport software, and the categories Software Lantern covers.",
   path: "/resources/blog",
+  noindex: true, // 2026-10-19 wind-down: keep live, noindex, unlinked, out of sitemap
 });
 
 export default function BlogHubPage() {

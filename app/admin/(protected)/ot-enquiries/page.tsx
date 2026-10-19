@@ -59,6 +59,7 @@ export default async function AdminOtEnquiriesPage({
               <tr>
                 <th className="px-5 py-3">Company</th>
                 <th className="px-5 py-3">Country</th>
+                <th className="px-5 py-3">Builder/Operator</th>
                 <th className="px-5 py-3">Submitted</th>
                 <th className="px-5 py-3">Shared?</th>
                 <th className="px-5 py-3">Status</th>
@@ -74,6 +75,7 @@ export default async function AdminOtEnquiriesPage({
                     <div className="text-[13px] text-[#79818f]">{e.contact_email}</div>
                   </td>
                   <td className="px-5 py-3">{e.country || "—"}</td>
+                  <td className="px-5 py-3">{e.builder_or_operator || "—"}</td>
                   <td className="px-5 py-3">{new Date(e.created_at).toLocaleDateString()}</td>
                   <td className="px-5 py-3">{e.shared_with ? `Yes — ${e.shared_with}` : "No"}</td>
                   <td className="px-5 py-3">

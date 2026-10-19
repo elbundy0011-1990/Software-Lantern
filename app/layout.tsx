@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Sans } from "next/font/google";
+import { Instrument_Sans, IBM_Plex_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION } from "@/lib/site";
 import "./globals.css";
@@ -8,6 +8,16 @@ const instrumentSans = Instrument_Sans({
   variable: "--font-instrument-sans",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+});
+
+// Used only by the OT pages' ComplianceLedger and technical/citation text
+// (docs/OT-CYBER-PLAN.md Part B §B.2.4's design plan) — loaded sitewide
+// here, same as Instrument Sans, since next/font requires a module-level
+// call and the CSS variable needs to be on <html> to cascade.
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 const TITLE = SITE_TITLE;
@@ -55,7 +65,7 @@ const websiteJsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${instrumentSans.variable} h-full`}>
+    <html lang="en" className={`${instrumentSans.variable} ${ibmPlexMono.variable} h-full`}>
       <head>
         <script
           type="application/ld+json"

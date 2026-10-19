@@ -2,7 +2,7 @@ import { NextResponse, after } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { sendEmail } from "@/lib/resend";
-import { buildNewOtEnquiryAdminEmail } from "@/lib/email-templates";
+import { buildNewOtEnquiryAdminEmail, buildOtEnquiryConfirmationEmail } from "@/lib/email-templates";
 import { isProductionDeploy } from "@/lib/environment";
 import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
 
@@ -105,6 +105,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Could not save your submission." }, { status: 500 });
   }
 
+  // Admin notification: ADMIN_EMAIL only, never any other address. Its own
+  // try/catch, independent of the confirmation email below — the row is
+  // already committed above, so neither of these two sends can undo that,
+  // and neither send's failure affects the other.
   if (process.env.ADMIN_EMAIL) {
     const adminEmail = process.env.ADMIN_EMAIL;
     const enquiryId = inserted.id;
@@ -123,6 +127,21 @@ export async function POST(request: Request) {
       }
     });
   }
+
+  // Confirmation to the person who submitted. Production-only by the same
+  // isProductionDeploy() guard above this code can't even be reached
+  // without, so there's no separate check needed here — this line simply
+  // never runs outside production, same as the admin email. Independent
+  // try/catch: if this fails, the already-stored row and the admin email
+  // above are both unaffected.
+  after(async () => {
+    try {
+      const { subject, html } = buildOtEnquiryConfirmationEmail();
+      await sendEmail({ to: email, subject, html });
+    } catch (err) {
+      console.error("Failed to send OT enquiry confirmation", err);
+    }
+  });
 
   return NextResponse.json({ ok: true });
 }

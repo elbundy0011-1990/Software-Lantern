@@ -66,6 +66,12 @@ export default function OtHomePage() {
             >
               Read the guides
             </Link>
+            <Link
+              href="/enquiry"
+              className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-[#1a1d22] border border-[#3f4b52]/[0.3]"
+            >
+              Send an enquiry
+            </Link>
           </div>
           <ComplianceLedger />
         </div>

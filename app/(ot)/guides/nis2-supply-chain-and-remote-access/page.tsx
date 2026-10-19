@@ -103,6 +103,15 @@ export default function SupplyChainArticlePage() {
             </li>
           </ul>
 
+          <div className="mt-10 text-center flex flex-wrap justify-center gap-3">
+            <Link href="/checker" className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-white inline-block" style={{ background: "#9a3412" }}>
+              Check your situation →
+            </Link>
+            <Link href="/enquiry" className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-[#1a1d22] border border-[#3f4b52]/[0.3] inline-block">
+              Send an enquiry
+            </Link>
+          </div>
+
           <hr className="border-[#3f4b52]/[0.2] my-10" />
           <p className="text-[13px] leading-[1.7] text-[#3f4b52] italic">
             This is a general guide based on published sources, not legal advice. Confirm your

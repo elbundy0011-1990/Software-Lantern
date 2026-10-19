@@ -193,3 +193,30 @@ export function buildNewOtEnquiryAdminEmail(input: {
     }),
   };
 }
+
+// TRIGGER: confirmation sent to the person who submitted an OT enquiry,
+// production only, after the row is already stored (app/api/ot-enquiries/
+// route.ts) — if this fails, the enquiry is still saved and the admin
+// notification above still fires regardless, since the two are
+// independent, separately-caught steps there, not sequential dependencies.
+// Deliberately plain, not emailLayout's branded card: no heading
+// treatment, no styled button, no product claims, no vendor names, one
+// factual link. The wording itself is fixed by instruction, not
+// paraphrased here, so it can't drift from what was actually approved.
+export function buildOtEnquiryConfirmationEmail(): { subject: string; html: string } {
+  const privacyUrl = `${SITE_URL}/privacy#ot-service`;
+  return {
+    subject: "We received your enquiry",
+    html: `<!doctype html>
+<html>
+  <body style="margin:0;padding:0;background:#ffffff;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+    <div style="max-width:560px;margin:0 auto;padding:40px 20px;font-size:15px;line-height:1.6;color:#0d1117;">
+      <p style="margin:0 0 16px;">Thanks for your enquiry. Software Lantern will review it and may contact you by email or phone.</p>
+      <p style="margin:0 0 16px;">Your details won&#39;t be shared with any other company unless we first ask you about that specific company and you agree.</p>
+      <p style="margin:0 0 16px;">Privacy policy: <a href="${privacyUrl}" style="color:#0d1117;">${privacyUrl}</a></p>
+      <p style="margin:0;">If you&#39;d like your details deleted, reply to this email.</p>
+    </div>
+  </body>
+</html>`,
+  };
+}

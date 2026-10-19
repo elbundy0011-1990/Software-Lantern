@@ -167,6 +167,12 @@ export default function PrivacyPolicyPage() {
             <li><strong>Supabase</strong> (database hosting and authentication)</li>
             <li><strong>Stripe</strong> (payment processing for legacy marketplace lead unlocks)</li>
             <li><strong>Vercel</strong> (website hosting)</li>
+            <li>
+              <strong>Vercel Web Analytics</strong> (usage analytics): measures page views and a
+              small number of named events (for example, that the scope checker was started or
+              completed, or that an enquiry was sent), without cookies. It never receives anything
+              you type into a form, such as your name, email, or free-text answers.
+            </li>
             <li><strong>Cloudflare</strong> (domain, DNS, bot-verification/Turnstile, and email routing)</li>
             <li><strong>Resend</strong> (sending internal notification emails to us about new submissions)</li>
           </ul>
@@ -227,6 +233,10 @@ export default function PrivacyPolicyPage() {
             <li>Authentication session cookies (via Supabase) if you have a legacy marketplace partner account</li>
             <li>Bot-verification tokens (via Cloudflare Turnstile) when submitting a form</li>
           </ul>
+          <p className={p}>
+            Vercel Web Analytics (see Section 5) does not use cookies; it identifies visits using a
+            hash generated from each request instead, discarded after 24 hours.
+          </p>
           <p className={p}>We do not currently use advertising or third-party tracking cookies.</p>
 
           <h2 className={h2}>10. The legacy software-matchmaking marketplace</h2>

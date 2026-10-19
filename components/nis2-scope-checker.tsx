@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { NIS2_DATES, OFFICIAL_SCOPE_TOOLS, type Nis2Country } from "@/lib/nis2-dates";
 import { COMPLIANCE_LEDGER } from "@/lib/compliance-ledger";
@@ -452,6 +453,12 @@ export function Nis2ScopeChecker({
                 >
                   Tell us about your situation →
                 </a>
+                <Link
+                  href="/enquiry"
+                  className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-[#1a1d22] border border-[#3f4b52]/[0.3]"
+                >
+                  Send an enquiry
+                </Link>
                 <button onClick={restart} className="text-[14px] font-semibold text-[#3f4b52] underline underline-offset-2">
                   Start over
                 </button>

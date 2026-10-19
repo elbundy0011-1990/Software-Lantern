@@ -35,10 +35,16 @@ export default function OtLayout({ children }: { children: React.ReactNode }) {
             ))}
             <Link
               href="/checker"
-              className="rounded px-4 py-[9px] font-semibold text-white"
-              style={{ background: "#9a3412" }}
+              className="rounded px-4 py-[9px] font-semibold text-[#9a3412] border border-[#9a3412]"
             >
               Check your situation
+            </Link>
+            <Link
+              href="/enquiry"
+              className="rounded px-4 py-[9px] font-semibold text-white whitespace-nowrap"
+              style={{ background: "#9a3412" }}
+            >
+              Send an enquiry
             </Link>
           </nav>
         </div>

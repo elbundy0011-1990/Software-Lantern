@@ -10,7 +10,7 @@ export const metadata: Metadata = pageMetadata({
   description: DESCRIPTION,
   path: "/who-runs-this",
   noindex: !OT_SITE_INDEXABLE,
-  siteName: "[Product name]",
+  siteName: "Software Lantern",
 });
 
 const p = "text-[16px] leading-[1.7] text-[#3f4b52] mb-4";
@@ -26,12 +26,12 @@ export default function WhoRunsThisPage() {
           </h1>
 
           <p className={p}>
-            This site is run by <strong>Johannes Cornelis de Boer</strong>, based in Copenhagen,
-            Denmark, the same controller named in this site&apos;s{" "}
-            <a href="/privacy" className="font-semibold underline text-[#9a3412]">privacy policy</a>.
-            There is no company behind it, no sales team, and no outside investors. [Add specific
-            background, relevant experience, and why this specific topic, here, before this page
-            goes live. Nothing is invented in its place.]
+            This site is run by Software Lantern, a one-person operation with no company behind
+            it, no sales team, and no outside investors. The legal entity and contact details are
+            in this site&apos;s{" "}
+            <a href="/privacy#ot-service" className="font-semibold underline text-[#9a3412]">privacy policy</a>.
+            [Add specific background, relevant experience, and why this specific topic, here,
+            before this page goes live. Nothing is invented in its place.]
           </p>
 
           <h2 className={h2}>Why this exists</h2>

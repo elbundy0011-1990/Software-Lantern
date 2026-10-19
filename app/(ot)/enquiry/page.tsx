@@ -11,7 +11,7 @@ export const metadata: Metadata = pageMetadata({
   description: DESCRIPTION,
   path: "/enquiry",
   noindex: !OT_SITE_INDEXABLE,
-  siteName: "[Product name]",
+  siteName: "Software Lantern",
 });
 
 export default function EnquiryPage() {

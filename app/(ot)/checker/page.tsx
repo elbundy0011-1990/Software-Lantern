@@ -9,7 +9,7 @@ export const metadata: Metadata = pageMetadata({
     "Check whether NIS2, the Cyber Resilience Act, or the Machinery Regulation apply to your business as a machine builder, factory operator, or system integrator in the Netherlands, Belgium, or Luxembourg.",
   path: "/checker",
   noindex: !OT_SITE_INDEXABLE,
-  siteName: "[Product name]",
+  siteName: "Software Lantern",
 });
 
 export default function CheckerPage() {

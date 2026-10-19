@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { ComplianceLedger } from "@/components/compliance-ledger";
-import { DisclosureSlot } from "@/components/disclosure-slot";
+// components/disclosure-slot.tsx is intentionally not imported/rendered
+// here per the 2026-10-19 instruction; the file is kept unmodified so it
+// can be reinstated once the real disclosure text is ready.
 
 export const metadata: Metadata = pageMetadata({
   title: "Secure Remote Access to Machines, Under NIS2, the CRA, and the Machinery Regulation",
@@ -11,7 +13,7 @@ export const metadata: Metadata = pageMetadata({
     "What NIS2/Cyberbeveiligingswet, the Cyber Resilience Act, and the Machinery Regulation mean for machine builders, factory operators, and system integrators in the Netherlands, Belgium, and Luxembourg.",
   path: "/",
   noindex: !OT_SITE_INDEXABLE,
-  siteName: "[Product name]",
+  siteName: "Software Lantern",
 });
 
 const AUDIENCES = [
@@ -62,12 +64,6 @@ export default function OtHomePage() {
             </Link>
           </div>
           <ComplianceLedger />
-        </div>
-      </section>
-
-      <section className="border-b border-[#3f4b52]/[0.15]">
-        <div className="max-w-[900px] mx-auto px-5 sm:px-8 py-10">
-          <DisclosureSlot />
         </div>
       </section>
 

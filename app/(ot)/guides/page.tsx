@@ -8,7 +8,7 @@ export const metadata: Metadata = pageMetadata({
   description: "Source-cited guides on NIS2, the Cyber Resilience Act, the Machinery Regulation, and IEC 62443 for machine builders, operators, and integrators.",
   path: "/guides",
   noindex: !OT_SITE_INDEXABLE,
-  siteName: "[Product name]",
+  siteName: "Software Lantern",
 });
 
 const GUIDES = [

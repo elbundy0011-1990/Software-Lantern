@@ -11,7 +11,7 @@ export const metadata: Metadata = pageMetadata({
   description: DESCRIPTION,
   path: "/guides/iec-62443-explained",
   noindex: !OT_SITE_INDEXABLE,
-  siteName: "[Product name]",
+  siteName: "Software Lantern",
 });
 
 const h2 = "font-sans font-semibold text-[24px] leading-[1.2] tracking-[-0.02em] mt-12 mb-4 text-[#1a1d22]";

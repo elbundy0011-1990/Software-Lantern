@@ -5,7 +5,7 @@ export const metadata: Metadata = pageMetadata({
   title: "Privacy Policy",
   description: "How this site collects, uses, and protects personal data, for both the OT cybersecurity resource and the legacy EUDR/PLM/Battery Passport marketplace.",
   path: "/privacy",
-  siteName: "[Product name]",
+  siteName: "Software Lantern",
 });
 
 const h2 = "font-sans font-semibold text-[26px] leading-[1.2] tracking-[-0.02em] mt-16 mb-4 text-[#1a1d22]";
@@ -46,7 +46,7 @@ export default function PrivacyPolicyPage() {
             will be updated to reflect the new controller.
           </p>
 
-          <h2 className={h2}>2. What this site does</h2>
+          <h2 id="ot-service" className={h2}>2. What this site does</h2>
           <p className={p}>
             This is a content and enquiry resource about industrial cybersecurity: secure remote
             access to machines and OT systems, and the NIS2/Cyberbeveiligingswet, Cyber Resilience

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { TurnstileWidget, type TurnstileWidgetHandle } from "@/components/turnstile-widget";
 import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
@@ -9,15 +10,26 @@ import type { Audience, Size, RemoteAccess } from "@/components/nis2-scope-check
 
 const ACCENT = "#9a3412";
 
-// CONSENT WORDING — owner name filled in per 2026-10-19 instruction 5
-// (the name already used in the live privacy policy, app/(marketing)/
-// privacy/page.tsx §1/§12: "Johannes Cornelis de Boer"). Still carries the
-// "pending approval" badge below until you give final sign-off on the
-// wording itself, same treatment as before — only the placeholder was
-// resolved, not the wording.
-const OWNER_NAME = "Johannes Cornelis de Boer";
-const CONSENT_INTRO = `${OWNER_NAME} will use your answers to review your enquiry and may contact you about it by email or phone. Your details won't be shared with any other company unless we first ask you about that specific company and you agree. See our privacy policy.`;
-const CONSENT_CHECKBOX_LABEL = `I understand ${OWNER_NAME} will use my answers to review my enquiry and may contact me about it, and that my details won't be shared with any other company unless I'm first asked about that specific company and I agree.`;
+// CONSENT WORDING — final, per the 2026-10-19 instruction. Uses
+// "Software Lantern," never the controller's personal name (that name
+// stays only in the privacy policy's controller/contact sections, per the
+// same instruction). "Privacy policy" links to the OT-specific section of
+// the policy (app/(ot)/privacy/page.tsx's #ot-service anchor), not the
+// page root, since that page also describes the unrelated legacy
+// marketplace.
+function ConsentText() {
+  return (
+    <>
+      Software Lantern will use your answers to review your enquiry and may contact you about it
+      by email or phone. Your details won&apos;t be shared with any other company unless we first
+      ask you about that specific company and you agree. See our{" "}
+      <Link href="/privacy#ot-service" className="underline font-semibold">privacy policy</Link>.
+    </>
+  );
+}
+
+const CONSENT_CHECKBOX_LABEL =
+  "I understand Software Lantern will use my answers to review my enquiry and may contact me about it, and that my details won't be shared with any other company unless I'm first asked about that specific company and I agree.";
 
 const ROLE_OPTIONS = ["Owner / founder", "Engineering", "IT / security", "Operations", "Other"];
 const SECTOR_OPTIONS = [
@@ -79,10 +91,24 @@ export function OtEnquiryForm({
   const turnstileRef = useRef<TurnstileWidgetHandle>(null);
 
   const submit = async () => {
+    // Work email and consent are required; validated client-side first for
+    // a fast, clear message, and re-validated server-side in
+    // app/api/ot-enquiries/route.ts regardless, since a client check can
+    // always be bypassed by posting directly to the API.
     const email = form.email.trim().toLowerCase();
+    if (!email) {
+      setError("A work email address is required.");
+      setStatus("error");
+      return;
+    }
     const domain = email.split("@")[1];
     if (domain && FREE_EMAIL_DOMAINS.includes(domain)) {
-      setError("Please use your work email address.");
+      setError("Please use your work email address, not a personal email provider.");
+      setStatus("error");
+      return;
+    }
+    if (!consent) {
+      setError("Please confirm the consent checkbox to continue.");
       setStatus("error");
       return;
     }
@@ -128,43 +154,50 @@ export function OtEnquiryForm({
     return (
       <div className="rounded border p-7 text-center" style={{ borderColor: `${ACCENT}40`, background: `${ACCENT}0d` }}>
         <p className="font-sans font-semibold text-[19px] mb-2 text-[#1a1d22]">Thanks, that&apos;s been sent.</p>
-        <p className="text-[15px] text-[#3f4b52]">{CONSENT_INTRO}</p>
+        <p className="text-[15px] text-[#3f4b52]"><ConsentText /></p>
       </div>
     );
   }
 
   return (
     <section id="ot-enquiry-form" className="max-w-[640px] mx-auto">
-      <div className="mb-4 inline-flex items-center gap-2 rounded-sm px-3 py-1 text-[12px] font-bold uppercase tracking-[0.06em]" style={{ background: "#fef3c7", color: "#78350f" }}>
-        Wording below, pending your final approval
-      </div>
       <h3 className="font-sans font-semibold text-[22px] mb-2 text-[#1a1d22]">Tell us about your situation</h3>
-      <p className="text-[14px] text-[#3f4b52] mb-5">{CONSENT_INTRO}</p>
+      <p className="text-[14px] text-[#3f4b52] mb-5"><ConsentText /></p>
 
       <div className="grid gap-3 mb-4">
         <input
           value={form.name}
           onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
           placeholder="Your name"
+          required
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px]"
         />
         <input
           value={form.company}
           onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))}
           placeholder="Company name"
+          required
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px]"
         />
-        <input
-          value={form.email}
-          onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-          placeholder="Work email"
-          type="email"
-          className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px]"
-        />
+        <div>
+          <input
+            value={form.email}
+            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+            placeholder="Work email (required)"
+            type="email"
+            required
+            aria-required="true"
+            className="w-full rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px]"
+          />
+          <p className="mt-1 text-[12px] text-[#3f4b52]">
+            Required. Please use your work email address, not a personal provider (e.g. Gmail).
+          </p>
+        </div>
         <input
           value={form.phone}
           onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
           placeholder="Phone number"
+          required
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px]"
         />
         <select
@@ -223,7 +256,7 @@ export function OtEnquiryForm({
         />
       </div>
 
-      {/* Honeypot — hidden from real visitors, must stay empty */}
+      {/* Honeypot, hidden from real visitors, must stay empty */}
       <input
         value={website}
         onChange={(e) => setWebsite(e.target.value)}
@@ -235,7 +268,14 @@ export function OtEnquiryForm({
       />
 
       <label className="flex items-start gap-2 mb-4 text-[14px] text-[#3f4b52]">
-        <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-[3px]" />
+        <input
+          type="checkbox"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          required
+          aria-required="true"
+          className="mt-[3px]"
+        />
         {CONSENT_CHECKBOX_LABEL}
       </label>
 

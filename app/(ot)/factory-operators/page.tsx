@@ -10,7 +10,7 @@ export const metadata: Metadata = pageMetadata({
     "What NIS2 means for factory and plant operators in the Netherlands, Belgium, and Luxembourg, and how it affects vetting your suppliers' remote access.",
   path: "/factory-operators",
   noindex: !OT_SITE_INDEXABLE,
-  siteName: "[Product name]",
+  siteName: "Software Lantern",
 });
 
 export default function FactoryOperatorsPage() {

@@ -10,7 +10,7 @@ export const metadata: Metadata = pageMetadata({
     "What NIS2, the Cyber Resilience Act, and the Machinery Regulation mean for machine builders and manufacturers in the Netherlands, Belgium, and Luxembourg.",
   path: "/machine-builders",
   noindex: !OT_SITE_INDEXABLE,
-  siteName: "[Product name]",
+  siteName: "Software Lantern",
 });
 
 export default function MachineBuildersPage() {

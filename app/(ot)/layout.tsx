@@ -1,12 +1,17 @@
 import Link from "next/link";
-import { DisclosureSlot } from "@/components/disclosure-slot";
+import { OtLogo } from "@/components/ot-logo";
 
 // New site identity, deliberately separate from components/site-header.tsx
 // / components/site-footer.tsx (the EUDR/PLM/Battery-Passport marketplace
-// nav) — per the 2026-10-19 instruction, this is the site's new public
-// identity, and /admin, /portal, and the marketplace pages are
-// deliberately not linked from here (constraint 8), while staying
-// reachable at their existing URLs for anyone who already has them.
+// nav): this is the site's new public identity, and /admin, /portal, and
+// the marketplace pages are deliberately not linked from here (constraint
+// 8), while staying reachable at their existing URLs for anyone who
+// already has them.
+//
+// The disclosure slot (components/disclosure-slot.tsx) is intentionally
+// not rendered here per the 2026-10-19 instruction. The component is kept
+// in the codebase, unmodified, so it can be reinstated with a single
+// import + JSX line whenever the real disclosure text is ready.
 const NAV = [
   { label: "Machine builders", href: "/machine-builders" },
   { label: "Factory operators", href: "/factory-operators" },
@@ -19,8 +24,8 @@ export default function OtLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex flex-col" style={{ background: "#f6f5f1" }}>
       <header className="border-b border-[#3f4b52]/[0.15] bg-[#f6f5f1]">
         <div className="max-w-[1100px] mx-auto px-5 sm:px-8 py-4 flex items-center gap-8">
-          <Link href="/" className="font-sans font-semibold text-[17px] text-[#1a1d22] whitespace-nowrap">
-            [Product name]
+          <Link href="/" aria-label="Software Lantern home">
+            <OtLogo height={26} />
           </Link>
           <nav className="hidden min-[900px]:flex items-center gap-6 ml-auto text-[14px] font-semibold text-[#3f4b52]">
             {NAV.map((item) => (
@@ -44,8 +49,8 @@ export default function OtLayout({ children }: { children: React.ReactNode }) {
       <footer className="border-t border-[#3f4b52]/[0.15] mt-10">
         <div className="max-w-[1100px] mx-auto px-5 sm:px-8 py-10 grid grid-cols-1 sm:grid-cols-4 gap-8 text-[14px]">
           <div className="sm:col-span-2">
-            <p className="font-sans font-semibold text-[16px] text-[#1a1d22] mb-2">[Product name]</p>
-            <p className="text-[#3f4b52] max-w-[36ch]">
+            <OtLogo height={24} />
+            <p className="text-[#3f4b52] max-w-[36ch] mt-3">
               Secure remote access to machines and OT, and what NIS2, the Cyber Resilience Act, and
               the Machinery Regulation mean for machine builders, factory operators, and system
               integrators in the Netherlands, Belgium, and Luxembourg.
@@ -66,9 +71,6 @@ export default function OtLayout({ children }: { children: React.ReactNode }) {
               <a href="mailto:info@softwarelantern.com" className="text-[#9a3412] hover:underline">Contact</a>
             </div>
           </div>
-        </div>
-        <div className="max-w-[1100px] mx-auto px-5 sm:px-8 pb-8">
-          <DisclosureSlot />
         </div>
       </footer>
     </div>

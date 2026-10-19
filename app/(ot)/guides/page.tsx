@@ -25,7 +25,7 @@ const GUIDES = [
   {
     href: "/guides/machinery-regulation-cybersecurity",
     title: "The Machinery Regulation's cybersecurity requirements",
-    body: "New essential safety requirements linking cyberattacks to physical hazard, from January 2027.",
+    body: "New essential safety requirements linking cyberattacks to physical hazard.",
   },
   {
     href: "/guides/iec-62443-explained",

@@ -41,7 +41,7 @@ export function ComplianceLedger({ limit }: { limit?: number }) {
               rel="noopener noreferrer"
               className="text-[#9ca3af] underline underline-offset-2"
             >
-              [{entry.citationLabel}]
+              Source: {entry.citationLabel}, checked {entry.lastVerifiedDisplay}
             </a>
           </li>
         ))}

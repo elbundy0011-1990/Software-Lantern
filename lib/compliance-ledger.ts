@@ -28,6 +28,7 @@ export interface LedgerEntry {
   citationLabel: string;
   citationUrl: string;
   lastVerified: string; // ISO date this specific entry was last checked
+  lastVerifiedDisplay: string; // human display date, e.g. "19 October 2026" — used in the public "Source: ..., checked ..." line
   verified: boolean; // false => withheld from public rendering entirely, pending a quoted primary-source sentence
 }
 
@@ -41,6 +42,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     citationLabel: "Moniteur belge / eJustice ELI 2024202344",
     citationUrl: "https://www.ejustice.just.fgov.be/eli/loi/2024/04/26/2024202344/justel",
     lastVerified: "2026-10-19",
+    lastVerifiedDisplay: "19 October 2026",
     verified: false, // pending — no quoted primary-source sentence on file; withheld from public pages 2026-10-19
   },
   {
@@ -56,6 +58,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     citationLabel: "Legilux (Mémorial A n° 225 de 2026)",
     citationUrl: "https://legilux.public.lu/eli/etat/leg/loi/2026/05/05/a225/jo",
     lastVerified: "2026-10-19",
+    lastVerifiedDisplay: "19 October 2026",
     verified: false, // pending — no quoted primary-source sentence on file; withheld from public pages 2026-10-19
   },
   {
@@ -67,29 +70,42 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     citationLabel: "Staatsblad 2026, 187 and 189 (Art. 35)",
     citationUrl: "https://zoek.officielebekendmakingen.nl/stb-2026-189.html",
     lastVerified: "2026-10-19",
+    lastVerifiedDisplay: "19 October 2026",
     verified: true, // this one's Article 35 text was read directly, see lib/nis2-dates.ts
   },
   {
     id: "cra-reporting",
     date: "2026-09-11",
     display: "11 September 2026",
-    label: "Cyber Resilience Act vulnerability/incident reporting obligations begin",
+    label: "Cyber Resilience Act, Article 14, applies",
     status: "upcoming",
-    citationLabel: "Regulation (EU) 2024/2847",
-    citationUrl: "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ:L_202402847",
+    // Verbatim, Art. 71(2): "This Regulation shall apply from 11 December 2027.
+    // However, Article 14 shall apply from 11 September 2026 and Chapter IV
+    // (Articles 35 to 51) shall apply from 11 June 2026." Read directly
+    // 2026-10-19 against the ELI text below.
+    citationLabel: "Regulation (EU) 2024/2847, Art. 71(2)",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng",
     lastVerified: "2026-10-19",
-    verified: false, // pending — no quoted primary-source sentence on file; withheld from public pages 2026-10-19
+    lastVerifiedDisplay: "19 October 2026",
+    verified: true,
   },
   {
     id: "machinery-regulation",
     date: "2027-01-20",
     display: "20 January 2027",
-    label: "Machinery Regulation (EU) 2023/1230 applies, no transition period",
+    label: "Machinery Regulation (EU) 2023/1230",
     status: "upcoming",
     citationLabel: "Regulation (EU) 2023/1230",
-    citationUrl: "https://eur-lex.europa.eu/eli/reg/2023/1230/oj",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2023/1230/oj/eng",
     lastVerified: "2026-10-19",
-    verified: false, // pending — no quoted primary-source sentence on file; withheld from public pages 2026-10-19
+    lastVerifiedDisplay: "19 October 2026",
+    // pending — the application-article quote (fixing this 20 January 2027
+    // date and whether there's a transition period) is not on file yet;
+    // withheld from public pages 2026-10-19. Article 51(2) (repeal of
+    // Directive 2006/42/EC, 14 January 2027) and Article 52(1) (transitional
+    // sale of pre-existing stock) ARE verified — see the guide page, which
+    // cites them directly rather than through this entry.
+    verified: false,
   },
   {
     id: "cra-full",
@@ -97,10 +113,12 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     display: "11 December 2027",
     label: "Cyber Resilience Act fully applies",
     status: "upcoming",
-    citationLabel: "Regulation (EU) 2024/2847",
-    citationUrl: "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ:L_202402847",
+    // Verbatim, Art. 71(2): see cra-reporting above — same sentence, same source.
+    citationLabel: "Regulation (EU) 2024/2847, Art. 71(2)",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng",
     lastVerified: "2026-10-19",
-    verified: false, // pending — no quoted primary-source sentence on file; withheld from public pages 2026-10-19
+    lastVerifiedDisplay: "19 October 2026",
+    verified: true,
   },
 ];
 

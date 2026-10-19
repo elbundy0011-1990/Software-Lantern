@@ -48,11 +48,14 @@ export default function MachineBuildersPage() {
           </h2>
           <p className="text-[15px] leading-[1.6] text-[#3f4b52] mb-4">
             These two generally apply to manufacturers placing a connected product on the market,
-            regardless of company size. The Cyber Resilience Act&apos;s vulnerability-reporting
-            obligations begin, and the Machinery Regulation applies with no transition period,
-            on the dates shown above. Remote-access functionality on a machine is treated as a
-            security-critical component by sources discussing the CRA&apos;s application to
-            connected machinery.
+            regardless of company size. The Cyber Resilience Act&apos;s Article 14 reporting
+            obligations begin, and it fully applies, on the dates shown above. The Machinery
+            Regulation adds its own cybersecurity-related requirements for machinery; see{" "}
+            <Link href="/guides/machinery-regulation-cybersecurity" className="underline font-semibold" style={{ color: "#9a3412" }}>
+              the guide
+            </Link>{" "}
+            for details. Remote-access functionality on a machine is treated as a security-critical
+            component by sources discussing the CRA&apos;s application to connected machinery.
           </p>
           <p className="text-[14px] text-[#3f4b52]">
             Neither regulation names or requires a specific product or vendor.

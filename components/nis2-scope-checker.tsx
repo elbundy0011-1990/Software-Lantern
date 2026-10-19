@@ -219,6 +219,7 @@ function Iec62443Note() {
 // the "placing a product on the market" side of this.
 function ProductRulesNote() {
   const cra = COMPLIANCE_LEDGER.find((e) => e.id === "cra-reporting")!;
+  const craFull = COMPLIANCE_LEDGER.find((e) => e.id === "cra-full")!;
   const machinery = COMPLIANCE_LEDGER.find((e) => e.id === "machinery-regulation")!;
   return (
     <div className="rounded border border-[#3f4b52]/[0.2] bg-white p-5 text-[14px] text-[#3f4b52] mb-4">
@@ -226,16 +227,17 @@ function ProductRulesNote() {
       <p className="mb-2">
         Your company&apos;s size mainly affects whether NIS2&apos;s organizational rules apply to you. It
         generally does not affect two separate, product-level rules that apply to manufacturers
-        regardless of size: the Cyber Resilience Act (
+        regardless of size: the Cyber Resilience Act, under which Article 14 applies from{" "}
+        <strong>{cra.display}</strong> and the Regulation fully applies from{" "}
+        <strong>{craFull.display}</strong> (
         <a href={cra.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
-          {cra.citationLabel}
+          Source: {cra.citationLabel}, checked {cra.lastVerifiedDisplay}
         </a>
-        ) and the Machinery Regulation (
+        ), and the Machinery Regulation (
         <a href={machinery.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
           {machinery.citationLabel}
         </a>
-        ). Specific obligation dates for both are pending primary-source verification; the official
-        texts linked above have the current timeline.
+        ).
       </p>
       <p>
         Neither names or requires any specific product or vendor. Both set outcomes (secure by

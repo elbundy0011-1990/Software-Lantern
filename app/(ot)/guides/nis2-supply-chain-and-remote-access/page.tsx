@@ -41,9 +41,7 @@ export default function SupplyChainArticlePage() {
             cybersecurity risk-management measures for in-scope entities, including supply-chain
             security (assessing the security practices of direct suppliers and service providers,
             such as a machine builder or integrator with remote access into its systems) and access
-            management, including multi-factor or continuous authentication where appropriate. The
-            exact sub-clause wording is pending primary-source verification against the official
-            EUR-Lex text.
+            management, including multi-factor or continuous authentication where appropriate.
           </p>
 
           <h2 className={h2}>What NIS2 does not require</h2>

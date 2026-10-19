@@ -21,6 +21,7 @@ const link = "font-semibold underline text-[#9a3412]";
 
 export default function CraGuidePage() {
   const reporting = COMPLIANCE_LEDGER.find((e) => e.id === "cra-reporting")!;
+  const full = COMPLIANCE_LEDGER.find((e) => e.id === "cra-full")!;
 
   return (
     <main data-screen-label="CRA guide for machine builders">
@@ -37,11 +38,18 @@ export default function CraGuidePage() {
 
           <h2 className={h2}>Dates that matter</h2>
           <p className={p}>
-            The regulation phases in vulnerability/incident reporting obligations ahead of full
-            application. Specific dates and exact article wording are pending primary-source
-            verification against the official text.{" "}
+            Article 71, &ldquo;Entry into force and application,&rdquo; sets a phased timeline:
+          </p>
+          <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
+            &ldquo;This Regulation shall apply from {full.display}. However, Article 14 shall apply
+            from {reporting.display} and Chapter IV (Articles 35 to 51) shall apply from 11 June
+            2026.&rdquo;
+          </blockquote>
+          <p className={p}>
+            Article 14 is &ldquo;Reporting obligations of manufacturers.&rdquo; Chapter IV is
+            &ldquo;Notification of conformity assessment bodies.&rdquo;{" "}
             <a href={reporting.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
-              {reporting.citationLabel}
+              Source: {reporting.citationLabel}, checked {reporting.lastVerifiedDisplay}
             </a>
           </p>
 

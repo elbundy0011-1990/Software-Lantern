@@ -36,11 +36,26 @@ export default function MachineryRegulationGuidePage() {
             </a>
           </p>
 
+          <h2 className={h2}>Repeal and transition</h2>
+          <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
+            Article 51(2): &ldquo;Directive 2006/42/EC is repealed with effect from 14 January
+            2027.&rdquo;
+          </blockquote>
+          <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
+            Article 52(1): &ldquo;Member States shall not impede the making available on the market
+            of products which were placed on the market in conformity with Directive 2006/42/EC
+            before 14 January 2027.&rdquo;
+          </blockquote>
+          <p className={p}>
+            <a href={entry.citationUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline text-[#9a3412]">
+              Source: {entry.citationLabel}, checked {entry.lastVerifiedDisplay}
+            </a>
+          </p>
+
           <h2 className={h2}>What&apos;s new</h2>
           <p className={p}>
-            For the first time, the regulation adds cybersecurity-related essential health and
-            safety requirements for machinery. Its application date and the specific requirements
-            are pending primary-source verification against the official text linked above.
+            The regulation adds cybersecurity-related essential health and safety requirements for
+            machinery. See the official text linked above for the specifics.
           </p>
 
           <h2 className={h2}>It&apos;s a Regulation, not a Directive</h2>

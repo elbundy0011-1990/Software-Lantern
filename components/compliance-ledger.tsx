@@ -7,12 +7,11 @@ const STATUS_COLOR: Record<LedgerEntry["status"], string> = {
 
 // The site's signature element (docs/OT-CYBER-PLAN.md Part B §B.2.4):
 // styled like an actual OT remote-access session log, but populated only
-// with real, cited, dated regulatory facts from lib/compliance-ledger.ts
-// — never fabricated activity, customers, or counts. Per the 2026-10-19
-// pull: an entry only renders here once `verified` is true and it carries
-// a quoted primary-source sentence — unverified entries stay in the data
-// file, flagged, until a quote is supplied, rather than rendering inline
-// as "[VERIFY]".
+// with real, cited, dated regulatory facts from lib/compliance-ledger.ts,
+// never fabricated activity, customers, or counts. An entry only renders
+// here once `verified` is true and it carries evidence — unverified
+// entries stay in the data file, flagged, until evidence is supplied.
+// See docs/CLAIMS.md.
 export function ComplianceLedger({ limit }: { limit?: number }) {
   const verifiedEntries = COMPLIANCE_LEDGER_SORTED.filter((entry) => entry.verified);
   const entries = limit ? verifiedEntries.slice(0, limit) : verifiedEntries;

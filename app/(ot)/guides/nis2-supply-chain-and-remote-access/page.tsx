@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { OFFICIAL_SCOPE_TOOLS } from "@/lib/nis2-dates";
+import { COMPLIANCE_LEDGER, SUPPLEMENTARY_EVIDENCE } from "@/lib/compliance-ledger";
 
 const TITLE = "NIS2 Supply Chain and Remote Access, Explained";
 const DESCRIPTION = "What NIS2 Article 21(2) actually requires for supply-chain security and remote access, with sources cited, and what it does not require.";
@@ -21,6 +22,12 @@ const ul = "list-disc pl-6 mb-4 grid gap-1.5 text-[16px] leading-[1.7] text-[#3f
 const link = "font-semibold underline text-[#9a3412]";
 
 export default function SupplyChainArticlePage() {
+  const article21 = SUPPLEMENTARY_EVIDENCE.find((e) => e.id === "nis2-article-21-2-d")!;
+  const article21Quote = article21.quotes[0];
+  const nl = COMPLIANCE_LEDGER.find((e) => e.id === "nis2-nl")!;
+  const be = COMPLIANCE_LEDGER.find((e) => e.id === "nis2-be")!;
+  const lu = COMPLIANCE_LEDGER.find((e) => e.id === "nis2-lu")!;
+
   return (
     <main data-screen-label="NIS2 supply chain and remote access guide">
       <section>
@@ -41,19 +48,13 @@ export default function SupplyChainArticlePage() {
             to take minimum cybersecurity risk-management measures. Verbatim:
           </p>
           <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
-            &ldquo;The measures referred to in paragraph 1 shall be based on an all-hazards approach
-            that aims to protect network and information systems and the physical environment of
-            those systems from incidents, and shall include at least the following: (a) policies on
-            risk analysis and information system security; (b) incident handling; (c) business
-            continuity, such as backup management and disaster recovery, and crisis management; (d)
-            supply chain security, including security-related aspects concerning the relationships
-            between each entity and its direct suppliers or service providers.&rdquo;
+            &ldquo;{article21Quote.text}&rdquo;
           </blockquote>
           <p className={p}>
             Point (d), supply chain security, covers a machine builder or integrator with remote
             access into its customer&apos;s systems.{" "}
-            <a href="https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng" target="_blank" rel="noopener noreferrer" className={link}>
-              Source: Directive (EU) 2022/2555, Art. 21(2)(d), checked 19 October 2026
+            <a href={article21.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
+              Source: {article21.citationLabel}, checked {article21.lastVerifiedDisplay}
             </a>
           </p>
 
@@ -80,6 +81,68 @@ export default function SupplyChainArticlePage() {
               contractual and commercial, not a separate legal requirement under NIS2 itself.
             </li>
           </ul>
+
+          <h2 className={h2}>NIS2 across the Netherlands, Belgium, and Luxembourg</h2>
+          <p className={p}>
+            NIS2 is a Directive: each country transposes it into its own national law, on its own
+            date.
+          </p>
+
+          <p className={p}><strong>Netherlands</strong> &ndash; Cyberbeveiligingswet, {nl.citationLabel}:</p>
+          {nl.evidence.kind === "quote" && (
+            <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-2">
+              &ldquo;{nl.evidence.quotes[0].text}&rdquo;
+            </blockquote>
+          )}
+          {nl.evidence.kind === "quote" && nl.evidence.quotes[0].translation && (
+            <blockquote className="border-l-4 border-[#3f4b52]/[0.25] pl-4 text-[15px] leading-[1.7] text-[#3f4b52] mb-2">
+              Our translation: &ldquo;{nl.evidence.quotes[0].translation}&rdquo;
+            </blockquote>
+          )}
+          <p className={p}>
+            <a href={nl.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
+              Source: {nl.citationLabel}, checked {nl.lastVerifiedDisplay}
+            </a>
+          </p>
+
+          <p className={p}><strong>Belgium</strong> &ndash; {be.citationLabel}:</p>
+          {be.evidence.kind === "quote" && (
+            <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-2">
+              &ldquo;{be.evidence.quotes[0].text}&rdquo;
+            </blockquote>
+          )}
+          {be.evidence.kind === "quote" && be.evidence.quotes[0].translation && (
+            <blockquote className="border-l-4 border-[#3f4b52]/[0.25] pl-4 text-[15px] leading-[1.7] text-[#3f4b52] mb-2">
+              Our translation: &ldquo;{be.evidence.quotes[0].translation}&rdquo;
+            </blockquote>
+          )}
+          <p className={p}>
+            <a href={be.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
+              Source: {be.citationLabel}, checked {be.lastVerifiedDisplay}
+            </a>
+          </p>
+
+          <p className={p}><strong>Luxembourg</strong> &ndash; {lu.citationLabel}:</p>
+          {lu.evidence.kind === "record" && (
+            <ul className={ul}>
+              {lu.evidence.fields.map((f) => (
+                <li key={f.label}>{f.label}: {f.value}</li>
+              ))}
+            </ul>
+          )}
+          <p className={p}>
+            <a href={lu.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
+              Source: {lu.citationLabel}, checked {lu.lastVerifiedDisplay}
+            </a>
+            {lu.subjectUrl && (
+              <>
+                {" "}&middot;{" "}
+                <a href={lu.subjectUrl} target="_blank" rel="noopener noreferrer" className={link}>
+                  {lu.subjectLabel}
+                </a>
+              </>
+            )}
+          </p>
 
           <h2 className={h2}>Check your own situation</h2>
           <p className={p}>

@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/check-claims.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check-claims": "node scripts/check-claims.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

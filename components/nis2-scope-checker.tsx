@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
-import { NIS2_DATES, OFFICIAL_SCOPE_TOOLS, type Nis2Country } from "@/lib/nis2-dates";
+import { OFFICIAL_SCOPE_TOOLS, LUXEMBOURG_AUTHORITY, type Nis2Country } from "@/lib/nis2-dates";
 import { COMPLIANCE_LEDGER } from "@/lib/compliance-ledger";
 import { CONSENT_SENTENCE } from "@/lib/consent-text";
 import { ComplianceLedger } from "./compliance-ledger";
@@ -122,21 +122,16 @@ function OptionCard({
 const backButtonClass =
   "rounded px-5 py-[10px] font-sans font-semibold text-[14px] text-[#3f4b52] border border-[#3f4b52]/[0.3] hover:bg-[#3f4b52]/[0.06]";
 
-function countryInfo(country: Nis2Country | null) {
-  if (country === "NL") return NIS2_DATES.netherlands;
-  if (country === "BE") return NIS2_DATES.belgium;
-  if (country === "LU") return NIS2_DATES.luxembourg;
-  return null;
-}
-
-// Gates the in-force date/citation sentence in Nis2OrgStatus below: only
-// render it once the matching Compliance Ledger entry is verified, so an
-// unquoted claim never renders publicly. Flip when lib/compliance-ledger.ts
-// flips, no separate edit needed here.
-function countryDateVerified(country: Nis2Country | null): boolean {
+// The in-force date/citation sentence in Nis2OrgStatus below reads
+// straight from the matching Compliance Ledger entry, and only renders
+// once that entry is verified, so an unsourced claim never renders
+// publicly. Flip the entry in lib/compliance-ledger.ts, no separate
+// edit needed here.
+function countryLedgerEntry(country: Nis2Country | null) {
   const id = country === "NL" ? "nis2-nl" : country === "BE" ? "nis2-be" : country === "LU" ? "nis2-lu" : null;
-  if (!id) return false;
-  return COMPLIANCE_LEDGER.find((e) => e.id === id)?.verified ?? false;
+  if (!id) return null;
+  const entry = COMPLIANCE_LEDGER.find((e) => e.id === id);
+  return entry && entry.verified ? entry : null;
 }
 
 function OfficialToolNote({ country }: { country: Nis2Country | null }) {
@@ -156,7 +151,7 @@ function OfficialToolNote({ country }: { country: Nis2Country | null }) {
       ) : country === "LU" ? (
         <p className="text-[13px]">
           No Luxembourg-specific self-evaluation tool was found as of this writing. The competent
-          authority is the Institut Luxembourgeois de Régulation (ILR).
+          authority is the {LUXEMBOURG_AUTHORITY}.
         </p>
       ) : (
         <>
@@ -385,7 +380,7 @@ function ResultHeading({ children, tone }: { children: React.ReactNode; tone: "i
 }
 
 function Nis2OrgStatus({ country, size, audience }: { country: Nis2Country | null; size: Size | null; audience: Audience | null }) {
-  const info = countryInfo(country);
+  const entry = countryLedgerEntry(country);
   if (size === "small_micro") {
     return (
       <p className="text-[15px] text-[#3f4b52] text-center mb-4">
@@ -402,11 +397,15 @@ function Nis2OrgStatus({ country, size, audience }: { country: Nis2Country | nul
         {audience === "operator"
           ? "Whether NIS2 applies to you as an organization depends on your specific sector among its 18 covered sectors, which this checker doesn't attempt to classify (the official tool below does). Size is generally the first gate: at medium or large, you clear that threshold if your sector is covered."
           : "Machinery and equipment manufacturing (NACE division 28) sits in NIS2 Annex II, which generally produces important-entity status for medium and large companies, not essential."}
-        {info && country !== "other" && country !== "not_sure" && countryDateVerified(country) && (
+        {entry && country !== "other" && country !== "not_sure" && (
           <>
             {" "}In{" "}
             {country === "NL" ? "the Netherlands" : country === "BE" ? "Belgium" : "Luxembourg"}, this
-            has applied since <strong>{info.inForceDisplay}</strong> ({info.citation}).
+            has applied since <strong>{entry.display}</strong> (
+            <a href={entry.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
+              Source: {entry.citationLabel}, checked {entry.lastVerifiedDisplay}
+            </a>
+            ).
           </>
         )}
       </p>

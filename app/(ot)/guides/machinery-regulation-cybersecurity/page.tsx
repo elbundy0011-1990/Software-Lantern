@@ -20,6 +20,7 @@ const p = "text-[16px] leading-[1.7] text-[#3f4b52] mb-4";
 
 export default function MachineryRegulationGuidePage() {
   const entry = COMPLIANCE_LEDGER.find((e) => e.id === "machinery-regulation")!;
+  const quotes = entry.evidence.kind === "quote" ? entry.evidence.quotes : [];
 
   return (
     <main data-screen-label="Machinery Regulation cybersecurity guide">
@@ -38,18 +39,11 @@ export default function MachineryRegulationGuidePage() {
           </p>
 
           <h2 className={h2}>Repeal and application, the same date</h2>
-          <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
-            Article 54: &ldquo;It shall apply from 14 January 2027.&rdquo;
-          </blockquote>
-          <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
-            Article 51(2): &ldquo;Directive 2006/42/EC is repealed with effect from 14 January
-            2027.&rdquo;
-          </blockquote>
-          <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
-            Article 52(1): &ldquo;Member States shall not impede the making available on the market
-            of products which were placed on the market in conformity with Directive 2006/42/EC
-            before 14 January 2027.&rdquo;
-          </blockquote>
+          {quotes.map((q) => (
+            <blockquote key={q.article} className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
+              {q.article}: &ldquo;{q.text}&rdquo;
+            </blockquote>
+          ))}
           <p className={p}>
             The old Directive is repealed and the new Regulation applies from the same date, with
             no gap between the two.{" "}

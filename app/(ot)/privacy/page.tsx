@@ -171,8 +171,9 @@ export default function PrivacyPolicyPage() {
               <strong>Vercel Web Analytics</strong> (usage analytics): measures page views and a
               small number of named events (for example, that the scope checker was started or
               completed, that someone clicked through to send a result for review, or that an
-              enquiry was started or sent), without cookies. These events never carry your
-              answers, just that the step happened. It never receives anything you type into a
+              enquiry was started or sent), without cookies. These events carry only the name of
+              the step and a broad result category (for example, that a check was completed),
+              never your name, email or typed answers. It never receives anything you type into a
               form, such as your name, email, or free-text answers.
             </li>
             <li><strong>Cloudflare</strong> (domain, DNS, bot-verification/Turnstile, and email routing)</li>
@@ -237,7 +238,8 @@ export default function PrivacyPolicyPage() {
             <li>
               Your scope-checker answers, held in your browser&apos;s session storage so they can be
               shown back to you on the enquiry form. This never leaves your browser as a cookie,
-              URL parameter, or analytics event, and clears itself when you close the tab
+              URL parameter, or analytics event, and clears itself when you close the tab. If you
+              send an enquiry, your checker answers are sent with it, as described above
             </li>
           </ul>
           <p className={p}>

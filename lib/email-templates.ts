@@ -154,3 +154,42 @@ export function buildLeadPublishedPartnerEmail(input: {
     }),
   };
 }
+
+// TRIGGER: a new OT cybersecurity / NIS2 enquiry was submitted, sent only
+// to ADMIN_EMAIL. Deliberately mirrors buildNewLeadAdminEmail's shape but
+// points at /admin/ot-enquiries, never at /admin/leads — this data lives
+// in its own table (public.ot_enquiries) and this is the only email this
+// system ever sends about it; there is no partner-notification equivalent
+// for this category, by design (see supabase/ot-cyber-schema.sql).
+export function buildNewOtEnquiryAdminEmail(input: {
+  enquiryId: string;
+  companyName: string;
+  contactName: string;
+  contactEmail: string;
+  country: string | null;
+}): { subject: string; html: string } {
+  const rows = [
+    fieldRow("Company", input.companyName),
+    fieldRow("Contact", input.contactName),
+    fieldRow("Email", input.contactEmail),
+    fieldRow("Country", input.country || "Not specified"),
+  ];
+
+  const bodyHtml = `
+    <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">${rows.join("")}</table>
+    <p style="margin:0;font-size:14px;line-height:1.6;color:#79818f;">
+      This person has only agreed that you may review their answers. Nothing is shared with any
+      other company unless you ask them separately and they say yes to that specific ask.
+    </p>
+  `;
+
+  return {
+    subject: `New OT cybersecurity enquiry: ${input.companyName}`,
+    html: emailLayout({
+      heading: "A new OT cybersecurity enquiry was submitted",
+      bodyHtml,
+      ctaHref: `${SITE_URL}/admin/ot-enquiries/${input.enquiryId}`,
+      ctaLabel: "Review this enquiry",
+    }),
+  };
+}

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
-import { COMPLIANCE_LEDGER } from "@/lib/compliance-ledger";
+import { COMPLIANCE_LEDGER, sourceLineText } from "@/lib/compliance-ledger";
 
 const TITLE = "The Machinery Regulation's Cybersecurity Requirements";
 const DESCRIPTION = "What Regulation (EU) 2023/1230 means for cybersecurity and safety in machinery, with sources cited.";
@@ -48,7 +48,7 @@ export default function MachineryRegulationGuidePage() {
             The old Directive is repealed and the new Regulation applies from the same date, with
             no gap between the two.{" "}
             <a href={entry.citationUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline text-[#9a3412]">
-              Source: {entry.citationLabel}, checked {entry.lastVerifiedDisplay}
+              {sourceLineText(entry)}
             </a>
           </p>
 

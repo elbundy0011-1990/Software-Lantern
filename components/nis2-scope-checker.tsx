@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { OFFICIAL_SCOPE_TOOLS, LUXEMBOURG_AUTHORITY, type Nis2Country } from "@/lib/nis2-dates";
-import { COMPLIANCE_LEDGER } from "@/lib/compliance-ledger";
+import { COMPLIANCE_LEDGER, SUPPLEMENTARY_EVIDENCE, sourceLineText } from "@/lib/compliance-ledger";
 import { CONSENT_SENTENCE } from "@/lib/consent-text";
 import { ComplianceLedger } from "./compliance-ledger";
 
@@ -227,12 +227,12 @@ function ProductRulesNote() {
         <strong>{cra.display}</strong> and the Regulation fully applies from{" "}
         <strong>{craFull.display}</strong> (
         <a href={cra.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
-          Source: {cra.citationLabel}, checked {cra.lastVerifiedDisplay}
+          {sourceLineText(cra)}
         </a>
         ), and the Machinery Regulation, which applies from{" "}
         <strong>{machinery.display}</strong> (
         <a href={machinery.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
-          Source: {machinery.citationLabel}, checked {machinery.lastVerifiedDisplay}
+          {sourceLineText(machinery)}
         </a>
         ).
       </p>
@@ -381,6 +381,8 @@ function ResultHeading({ children, tone }: { children: React.ReactNode; tone: "i
 
 function Nis2OrgStatus({ country, size, audience }: { country: Nis2Country | null; size: Size | null; audience: Audience | null }) {
   const entry = countryLedgerEntry(country);
+  const annex2 = SUPPLEMENTARY_EVIDENCE.find((e) => e.id === "nis2-annex2-5d")!;
+  const importantEntities = SUPPLEMENTARY_EVIDENCE.find((e) => e.id === "nis2-important-entities-art3-2")!;
   if (size === "small_micro") {
     return (
       <p className="text-[15px] text-[#3f4b52] text-center mb-4">
@@ -394,16 +396,28 @@ function Nis2OrgStatus({ country, size, audience }: { country: Nis2Country | nul
   if (size === "medium_large") {
     return (
       <p className="text-[15px] text-[#3f4b52] text-center mb-4">
-        {audience === "operator"
-          ? "Whether NIS2 applies to you as an organization depends on your specific sector among its 18 covered sectors, which this checker doesn't attempt to classify (the official tool below does). Size is generally the first gate: at medium or large, you clear that threshold if your sector is covered."
-          : "Machinery and equipment manufacturing (NACE division 28) sits in NIS2 Annex II, which generally produces important-entity status for medium and large companies, not essential."}
+        {audience === "operator" ? (
+          "Whether NIS2 applies to you as an organization depends on your specific sector among its 18 covered sectors, which this checker doesn't attempt to classify (the official tool below does). Size is generally the first gate: at medium or large, you clear that threshold if your sector is covered."
+        ) : (
+          <>
+            Machinery and equipment manufacturing sits in NIS2{" "}
+            <a href={annex2.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
+              Annex II, point 5(d)
+            </a>
+            , which generally produces{" "}
+            <a href={importantEntities.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
+              important-entity
+            </a>{" "}
+            status for medium and large companies, not essential.
+          </>
+        )}
         {entry && country !== "other" && country !== "not_sure" && (
           <>
             {" "}In{" "}
             {country === "NL" ? "the Netherlands" : country === "BE" ? "Belgium" : "Luxembourg"}, this
             has applied since <strong>{entry.display}</strong> (
             <a href={entry.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
-              Source: {entry.citationLabel}, checked {entry.lastVerifiedDisplay}
+              {sourceLineText(entry)}
             </a>
             ).
           </>

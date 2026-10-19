@@ -20,7 +20,9 @@ the build if:
 
 1. A `COMPLIANCE_LEDGER` or `SUPPLEMENTARY_EVIDENCE` entry has
    `verified: true` without a citation URL, a check date
-   (`lastVerifiedDisplay`), and either a quote or a record.
+   (`lastVerifiedDisplay`), and either a quote or a record. A
+   `"corroborated"` tier quote (see "Evidence tiers" below) also needs
+   at least 3 `copyUrls`.
 2. Any in-scope file contains `"[VERIFY]"`, `"pending verification"`,
    `"TODO"`, or a leftover bracket placeholder (e.g. `"[INSERT DATE]"`).
 3. Any in-scope file other than `lib/compliance-ledger.ts` and the
@@ -32,6 +34,33 @@ the build if:
    `false` (a pulled claim must never be looked up for display).
 
 Run it on its own with `npm run check-claims`.
+
+## Evidence tiers
+
+Every quote-kind entry declares a `tier`:
+
+- **`"primary"`**: the quote was read directly from the official text
+  (EUR-Lex, a national gazette, Legilux) or is a gazette/register
+  record. Public Source line: `Source: [name], checked [date]`, linking
+  the official URL. This is the default, and what every entry on this
+  site used before the tier system existed.
+- **`"corroborated"`**: the official URL did not yield a confirmable
+  direct read in this pass (a blocked fetch, a JS-rendering issue, or
+  similar), so the wording is corroborated against **at least 3
+  independent copies** of the same text instead, listed in `copyUrls`.
+  Public Source line: `Source: [act and article]. Wording cross-checked
+  against published copies, [date].`, still linking the official URL,
+  not one of the copies. `scripts/check-claims.mjs` fails the build if
+  a `"corroborated"` entry has fewer than 3 `copyUrls`.
+
+Both tiers render through the same `sourceLineText(entry)` helper
+exported from `lib/compliance-ledger.ts` — call that, never hand-write
+the Source line, so the two tiers can never drift into a third,
+unapproved phrasing.
+
+A `"record"`-kind entry (a gazette/register record rather than a
+sentence) has no tier; it's always treated as primary evidence, since
+there's no "corroborated register entry" concept.
 
 ## How to add a claim
 
@@ -46,9 +75,11 @@ Run it on its own with `npm run check-claims`.
 3. **Add or update the entry in `lib/compliance-ledger.ts`:**
    - `citationLabel` / `citationUrl`: the primary source and its link.
    - `evidence`: either
-     `{ kind: "quote", quotes: [{ article, text, translation? }] }` —
-     `translation` is required whenever the quote isn't in English,
-     labelled "Our translation" wherever it's shown — or
+     `{ kind: "quote", tier: "primary", quotes: [{ article, text, translation? }] }`,
+     `{ kind: "quote", tier: "corroborated", quotes: [...], copyUrls: [at least 3 URLs] }`
+     when the official text wasn't directly confirmable (see "Evidence
+     tiers" above) — `translation` is required whenever the quote isn't
+     in English, labelled "Our translation" wherever it's shown — or
      `{ kind: "record", fields: [{ label, value }] }` for a
      gazette/register record.
    - `subjectLabel` / `subjectUrl`, only if the record's *subject*
@@ -56,19 +87,19 @@ Run it on its own with `npm run check-claims`.
      parliamentary bill summary explaining what a gazette record
      transposes).
    - `lastVerified` (ISO) / `lastVerifiedDisplay` (human date): the day
-     you actually read the source.
+     you actually read the source (or last cross-checked the copies).
    - `verified: true`.
 4. **If the claim isn't a dated timeline event** (a standing
    requirement like "Article 21(2)(d) covers supply-chain security,"
    not "this law took effect on X"), add it to
    `SUPPLEMENTARY_EVIDENCE` instead of `COMPLIANCE_LEDGER` — same
-   fields, no `date`/`display`/`status`, since it won't render as a
-   ledger row.
+   `evidence` shape, no `date`/`display`/`status`, since it won't
+   render as a ledger row.
 5. **Reference it from the page**, never retype the date or quote:
    `const entry = COMPLIANCE_LEDGER.find((e) => e.id === "...")!`, then
    `{entry.display}`, `{entry.evidence.quotes[0].text}`, and
-   `Source: {entry.citationLabel}, checked {entry.lastVerifiedDisplay}`
-   linking `entry.citationUrl`.
+   `{sourceLineText(entry)}` linking `entry.citationUrl` — call the
+   helper, don't hand-write the Source line.
 6. **Run `npm run check-claims`** before committing.
 
 ## Until you have a primary source

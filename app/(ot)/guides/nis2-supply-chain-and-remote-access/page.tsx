@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { OFFICIAL_SCOPE_TOOLS } from "@/lib/nis2-dates";
-import { COMPLIANCE_LEDGER, SUPPLEMENTARY_EVIDENCE } from "@/lib/compliance-ledger";
+import { COMPLIANCE_LEDGER, SUPPLEMENTARY_EVIDENCE, sourceLineText } from "@/lib/compliance-ledger";
 
 const TITLE = "NIS2 Supply Chain and Remote Access, Explained";
 const DESCRIPTION = "What NIS2 Article 21(2) actually requires for supply-chain security and remote access, with sources cited, and what it does not require.";
@@ -23,7 +23,9 @@ const link = "font-semibold underline text-[#9a3412]";
 
 export default function SupplyChainArticlePage() {
   const article21 = SUPPLEMENTARY_EVIDENCE.find((e) => e.id === "nis2-article-21-2-d")!;
-  const article21Quote = article21.quotes[0];
+  const article21Quote = article21.evidence.kind === "quote" ? article21.evidence.quotes[0] : null;
+  const annex2 = SUPPLEMENTARY_EVIDENCE.find((e) => e.id === "nis2-annex2-5d")!;
+  const importantEntities = SUPPLEMENTARY_EVIDENCE.find((e) => e.id === "nis2-important-entities-art3-2")!;
   const nl = COMPLIANCE_LEDGER.find((e) => e.id === "nis2-nl")!;
   const be = COMPLIANCE_LEDGER.find((e) => e.id === "nis2-be")!;
   const lu = COMPLIANCE_LEDGER.find((e) => e.id === "nis2-lu")!;
@@ -47,14 +49,16 @@ export default function SupplyChainArticlePage() {
             Directive (EU) 2022/2555 (&ldquo;NIS2&rdquo;), Article 21(2), requires in-scope entities
             to take minimum cybersecurity risk-management measures. Verbatim:
           </p>
-          <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
-            &ldquo;{article21Quote.text}&rdquo;
-          </blockquote>
+          {article21Quote && (
+            <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
+              &ldquo;{article21Quote.text}&rdquo;
+            </blockquote>
+          )}
           <p className={p}>
             Point (d), supply chain security, covers a machine builder or integrator with remote
             access into its customer&apos;s systems.{" "}
             <a href={article21.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
-              Source: {article21.citationLabel}, checked {article21.lastVerifiedDisplay}
+              {sourceLineText(article21)}
             </a>
           </p>
 
@@ -70,8 +74,16 @@ export default function SupplyChainArticlePage() {
           <ul className={ul}>
             <li>
               If a machine builder or manufacturer is itself in scope (generally: medium or large,
-              in a covered sector such as machinery and equipment manufacturing), it has its own
-              direct obligations under Article 21(2), including assessing its own suppliers.
+              in machinery and equipment manufacturing, which NIS2&apos;s{" "}
+              <a href={annex2.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
+                Annex II, point 5(d)
+              </a>{" "}
+              names directly), it generally has &ldquo;important entity&rdquo; status (
+              <a href={importantEntities.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
+                {importantEntities.citationLabel}
+              </a>
+              ) and has its own direct obligations under Article 21(2), including assessing its own
+              suppliers.
             </li>
             <li>
               Separately, if a machine builder&apos;s customer is in scope, that customer has its
@@ -81,6 +93,9 @@ export default function SupplyChainArticlePage() {
               contractual and commercial, not a separate legal requirement under NIS2 itself.
             </li>
           </ul>
+          <p className="text-[13px] leading-[1.7] text-[#3f4b52]">
+            {sourceLineText(annex2)} &middot; {sourceLineText(importantEntities)}
+          </p>
 
           <h2 className={h2}>NIS2 across the Netherlands, Belgium, and Luxembourg</h2>
           <p className={p}>
@@ -101,7 +116,7 @@ export default function SupplyChainArticlePage() {
           )}
           <p className={p}>
             <a href={nl.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
-              Source: {nl.citationLabel}, checked {nl.lastVerifiedDisplay}
+              {sourceLineText(nl)}
             </a>
           </p>
 
@@ -118,7 +133,7 @@ export default function SupplyChainArticlePage() {
           )}
           <p className={p}>
             <a href={be.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
-              Source: {be.citationLabel}, checked {be.lastVerifiedDisplay}
+              {sourceLineText(be)}
             </a>
           </p>
 
@@ -132,7 +147,7 @@ export default function SupplyChainArticlePage() {
           )}
           <p className={p}>
             <a href={lu.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
-              Source: {lu.citationLabel}, checked {lu.lastVerifiedDisplay}
+              {sourceLineText(lu)}
             </a>
             {lu.subjectUrl && (
               <>

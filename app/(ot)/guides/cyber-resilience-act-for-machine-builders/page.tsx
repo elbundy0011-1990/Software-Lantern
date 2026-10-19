@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
-import { COMPLIANCE_LEDGER } from "@/lib/compliance-ledger";
+import { COMPLIANCE_LEDGER, SUPPLEMENTARY_EVIDENCE, sourceLineText } from "@/lib/compliance-ledger";
 
 const TITLE = "The Cyber Resilience Act for Machine Builders";
 const DESCRIPTION = "What Regulation (EU) 2024/2847 requires of manufacturers of connected machinery, with sources cited.";
@@ -22,6 +22,8 @@ const link = "font-semibold underline text-[#9a3412]";
 export default function CraGuidePage() {
   const reporting = COMPLIANCE_LEDGER.find((e) => e.id === "cra-reporting")!;
   const quote = reporting.evidence.kind === "quote" ? reporting.evidence.quotes[0] : null;
+  const scope = SUPPLEMENTARY_EVIDENCE.find((e) => e.id === "cra-scope-art2-1")!;
+  const scopeQuote = scope.evidence.kind === "quote" ? scope.evidence.quotes[0] : null;
 
   return (
     <main data-screen-label="CRA guide for machine builders">
@@ -49,16 +51,23 @@ export default function CraGuidePage() {
             Article 14 is &ldquo;Reporting obligations of manufacturers.&rdquo; Chapter IV is
             &ldquo;Notification of conformity assessment bodies.&rdquo;{" "}
             <a href={reporting.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
-              Source: {reporting.citationLabel}, checked {reporting.lastVerifiedDisplay}
+              {sourceLineText(reporting)}
             </a>
           </p>
 
           <h2 className={h2}>Scope</h2>
+          {scopeQuote && (
+            <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
+              &ldquo;{scopeQuote.text}&rdquo;
+            </blockquote>
+          )}
           <p className={p}>
-            The CRA applies to products with digital elements whose intended or foreseeable use
-            includes a direct or indirect connection to a device or network. Industrial control
-            systems and connected machinery fall within that description. Excluded: medical
-            devices, motor vehicles, civil aviation, marine equipment, and defence.
+            Industrial control systems and connected machinery fall within that description.
+            Excluded: medical devices, motor vehicles, civil aviation, marine equipment, and
+            defence.{" "}
+            <a href={scope.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
+              {sourceLineText(scope)}
+            </a>
           </p>
 
           <h2 className={h2}>Why remote access matters here specifically</h2>

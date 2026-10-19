@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { ComplianceLedger } from "@/components/compliance-ledger";
+import { SUPPLEMENTARY_EVIDENCE } from "@/lib/compliance-ledger";
 
 export const metadata: Metadata = pageMetadata({
   title: "NIS2, CRA & Machinery Regulation for Machine Builders",
@@ -14,6 +15,8 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default function MachineBuildersPage() {
+  const annex2 = SUPPLEMENTARY_EVIDENCE.find((e) => e.id === "nis2-annex2-5d")!;
+  const importantEntities = SUPPLEMENTARY_EVIDENCE.find((e) => e.id === "nis2-important-entities-art3-2")!;
   return (
     <main data-screen-label="Machine builders audience page">
       <section className="border-b border-[#3f4b52]/[0.15]">
@@ -37,11 +40,18 @@ export default function MachineBuildersPage() {
             Your organization: NIS2
           </h2>
           <p className="text-[15px] leading-[1.6] text-[#3f4b52] mb-4">
-            Machinery and equipment manufacturing sits in NIS2&apos;s Annex II, which generally
-            produces &ldquo;important entity&rdquo; status for medium and large companies, not
-            essential. A small or micro business is generally outside this organizational scope
-            entirely, though its customers may still push supply-chain security expectations onto
-            it commercially, which the checker covers in detail.
+            Machinery and equipment manufacturing sits in NIS2&apos;s{" "}
+            <a href={annex2.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
+              Annex II, point 5(d)
+            </a>
+            , which generally produces{" "}
+            <a href={importantEntities.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
+              &ldquo;important entity&rdquo;
+            </a>{" "}
+            status for medium and large companies, not essential. A small or micro business is
+            generally outside this organizational scope entirely, though its customers may still
+            push supply-chain security expectations onto it commercially, which the checker covers
+            in detail.
           </p>
           <h2 className="font-sans font-semibold text-[24px] mb-4 mt-10 text-[#1a1d22]">
             Your product: the Cyber Resilience Act and the Machinery Regulation

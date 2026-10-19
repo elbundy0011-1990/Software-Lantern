@@ -17,8 +17,20 @@ export interface LedgerQuote {
   translation?: string; // "Our translation" — shown only when the source isn't English
 }
 
+// Two evidence tiers:
+// - "primary": a quote read directly from the official text (EUR-Lex,
+//   a national gazette, Legilux), or a gazette/register record. The
+//   public Source line is "Source: [name], checked [date]".
+// - "corroborated": the official EUR-Lex URL did not yield a
+//   confirmable direct read in this pass, so the quote is corroborated
+//   against at least three independent copies of the same text instead
+//   (copyUrls). The public Source line says so explicitly: "Source:
+//   [act and article]. Wording cross-checked against published copies,
+//   [date]." scripts/check-claims.mjs fails the build if a
+//   "corroborated" entry has fewer than 3 copyUrls.
 export type LedgerEvidence =
-  | { kind: "quote"; quotes: LedgerQuote[] }
+  | { kind: "quote"; tier: "primary"; quotes: LedgerQuote[] }
+  | { kind: "quote"; tier: "corroborated"; quotes: LedgerQuote[]; copyUrls: string[] }
   | { kind: "record"; fields: { label: string; value: string }[] };
 
 export interface LedgerEntry {
@@ -41,6 +53,16 @@ export interface LedgerEntry {
   verified: boolean; // false => withheld from public rendering entirely, no evidence on file yet
 }
 
+// The public "Source: ..." line, in the one format every renderer
+// (ledger, checker, guides) must use, so the two evidence tiers never
+// get paraphrased differently in different places.
+export function sourceLineText(entry: { citationLabel: string; lastVerifiedDisplay: string; evidence: LedgerEvidence }): string {
+  if (entry.evidence.kind === "quote" && entry.evidence.tier === "corroborated") {
+    return `Source: ${entry.citationLabel}. Wording cross-checked against published copies, ${entry.lastVerifiedDisplay}.`;
+  }
+  return `Source: ${entry.citationLabel}, checked ${entry.lastVerifiedDisplay}`;
+}
+
 export const COMPLIANCE_LEDGER: LedgerEntry[] = [
   {
     id: "nis2-be",
@@ -52,6 +74,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     citationUrl: "https://www.ejustice.just.fgov.be/eli/loi/2024/04/26/2024202344/justel",
     evidence: {
       kind: "quote",
+      tier: "primary",
       quotes: [
         {
           article: "Article 98",
@@ -97,6 +120,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     citationUrl: "https://zoek.officielebekendmakingen.nl/stb-2026-189.html",
     evidence: {
       kind: "quote",
+      tier: "primary",
       quotes: [
         {
           article: "Article 35",
@@ -119,6 +143,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng",
     evidence: {
       kind: "quote",
+      tier: "primary",
       quotes: [
         {
           article: "Article 71(2)",
@@ -140,6 +165,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     citationUrl: "https://eur-lex.europa.eu/eli/reg/2023/1230/oj/eng",
     evidence: {
       kind: "quote",
+      tier: "primary",
       quotes: [
         { article: "Article 54", text: "It shall apply from 14 January 2027." },
         { article: "Article 51(2)", text: "Directive 2006/42/EC is repealed with effect from 14 January 2027." },
@@ -163,6 +189,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng",
     evidence: {
       kind: "quote",
+      tier: "primary",
       quotes: [
         {
           article: "Article 71(2)",
@@ -185,11 +212,13 @@ export const COMPLIANCE_LEDGER_SORTED = [...COMPLIANCE_LEDGER].sort((a, b) => a.
 // as an existing ledger entry, or isn't a dated timeline event at all
 // (so it doesn't belong in COMPLIANCE_LEDGER's chronological log), but
 // still needs a citation and a check date like everything else here.
+// Shares the same LedgerEvidence shape (and the same "primary"/
+// "corroborated" tiers) as a ledger entry.
 export interface SupplementaryQuote {
   id: string;
   citationLabel: string;
   citationUrl: string;
-  quotes: LedgerQuote[];
+  evidence: LedgerEvidence;
   lastVerifiedDisplay: string;
 }
 
@@ -198,12 +227,108 @@ export const SUPPLEMENTARY_EVIDENCE: SupplementaryQuote[] = [
     id: "nis2-article-21-2-d",
     citationLabel: "Directive (EU) 2022/2555, Art. 21(2)(d)",
     citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng",
-    quotes: [
-      {
-        article: "Article 21(2)",
-        text: "The measures referred to in paragraph 1 shall be based on an all-hazards approach that aims to protect network and information systems and the physical environment of those systems from incidents, and shall include at least the following: (a) policies on risk analysis and information system security; (b) incident handling; (c) business continuity, such as backup management and disaster recovery, and crisis management; (d) supply chain security, including security-related aspects concerning the relationships between each entity and its direct suppliers or service providers.",
-      },
-    ],
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 21(2)",
+          text: "The measures referred to in paragraph 1 shall be based on an all-hazards approach that aims to protect network and information systems and the physical environment of those systems from incidents, and shall include at least the following: (a) policies on risk analysis and information system security; (b) incident handling; (c) business continuity, such as backup management and disaster recovery, and crisis management; (d) supply chain security, including security-related aspects concerning the relationships between each entity and its direct suppliers or service providers.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "19 October 2026",
+  },
+  {
+    id: "cra-scope-art2-1",
+    citationLabel: "Regulation (EU) 2024/2847, Art. 2(1)",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/2024-11-20/eng",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 2(1)",
+          text: "This Regulation applies to products with digital elements made available on the market, the intended purpose or reasonably foreseeable use of which includes a direct or indirect logical or physical data connection to a device or network.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "19 October 2026",
+  },
+  {
+    id: "nis2-scope-art2-1",
+    citationLabel: "Directive (EU) 2022/2555, Art. 2(1)",
+    citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/2022-12-27",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 2(1)",
+          text: "This Directive applies to public or private entities of a type referred to in Annex I or II which qualify as medium-sized enterprises under Article 2 of the Annex to Recommendation 2003/361/EC, or exceed the ceilings for medium-sized enterprises provided for in paragraph 1 of that Article, and which provide their services or carry out their activities within the Union.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "19 October 2026",
+  },
+  {
+    id: "nis2-important-entities-art3-2",
+    citationLabel: "Directive (EU) 2022/2555, Art. 3(2)",
+    citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/2022-12-27",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 3(2)",
+          text: "For the purposes of this Directive, entities of a type referred to in Annex I or II which do not qualify as essential entities pursuant to paragraph 1 of this Article shall be considered to be important entities.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "19 October 2026",
+  },
+  {
+    id: "nis2-art21-1",
+    citationLabel: "Directive (EU) 2022/2555, Art. 21(1)",
+    citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng",
+    evidence: {
+      kind: "quote",
+      tier: "corroborated",
+      quotes: [
+        {
+          article: "Article 21(1)",
+          text: "Member States shall ensure that essential and important entities take appropriate and proportionate technical, operational and organisational measures to manage the risks posed to the security of network and information systems which those entities use for their operations or for the provision of their services, and to prevent or minimise the impact of incidents on recipients of their services and on other services. Taking into account the state-of-the-art and, where applicable, relevant European and international standards, as well as the cost of implementation, the measures referred to in the first subparagraph shall ensure a level of security of network and information systems appropriate to the risks posed. When assessing the proportionality of those measures, due account shall be taken of the degree of the entity's exposure to risks, the entity's size and the likelihood of occurrence of incidents and their severity, including their societal and economic impact.",
+        },
+      ],
+      copyUrls: [
+        "https://advisera.com/nis2/cybersecurity-risk-management-measures/",
+        "https://prighter.com/resources/laws/nis2/articles/article-21",
+        "https://myctrl.tools/frameworks/nis2/article-21-1",
+        "https://www.springlex.eu/en/packages/nis2/nis2-directive/article-21/",
+      ],
+    },
+    lastVerifiedDisplay: "19 October 2026",
+  },
+  {
+    id: "nis2-annex2-5d",
+    citationLabel: "Directive (EU) 2022/2555, Annex II, point 5(d)",
+    citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng",
+    evidence: {
+      kind: "quote",
+      tier: "corroborated",
+      quotes: [
+        {
+          article: "Annex II, point 5(d)",
+          text: "Manufacture of machinery and equipment n.e.c. (undertakings carrying out any of the economic activities referred to in section C division 28 of NACE Rev. 2).",
+        },
+      ],
+      copyUrls: [
+        "https://advisera.com/nis2/other-critical-sectors/",
+        "https://prighter.com/resources/laws/nis2/articles/annex-ii",
+        "https://streamlex.eu/annexes/nis2-en-annex-ii/",
+        "https://www.ilr.lu/en/?p=32584",
+      ],
+    },
     lastVerifiedDisplay: "19 October 2026",
   },
 ];

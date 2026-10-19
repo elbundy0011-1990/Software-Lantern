@@ -1,4 +1,4 @@
-import { COMPLIANCE_LEDGER_SORTED, type LedgerEntry } from "@/lib/compliance-ledger";
+import { COMPLIANCE_LEDGER_SORTED, sourceLineText, type LedgerEntry } from "@/lib/compliance-ledger";
 
 const STATUS_COLOR: Record<LedgerEntry["status"], string> = {
   in_force: "#166534",
@@ -40,7 +40,7 @@ export function ComplianceLedger({ limit }: { limit?: number }) {
               rel="noopener noreferrer"
               className="text-[#9ca3af] underline underline-offset-2"
             >
-              Source: {entry.citationLabel}, checked {entry.lastVerifiedDisplay}
+              {sourceLineText(entry)}
             </a>
           </li>
         ))}

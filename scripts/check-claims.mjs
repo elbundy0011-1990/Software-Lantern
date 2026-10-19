@@ -5,7 +5,9 @@
 //
 //   A. A lib/compliance-ledger.ts entry (or supplementary-evidence item)
 //      has verified: true without a citation URL, a check date, and a
-//      quote or record reference.
+//      quote or record reference. A "corroborated" tier quote also
+//      needs at least 3 copyUrls (independent published copies of the
+//      wording), since the official text wasn't directly confirmable.
 //   B. Any in-scope file contains "[VERIFY]", "pending verification",
 //      "TODO", or a leftover bracket placeholder like "[INSERT DATE]".
 //   C. Any in-scope file other than lib/compliance-ledger.ts (the one
@@ -107,7 +109,11 @@ function extractArray(source, exportName) {
   const marker = `export const ${exportName}`;
   const startIdx = source.indexOf(marker);
   if (startIdx === -1) return [];
-  const bracketStart = source.indexOf("[", startIdx);
+  // The type annotation (e.g. ": LedgerEntry[]") has its own "[]" before the
+  // "=", so searching for "[" from startIdx lands on that empty pair, not
+  // the array literal. Search from the "=" instead.
+  const eqIdx = source.indexOf("=", startIdx);
+  const bracketStart = source.indexOf("[", eqIdx);
   // Walk bracket depth to find the matching closing "]".
   let depth = 0;
   let end = -1;
@@ -124,6 +130,13 @@ function extractArray(source, exportName) {
   return splitEntries(source.slice(bracketStart, end + 1));
 }
 
+function countCopyUrls(block) {
+  const match = block.match(/copyUrls:\s*\[([\s\S]*?)\]/);
+  if (!match) return 0;
+  const urls = match[1].match(/"https?:\/\/[^"]+"/g);
+  return urls ? urls.length : 0;
+}
+
 function checkEvidenceBlock(block, idMatch, requireDate) {
   const id = idMatch ? idMatch[1] : "(unknown id)";
   const verifiedMatch = block.match(/verified:\s*(true|false)/);
@@ -137,6 +150,14 @@ function checkEvidenceBlock(block, idMatch, requireDate) {
   const hasRecord = /kind:\s*"record"/.test(block) && /fields:\s*\[/.test(block) && /value:\s*"/.test(block);
   const hasSupplementaryQuotes = requireDate && /quotes:\s*\[/.test(block) && /text:\s*"/.test(block);
   if (!hasQuote && !hasRecord && !hasSupplementaryQuotes) missing.push("evidence (quote or record)");
+
+  const tierMatch = block.match(/tier:\s*"(primary|corroborated)"/);
+  if (tierMatch && tierMatch[1] === "corroborated") {
+    const copyCount = countCopyUrls(block);
+    if (copyCount < 3) {
+      missing.push(`at least 3 copyUrls for a "corroborated" tier entry (found ${copyCount})`);
+    }
+  }
 
   if (missing.length) {
     return `Ledger entry "${id}" is verified but missing: ${missing.join(", ")}.`;

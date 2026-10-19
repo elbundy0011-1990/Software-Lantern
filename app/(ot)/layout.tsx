@@ -35,16 +35,10 @@ export default function OtLayout({ children }: { children: React.ReactNode }) {
             ))}
             <Link
               href="/checker"
-              className="rounded px-4 py-[9px] font-semibold text-[#9a3412] border border-[#9a3412]"
-            >
-              Check your situation
-            </Link>
-            <Link
-              href="/enquiry"
               className="rounded px-4 py-[9px] font-semibold text-white whitespace-nowrap"
               style={{ background: "#9a3412" }}
             >
-              Send an enquiry
+              Check your situation
             </Link>
           </nav>
         </div>
@@ -74,7 +68,7 @@ export default function OtLayout({ children }: { children: React.ReactNode }) {
             <div className="grid gap-2">
               <Link href="/privacy" className="text-[#9a3412] hover:underline">Privacy Policy</Link>
               <a href="mailto:info@softwarelantern.com" className="text-[#9a3412] hover:underline">
-                Contact: info@softwarelantern.com
+                Contact
               </a>
             </div>
           </div>

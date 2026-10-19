@@ -1,94 +1,95 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { TurnstileWidget, type TurnstileWidgetHandle } from "@/components/turnstile-widget";
 import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
-import type { Nis2Country } from "@/lib/nis2-dates";
-import type { Audience, Size, RemoteAccess } from "@/components/nis2-scope-checker";
+import { CONSENT_SENTENCE, CONSENT_CHECKBOX_LABEL } from "@/lib/consent-text";
+import {
+  EMPTY_CHECKER_ANSWERS,
+  hasAnyCheckerAnswer,
+  getCheckerAnswersSnapshot,
+  getCheckerAnswersServerSnapshot,
+  subscribeCheckerAnswers,
+  type CheckerAnswers,
+} from "@/lib/checker-session";
+import { describeCheckerAnswers } from "@/components/nis2-scope-checker";
 
 const ACCENT = "#9a3412";
 
-// CONSENT WORDING — final, per the 2026-10-19 instruction. Uses
-// "Software Lantern," never the controller's personal name (that name
-// stays only in the privacy policy's controller/contact sections, per the
-// same instruction). "Privacy policy" links to the OT-specific section of
-// the policy (app/(ot)/privacy/page.tsx's #ot-service anchor), not the
-// page root, since that page also describes the unrelated legacy
-// marketplace.
+// CONSENT WORDING — final, per the 2026-10-19 instruction, shared with
+// the result-screen CTA blocks (components/nis2-scope-checker.tsx) and
+// the confirmation email (lib/email-templates.ts) via lib/consent-text.ts
+// so it can't drift between the three. "Privacy policy" links to the
+// OT-specific section of the policy (app/(ot)/privacy/page.tsx's
+// #ot-service anchor), not the page root, since that page also describes
+// the unrelated legacy marketplace.
 function ConsentText() {
   return (
     <>
-      Software Lantern will use your answers to review your enquiry and may contact you about it
-      by email or phone. Your details won&apos;t be shared with any other company unless we first
-      ask you about that specific company and you agree. See our{" "}
+      {CONSENT_SENTENCE} See our{" "}
       <Link href="/privacy#ot-service" className="underline font-semibold">privacy policy</Link>.
     </>
   );
 }
 
-const CONSENT_CHECKBOX_LABEL =
-  "I understand Software Lantern will use my answers to review my enquiry and may contact me about it, and that my details won't be shared with any other company unless I'm first asked about that specific company and I agree.";
-
 const ROLE_OPTIONS = ["Owner / founder", "Engineering", "IT / security", "Operations", "Other"];
-const SECTOR_OPTIONS = [
-  "Industrial machinery",
-  "Food & beverage equipment",
-  "Packaging",
-  "Automotive / transport equipment",
-  "Medical devices",
-  "Other manufacturing",
-  "Other",
-];
-const TIMELINE_OPTIONS = ["Already looking", "Within 6 months", "Within 12 months", "No specific timeline"];
 
 interface FormState {
   name: string;
   company: string;
   email: string;
-  phone: string;
   role: string;
-  sector: string;
-  timeline: string;
-  currentRemoteAccess: string;
-  freeText: string;
+  remoteAccessToday: string;
 }
 
 const EMPTY_FORM: FormState = {
   name: "",
   company: "",
   email: "",
-  phone: "",
   role: "",
-  sector: "",
-  timeline: "",
-  currentRemoteAccess: "",
-  freeText: "",
+  remoteAccessToday: "",
 };
-
-interface CheckerAnswers {
-  country: Nis2Country | null;
-  audience: Audience | null;
-  size: Size | null;
-  remoteAccess: RemoteAccess | null;
-}
 
 export function OtEnquiryForm({
   checkerAnswers,
-  source,
+  showCheckerNudge = true,
 }: {
+  // Live answers from the checker on the same page (components/ot-cyber-
+  // interactive.tsx). When omitted (opening /enquiry directly), the form
+  // falls back to whatever's in sessionStorage from an earlier checker
+  // session, per lib/checker-session.ts.
   checkerAnswers?: CheckerAnswers;
-  source: "checker" | "direct";
+  // The "check your situation first" nudge only makes sense when this
+  // form isn't already sitting right below the checker on the same page.
+  showCheckerNudge?: boolean;
 }) {
+  const storedAnswers = useSyncExternalStore(
+    subscribeCheckerAnswers,
+    getCheckerAnswersSnapshot,
+    getCheckerAnswersServerSnapshot,
+  );
+  const effectiveAnswers = checkerAnswers ?? storedAnswers ?? EMPTY_CHECKER_ANSWERS;
+  const sourceIsChecker = hasAnyCheckerAnswer(effectiveAnswers);
+
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
-  const [country, setCountry] = useState<Nis2Country | "">(checkerAnswers?.country ?? "");
   const [consent, setConsent] = useState(false);
   const [website, setWebsite] = useState(""); // honeypot
   const [token, setToken] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const turnstileRef = useRef<TurnstileWidgetHandle>(null);
+  const startedRef = useRef(false);
+
+  // Fires once, on the first real interaction with the form (not on
+  // mount — on /checker this component renders before anyone has
+  // answered the checker, which would otherwise always log "direct").
+  const markStarted = () => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    track("enquiry_start", { source: sourceIsChecker ? "checker" : "direct" });
+  };
 
   const submit = async () => {
     // Work email and consent are required; validated client-side first for
@@ -120,15 +121,12 @@ export function OtEnquiryForm({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          country: country || null,
-          answers: checkerAnswers ?? {},
-          contact: { name: form.name, company: form.company, email: form.email, phone: form.phone },
+          country: effectiveAnswers.country || null,
+          answers: effectiveAnswers,
+          contact: { name: form.name, company: form.company, email: form.email },
           role: form.role,
-          sector: form.sector,
-          builderOrOperator: checkerAnswers?.audience ?? null,
-          currentRemoteAccess: form.currentRemoteAccess,
-          timeline: form.timeline,
-          freeText: form.freeText,
+          builderOrOperator: effectiveAnswers.audience ?? null,
+          currentRemoteAccess: form.remoteAccessToday,
           consentReviewGiven: consent,
           website,
           turnstileToken: token,
@@ -142,7 +140,7 @@ export function OtEnquiryForm({
         return;
       }
       setStatus("done");
-      track("enquiry_submit", { source });
+      track("enquiry_submit", { source: sourceIsChecker ? "checker" : "direct" });
     } catch {
       setError("Something went wrong. Please try again.");
       setStatus("error");
@@ -161,6 +159,23 @@ export function OtEnquiryForm({
 
   return (
     <section id="ot-enquiry-form" className="max-w-[640px] mx-auto">
+      {sourceIsChecker ? (
+        <div className="rounded border border-[#3f4b52]/[0.2] bg-[#f6f5f1] p-4 mb-5">
+          <p className="text-[12px] font-bold tracking-[0.07em] uppercase text-[#3f4b52] mb-1">Your result</p>
+          <p className="text-[14px] text-[#1a1d22]">{describeCheckerAnswers(effectiveAnswers)}</p>
+        </div>
+      ) : (
+        showCheckerNudge && (
+          <p className="text-[14px] text-[#3f4b52] mb-5">
+            Not sure where you stand?{" "}
+            <Link href="/checker" className="underline font-semibold" style={{ color: ACCENT }}>
+              Check your situation first (2 minutes)
+            </Link>
+            .
+          </p>
+        )
+      )}
+
       <h3 className="font-sans font-semibold text-[22px] mb-2 text-[#1a1d22]">Tell us about your situation</h3>
       <p className="text-[14px] text-[#3f4b52] mb-5"><ConsentText /></p>
 
@@ -168,6 +183,7 @@ export function OtEnquiryForm({
         <input
           value={form.name}
           onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+          onFocus={markStarted}
           placeholder="Your name"
           aria-label="Your name"
           required
@@ -176,6 +192,7 @@ export function OtEnquiryForm({
         <input
           value={form.company}
           onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))}
+          onFocus={markStarted}
           placeholder="Company name"
           aria-label="Company name"
           required
@@ -185,6 +202,7 @@ export function OtEnquiryForm({
           <input
             value={form.email}
             onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+            onFocus={markStarted}
             placeholder="Work email (required)"
             aria-label="Work email, required"
             type="email"
@@ -196,17 +214,10 @@ export function OtEnquiryForm({
             Required. Please use your work email address, not a personal provider (e.g. Gmail).
           </p>
         </div>
-        <input
-          value={form.phone}
-          onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-          placeholder="Phone number"
-          aria-label="Phone number"
-          required
-          className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px]"
-        />
         <select
           value={form.role}
           onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}
+          onFocus={markStarted}
           aria-label="Your role"
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px] text-[#1a1d22]"
         >
@@ -215,53 +226,12 @@ export function OtEnquiryForm({
             <option key={r} value={r}>{r}</option>
           ))}
         </select>
-        <select
-          value={country}
-          onChange={(e) => setCountry(e.target.value as Nis2Country)}
-          aria-label="Country"
-          className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px] text-[#1a1d22]"
-        >
-          <option value="">Country</option>
-          <option value="NL">Netherlands</option>
-          <option value="BE">Belgium</option>
-          <option value="LU">Luxembourg</option>
-          <option value="other">Other</option>
-        </select>
-        <select
-          value={form.sector}
-          onChange={(e) => setForm((f) => ({ ...f, sector: e.target.value }))}
-          aria-label="Sector"
-          className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px] text-[#1a1d22]"
-        >
-          <option value="">Sector</option>
-          {SECTOR_OPTIONS.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
         <input
-          value={form.currentRemoteAccess}
-          onChange={(e) => setForm((f) => ({ ...f, currentRemoteAccess: e.target.value }))}
-          placeholder="What do you use for remote access today, if anything?"
-          aria-label="What do you use for remote access today, if anything?"
-          className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px]"
-        />
-        <select
-          value={form.timeline}
-          onChange={(e) => setForm((f) => ({ ...f, timeline: e.target.value }))}
-          aria-label="Timeline"
-          className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px] text-[#1a1d22]"
-        >
-          <option value="">Timeline</option>
-          {TIMELINE_OPTIONS.map((t) => (
-            <option key={t} value={t}>{t}</option>
-          ))}
-        </select>
-        <textarea
-          value={form.freeText}
-          onChange={(e) => setForm((f) => ({ ...f, freeText: e.target.value }))}
-          placeholder="Anything else you'd like to add"
-          aria-label="Anything else you'd like to add"
-          rows={3}
+          value={form.remoteAccessToday}
+          onChange={(e) => setForm((f) => ({ ...f, remoteAccessToday: e.target.value }))}
+          onFocus={markStarted}
+          placeholder="What does remote access to your machines look like today? (optional)"
+          aria-label="What does remote access to your machines look like today? Optional."
           className="rounded border border-[#3f4b52]/[0.3] px-3 py-2 text-[14px]"
         />
       </div>

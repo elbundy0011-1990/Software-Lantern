@@ -9,13 +9,10 @@ import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
 interface OtEnquirySubmission {
   country: string | null;
   answers: Record<string, unknown>;
-  contact: { name?: string; company?: string; email?: string; phone?: string };
+  contact: { name?: string; company?: string; email?: string };
   role?: string;
-  sector?: string;
   builderOrOperator?: string | null;
   currentRemoteAccess?: string;
-  timeline?: string;
-  freeText?: string;
   consentReviewGiven: boolean;
   website?: string; // honeypot — must arrive empty
   turnstileToken?: string;
@@ -43,7 +40,6 @@ export async function POST(request: Request) {
   const name = (contact.name || "").trim();
   const company = (contact.company || "").trim();
   const email = (contact.email || "").trim().toLowerCase();
-  const phoneDigits = (contact.phone || "").replace(/[^0-9]/g, "");
 
   if (!name || !company) {
     return NextResponse.json({ error: "Name and company are required." }, { status: 400 });
@@ -56,9 +52,6 @@ export async function POST(request: Request) {
   const domain = email.split("@")[1];
   if (FREE_EMAIL_DOMAINS.includes(domain)) {
     return NextResponse.json({ error: "Please use your work email address." }, { status: 400 });
-  }
-  if (phoneDigits.length < 7) {
-    return NextResponse.json({ error: "A valid phone number is required." }, { status: 400 });
   }
   if (!body.consentReviewGiven) {
     return NextResponse.json(
@@ -88,14 +81,10 @@ export async function POST(request: Request) {
       company_name: company,
       contact_name: name,
       contact_email: email,
-      contact_phone: contact.phone || null,
       answers: body.answers || {},
       role: body.role || null,
-      sector: body.sector || null,
       builder_or_operator: body.builderOrOperator || null,
       current_remote_access: body.currentRemoteAccess || null,
-      timeline: body.timeline || null,
-      free_text: body.freeText || null,
       consent_review_given: true,
     })
     .select("id")

@@ -52,25 +52,22 @@ export default function OtHomePage() {
             Belgium, and Luxembourg. Three different EU rules, three different reasons they apply,
             explained plainly and cited.
           </p>
-          <div className="flex flex-wrap gap-3 mb-10">
-            <Link
-              href="/checker"
-              className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-white"
-              style={{ background: "#9a3412" }}
-            >
-              Check your situation →
-            </Link>
+          <div className="flex flex-wrap items-start gap-x-3 gap-y-2 mb-10">
+            <div>
+              <Link
+                href="/checker"
+                className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-white inline-block"
+                style={{ background: "#9a3412" }}
+              >
+                Check your situation →
+              </Link>
+              <p className="mt-2 text-[13px] text-[#3f4b52]">About 2 minutes. No email needed.</p>
+            </div>
             <Link
               href="/guides"
-              className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-[#1a1d22] border border-[#3f4b52]/[0.3]"
+              className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-[#1a1d22] border border-[#3f4b52]/[0.3] inline-block"
             >
               Read the guides
-            </Link>
-            <Link
-              href="/enquiry"
-              className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-[#1a1d22] border border-[#3f4b52]/[0.3]"
-            >
-              Send an enquiry
             </Link>
           </div>
           <ComplianceLedger />

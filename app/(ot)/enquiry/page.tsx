@@ -22,7 +22,7 @@ export default function EnquiryPage() {
           <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-8 text-[#1a1d22] text-center">
             Send an enquiry
           </h1>
-          <OtEnquiryForm source="direct" />
+          <OtEnquiryForm />
         </div>
       </section>
     </main>

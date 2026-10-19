@@ -37,11 +37,24 @@ export default function SupplyChainArticlePage() {
 
           <h2 className={h2}>What NIS2 requires (Article 21(2))</h2>
           <p className={p}>
-            Directive (EU) 2022/2555 (&ldquo;NIS2&rdquo;), Article 21(2), sets out minimum
-            cybersecurity risk-management measures for in-scope entities, including supply-chain
-            security (assessing the security practices of direct suppliers and service providers,
-            such as a machine builder or integrator with remote access into its systems) and access
-            management, including multi-factor or continuous authentication where appropriate.
+            Directive (EU) 2022/2555 (&ldquo;NIS2&rdquo;), Article 21(2), requires in-scope entities
+            to take minimum cybersecurity risk-management measures. Verbatim:
+          </p>
+          <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
+            &ldquo;The measures referred to in paragraph 1 shall be based on an all-hazards approach
+            that aims to protect network and information systems and the physical environment of
+            those systems from incidents, and shall include at least the following: (a) policies on
+            risk analysis and information system security; (b) incident handling; (c) business
+            continuity, such as backup management and disaster recovery, and crisis management; (d)
+            supply chain security, including security-related aspects concerning the relationships
+            between each entity and its direct suppliers or service providers.&rdquo;
+          </blockquote>
+          <p className={p}>
+            Point (d), supply chain security, covers a machine builder or integrator with remote
+            access into its customer&apos;s systems.{" "}
+            <a href="https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng" target="_blank" rel="noopener noreferrer" className={link}>
+              Source: Directive (EU) 2022/2555, Art. 21(2)(d), checked 19 October 2026
+            </a>
           </p>
 
           <h2 className={h2}>What NIS2 does not require</h2>
@@ -89,13 +102,15 @@ export default function SupplyChainArticlePage() {
             </li>
           </ul>
 
-          <div className="mt-10 text-center flex flex-wrap justify-center gap-3">
+          <div className="mt-10 text-center">
             <Link href="/checker" className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-white inline-block" style={{ background: "#9a3412" }}>
               Check your situation →
             </Link>
-            <Link href="/enquiry" className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-[#1a1d22] border border-[#3f4b52]/[0.3] inline-block">
-              Send an enquiry
-            </Link>
+            <p className="mt-3 text-[14px] text-[#3f4b52]">
+              It takes about 2 minutes and covers NIS2, the Cyber Resilience Act, and the Machinery
+              Regulation for machine builders, factory operators, and system integrators in the
+              Netherlands, Belgium, and Luxembourg.
+            </p>
           </div>
 
           <hr className="border-[#3f4b52]/[0.2] my-10" />

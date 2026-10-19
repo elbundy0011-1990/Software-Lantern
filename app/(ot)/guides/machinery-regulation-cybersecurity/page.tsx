@@ -30,13 +30,17 @@ export default function MachineryRegulationGuidePage() {
           </h1>
 
           <p className={p}>
-            Regulation (EU) 2023/1230 replaces the Machinery Directive 2006/42/EC.{" "}
+            Regulation (EU) 2023/1230 replaces the Machinery Directive 2006/42/EC and applies from{" "}
+            <strong>{entry.display}</strong>.{" "}
             <a href={entry.citationUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline text-[#9a3412]">
               {entry.citationLabel}
             </a>
           </p>
 
-          <h2 className={h2}>Repeal and transition</h2>
+          <h2 className={h2}>Repeal and application, the same date</h2>
+          <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
+            Article 54: &ldquo;It shall apply from 14 January 2027.&rdquo;
+          </blockquote>
           <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
             Article 51(2): &ldquo;Directive 2006/42/EC is repealed with effect from 14 January
             2027.&rdquo;
@@ -47,6 +51,8 @@ export default function MachineryRegulationGuidePage() {
             before 14 January 2027.&rdquo;
           </blockquote>
           <p className={p}>
+            The old Directive is repealed and the new Regulation applies from the same date, with
+            no gap between the two.{" "}
             <a href={entry.citationUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline text-[#9a3412]">
               Source: {entry.citationLabel}, checked {entry.lastVerifiedDisplay}
             </a>
@@ -74,13 +80,15 @@ export default function MachineryRegulationGuidePage() {
             reasons, at the same time.
           </p>
 
-          <div className="mt-10 text-center flex flex-wrap justify-center gap-3">
+          <div className="mt-10 text-center">
             <Link href="/checker" className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-white inline-block" style={{ background: "#9a3412" }}>
               Check your situation →
             </Link>
-            <Link href="/enquiry" className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-[#1a1d22] border border-[#3f4b52]/[0.3] inline-block">
-              Send an enquiry
-            </Link>
+            <p className="mt-3 text-[14px] text-[#3f4b52]">
+              It takes about 2 minutes and covers NIS2, the Cyber Resilience Act, and the Machinery
+              Regulation for machine builders, factory operators, and system integrators in the
+              Netherlands, Belgium, and Luxembourg.
+            </p>
           </div>
 
           <hr className="border-[#3f4b52]/[0.2] my-10" />

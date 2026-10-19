@@ -66,12 +66,12 @@ export default function PrivacyPolicyPage() {
           <h2 className={h2}>3. What personal data we collect</h2>
           <p className={p}><strong>a) If you submit an OT cybersecurity enquiry:</strong></p>
           <ul className={ul}>
-            <li>Name, work email address, company name, and phone number if provided</li>
-            <li>Role, country (Netherlands, Belgium, Luxembourg, or other), and sector</li>
+            <li>Name, work email address, and company name</li>
+            <li>Role, and what your remote access to machines looks like today, if you tell us</li>
             <li>
-              Whether you identify as a machine builder, operator, or system integrator, your
-              current remote-access approach if provided, your timeline, any free-text details, and
-              your answers to the scope checker if you used it
+              Your answers to the scope checker if you used it: country (Netherlands, Belgium,
+              Luxembourg, or other), whether you identify as a machine builder, operator, or system
+              integrator, company size, and remote-access status
             </li>
           </ul>
           <p className={p}><strong>b) If you submit a legacy marketplace requirements form (buyer):</strong></p>
@@ -170,8 +170,10 @@ export default function PrivacyPolicyPage() {
             <li>
               <strong>Vercel Web Analytics</strong> (usage analytics): measures page views and a
               small number of named events (for example, that the scope checker was started or
-              completed, or that an enquiry was sent), without cookies. It never receives anything
-              you type into a form, such as your name, email, or free-text answers.
+              completed, that someone clicked through to send a result for review, or that an
+              enquiry was started or sent), without cookies. These events never carry your
+              answers, just that the step happened. It never receives anything you type into a
+              form, such as your name, email, or free-text answers.
             </li>
             <li><strong>Cloudflare</strong> (domain, DNS, bot-verification/Turnstile, and email routing)</li>
             <li><strong>Resend</strong> (sending internal notification emails to us about new submissions)</li>
@@ -232,6 +234,11 @@ export default function PrivacyPolicyPage() {
           <ul className={ul}>
             <li>Authentication session cookies (via Supabase) if you have a legacy marketplace partner account</li>
             <li>Bot-verification tokens (via Cloudflare Turnstile) when submitting a form</li>
+            <li>
+              Your scope-checker answers, held in your browser&apos;s session storage so they can be
+              shown back to you on the enquiry form. This never leaves your browser as a cookie,
+              URL parameter, or analytics event, and clears itself when you close the tab
+            </li>
           </ul>
           <p className={p}>
             Vercel Web Analytics (see Section 5) does not use cookies; it identifies visits using a

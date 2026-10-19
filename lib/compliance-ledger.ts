@@ -91,21 +91,21 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
   },
   {
     id: "machinery-regulation",
-    date: "2027-01-20",
-    display: "20 January 2027",
-    label: "Machinery Regulation (EU) 2023/1230",
+    date: "2027-01-14",
+    display: "14 January 2027",
+    label: "Machinery Regulation (EU) 2023/1230 applies",
     status: "upcoming",
-    citationLabel: "Regulation (EU) 2023/1230",
+    // Verbatim, Art. 54: "It shall apply from 14 January 2027." Read
+    // directly 2026-10-19 against the ELI text below. The previous
+    // 20 January 2027 figure on this entry was wrong and has been
+    // corrected; see the guide page for the repeal (Art. 51(2)) and
+    // transitional-sale (Art. 52(1)) quotes, which confirm the old
+    // Directive is repealed from the same date this Regulation applies.
+    citationLabel: "Regulation (EU) 2023/1230, Art. 54",
     citationUrl: "https://eur-lex.europa.eu/eli/reg/2023/1230/oj/eng",
     lastVerified: "2026-10-19",
     lastVerifiedDisplay: "19 October 2026",
-    // pending — the application-article quote (fixing this 20 January 2027
-    // date and whether there's a transition period) is not on file yet;
-    // withheld from public pages 2026-10-19. Article 51(2) (repeal of
-    // Directive 2006/42/EC, 14 January 2027) and Article 52(1) (transitional
-    // sale of pre-existing stock) ARE verified — see the guide page, which
-    // cites them directly rather than through this entry.
-    verified: false,
+    verified: true,
   },
   {
     id: "cra-full",

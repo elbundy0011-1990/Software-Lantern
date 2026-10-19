@@ -211,7 +211,7 @@ export function buildOtEnquiryConfirmationEmail(): { subject: string; html: stri
 <html>
   <body style="margin:0;padding:0;background:#ffffff;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
     <div style="max-width:560px;margin:0 auto;padding:40px 20px;font-size:15px;line-height:1.6;color:#0d1117;">
-      <p style="margin:0 0 16px;">Thanks for your enquiry. Software Lantern will review it and may contact you by email or phone.</p>
+      <p style="margin:0 0 16px;">Thanks for your enquiry. Software Lantern will review it and may contact you by email.</p>
       <p style="margin:0 0 16px;">Your details won&#39;t be shared with any other company unless we first ask you about that specific company and you agree.</p>
       <p style="margin:0 0 16px;">Privacy policy: <a href="${privacyUrl}" style="color:#0d1117;">${privacyUrl}</a></p>
       <p style="margin:0;">If you&#39;d like your details deleted, reply to this email.</p>

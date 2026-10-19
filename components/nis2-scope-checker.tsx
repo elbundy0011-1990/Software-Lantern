@@ -5,6 +5,7 @@ import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { NIS2_DATES, OFFICIAL_SCOPE_TOOLS, type Nis2Country } from "@/lib/nis2-dates";
 import { COMPLIANCE_LEDGER } from "@/lib/compliance-ledger";
+import { CONSENT_SENTENCE } from "@/lib/consent-text";
 import { ComplianceLedger } from "./compliance-ledger";
 
 export type Audience = "builder" | "operator" | "integrator" | "not_sure";
@@ -233,9 +234,10 @@ function ProductRulesNote() {
         <a href={cra.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
           Source: {cra.citationLabel}, checked {cra.lastVerifiedDisplay}
         </a>
-        ), and the Machinery Regulation (
+        ), and the Machinery Regulation, which applies from{" "}
+        <strong>{machinery.display}</strong> (
         <a href={machinery.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
-          {machinery.citationLabel}
+          Source: {machinery.citationLabel}, checked {machinery.lastVerifiedDisplay}
         </a>
         ).
       </p>
@@ -244,6 +246,124 @@ function ProductRulesNote() {
         design, protection against corruption that could create a safety hazard), leaving the
         implementation to you.
       </p>
+    </div>
+  );
+}
+
+// The four outcomes the result screen's CTA block reads, distinct from
+// ResultHeading's three-way "tone" below: "in_scope" and "not_sure" share
+// one CTA (the evidence-review angle), "small_micro" splits in two
+// depending on whether remote access makes a customer ask realistic.
+export type Outcome = "in_scope" | "not_sure" | "customer_evidence" | "clearly_out";
+
+export function computeOutcome(size: Size | null, remoteAccess: RemoteAccess | null): Outcome {
+  if (size === "medium_large") return "in_scope";
+  if (size === "not_sure") return "not_sure";
+  // size === "small_micro": a plausible customer-evidence ask needs some
+  // remote-access exposure to point to; "no" leaves nothing to raise.
+  return remoteAccess === "no" ? "clearly_out" : "customer_evidence";
+}
+
+// Shared with components/ot-enquiry-form.tsx, which shows the same recap
+// as a read-only "Your result" summary at the top of the form, so the
+// wording a visitor sees on the result screen and on the form that
+// follows it never drifts apart.
+export function describeCheckerAnswers({
+  country,
+  audience,
+  size,
+  remoteAccess,
+}: {
+  country: Nis2Country | null;
+  audience: Audience | null;
+  size: Size | null;
+  remoteAccess: RemoteAccess | null;
+}): string {
+  const sizePart =
+    size === "medium_large" ? "a medium or large" : size === "small_micro" ? "a small or micro" : "a";
+  const audiencePart =
+    audience === "builder"
+      ? "machine builder"
+      : audience === "operator"
+        ? "factory or plant operator"
+        : audience === "integrator"
+          ? "system integrator"
+          : "business";
+  const countryPart =
+    country === "NL" ? " in the Netherlands" : country === "BE" ? " in Belgium" : country === "LU" ? " in Luxembourg" : "";
+  const remoteAccessPart =
+    remoteAccess === "yes"
+      ? ", with remote access into machines"
+      : remoteAccess === "no"
+        ? ", without remote access into machines"
+        : "";
+  return `${sizePart} ${audiencePart}${countryPart}${remoteAccessPart}`;
+}
+
+const resultCtaPrimaryClass =
+  "rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-white inline-block";
+const resultCtaSecondaryClass =
+  "rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-[#1a1d22] border border-[#3f4b52]/[0.3] inline-block";
+
+function ResultCta({
+  country,
+  audience,
+  size,
+  remoteAccess,
+  restart,
+}: {
+  country: Nis2Country | null;
+  audience: Audience | null;
+  size: Size | null;
+  remoteAccess: RemoteAccess | null;
+  restart: () => void;
+}) {
+  const outcome = computeOutcome(size, remoteAccess);
+
+  if (outcome === "clearly_out") {
+    return (
+      <div className="mt-7 pt-6 border-t border-[#3f4b52]/[0.15] text-center">
+        <p className="text-[15px] text-[#3f4b52] mb-4 max-w-[480px] mx-auto">
+          Based on your answers, there&apos;s nothing here pointing to pressure from customers or
+          regulators. See the guides to understand the wider landscape.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <Link href="/guides" className={resultCtaSecondaryClass}>
+            Read the guides
+          </Link>
+          <button onClick={restart} className="text-[14px] font-semibold text-[#3f4b52] underline underline-offset-2">
+            Start over
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const recap = describeCheckerAnswers({ country, audience, size, remoteAccess });
+  const bodyText =
+    outcome === "customer_evidence"
+      ? "Your customers may ask how you secure remote access. Send your result for review and we will look at it with you."
+      : `Your answers point to ${recap}. If you want to talk through what this means for how your machines are serviced remotely, send your result for review.`;
+
+  return (
+    <div className="mt-7 pt-6 border-t border-[#3f4b52]/[0.15] text-center">
+      <p className="text-[15px] text-[#3f4b52] mb-4 max-w-[520px] mx-auto">{bodyText}</p>
+      <a
+        href="#ot-enquiry-form"
+        onClick={() => track("result_cta_click", { outcome })}
+        className={resultCtaPrimaryClass}
+        style={{ background: ACCENT }}
+      >
+        Send my result for review
+      </a>
+      <p className="mt-3 text-[12px] leading-[1.6] text-[#3f4b52] max-w-[480px] mx-auto">
+        Work email required. {CONSENT_SENTENCE}
+      </p>
+      <div className="mt-4">
+        <button onClick={restart} className="text-[14px] font-semibold text-[#3f4b52] underline underline-offset-2">
+          Start over
+        </button>
+      </div>
     </div>
   );
 }
@@ -347,11 +467,7 @@ export function Nis2ScopeChecker({
     setRemoteAccess(r);
     setScreen("result");
     emit({ remoteAccess: r });
-    track("checker_complete", {
-      country: country ?? "unknown",
-      audience: audience ?? "unknown",
-      in_scope_result: size === "medium_large" ? "likely_in_scope" : size === "small_micro" ? "generally_out" : "not_sure",
-    });
+    track("checker_complete", { outcome: computeOutcome(size, r) });
   };
   const restart = () => {
     setScreen("country");
@@ -455,24 +571,7 @@ export function Nis2ScopeChecker({
               {showProductRules && <ProductRulesNote />}
               <Iec62443Note />
               <OfficialToolNote country={country} />
-              <div className="mt-7 pt-6 border-t border-[#3f4b52]/[0.15] flex flex-wrap items-center justify-center gap-4">
-                <a
-                  href="#ot-enquiry-form"
-                  className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-white"
-                  style={{ background: ACCENT }}
-                >
-                  Tell us about your situation →
-                </a>
-                <Link
-                  href="/enquiry"
-                  className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-[#1a1d22] border border-[#3f4b52]/[0.3]"
-                >
-                  Send an enquiry
-                </Link>
-                <button onClick={restart} className="text-[14px] font-semibold text-[#3f4b52] underline underline-offset-2">
-                  Start over
-                </button>
-              </div>
+              <ResultCta country={country} audience={audience} size={size} remoteAccess={remoteAccess} restart={restart} />
             </div>
           )}
         </div>

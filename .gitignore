@@ -40,6 +40,10 @@ yarn-error.log*
 # local tooling
 .claude/
 
+# internal research docs that name competitors by name — never committed
+/docs/OT-SEO-RESEARCH.md
+/docs/OT-SEO-PLAN.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

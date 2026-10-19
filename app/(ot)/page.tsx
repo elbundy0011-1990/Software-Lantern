@@ -43,6 +43,9 @@ export default function OtHomePage() {
     <main data-screen-label="OT Cybersecurity homepage">
       <section className="border-b border-[#3f4b52]/[0.15]">
         <div className="max-w-[900px] mx-auto px-5 sm:px-8 pt-16 pb-14">
+          <p className="mb-3 text-[13px] font-bold uppercase tracking-[0.08em] text-[#9a3412]">
+            Practical OT security guidance
+          </p>
           <h1 className="font-sans font-semibold text-[clamp(32px,4.8vw,52px)] leading-[1.08] tracking-[-0.03em] mb-5 text-[#1a1d22] text-left">
             Secure remote access to machines, under NIS2, the Cyber Resilience Act, and the
             Machinery Regulation

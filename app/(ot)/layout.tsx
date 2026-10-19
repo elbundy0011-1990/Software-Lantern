@@ -1,5 +1,17 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { OtLogo } from "@/components/ot-logo";
+
+export const OT_TAGLINE = "Practical OT security guidance";
+
+// Default metadata for the (ot) route group: the fallback every OT page
+// would inherit if it didn't set its own pageMetadata() call. Every
+// current page does set its own, so this never overrides anything
+// today, but it's the one place a future page's metadata would fall
+// back to, and it carries the tagline per the standing rule.
+export const metadata: Metadata = {
+  description: `${OT_TAGLINE}: what NIS2, the Cyber Resilience Act, and the Machinery Regulation mean for machine builders, factory operators, and system integrators in the Netherlands, Belgium, and Luxembourg.`,
+};
 
 // New site identity, deliberately separate from components/site-header.tsx
 // / components/site-footer.tsx (the EUDR/PLM/Battery-Passport marketplace
@@ -24,8 +36,9 @@ export default function OtLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex flex-col" style={{ background: "#f6f5f1" }}>
       <header className="border-b border-[#3f4b52]/[0.15] bg-[#f6f5f1]">
         <div className="max-w-[1100px] mx-auto px-5 sm:px-8 py-4 flex items-center gap-8">
-          <Link href="/" aria-label="Software Lantern home">
+          <Link href="/" aria-label="Software Lantern home" className="flex items-center gap-3">
             <OtLogo height={26} />
+            <span className="hidden sm:inline text-[13px] font-semibold text-[#3f4b52]">{OT_TAGLINE}</span>
           </Link>
           <nav className="hidden min-[900px]:flex items-center gap-6 ml-auto text-[14px] font-semibold text-[#3f4b52]">
             {NAV.map((item) => (
@@ -50,7 +63,8 @@ export default function OtLayout({ children }: { children: React.ReactNode }) {
         <div className="max-w-[1100px] mx-auto px-5 sm:px-8 py-10 grid grid-cols-1 sm:grid-cols-4 gap-8 text-[14px]">
           <div className="sm:col-span-2">
             <OtLogo height={24} />
-            <p className="text-[#3f4b52] max-w-[36ch] mt-3">
+            <p className="mt-3 text-[12px] font-bold uppercase tracking-[0.07em] text-[#9a3412]">{OT_TAGLINE}</p>
+            <p className="text-[#3f4b52] max-w-[36ch] mt-2">
               Secure remote access to machines and OT, and what NIS2, the Cyber Resilience Act, and
               the Machinery Regulation mean for machine builders, factory operators, and system
               integrators in the Netherlands, Belgium, and Luxembourg.

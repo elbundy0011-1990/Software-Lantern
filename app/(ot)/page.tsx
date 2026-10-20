@@ -72,6 +72,12 @@ export default function OtHomePage() {
             >
               Read the guides
             </Link>
+            <Link
+              href="/remote-access-check"
+              className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-[#1a1d22] border border-[#3f4b52]/[0.3] inline-block"
+            >
+              Remote access situation check
+            </Link>
           </div>
           <ComplianceLedger />
         </div>
@@ -136,6 +142,12 @@ export default function OtHomePage() {
             </Link>
             <Link href="/guides/iec-62443-explained" className="text-[#9a3412] hover:underline">
               IEC 62443, explained
+            </Link>
+            <Link href="/guides/customer-security-questionnaire" className="text-[#9a3412] hover:underline">
+              Preparing to answer a customer&apos;s security questionnaire
+            </Link>
+            <Link href="/guides/iec-62443-remote-access" className="text-[#9a3412] hover:underline">
+              IEC 62443 and remote access for machine builders
             </Link>
           </div>
         </div>

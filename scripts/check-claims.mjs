@@ -40,10 +40,13 @@ const OT_FILES = [
   "components/compliance-ledger.tsx",
   "components/ot-logo.tsx",
   "components/disclosure-slot.tsx",
+  "components/remote-access-situation-check.tsx",
+  "components/remote-access-check-interactive.tsx",
   "lib/compliance-ledger.ts",
   "lib/nis2-dates.ts",
   "lib/consent-text.ts",
   "lib/checker-session.ts",
+  "lib/remote-access-session.ts",
   "lib/email-templates.ts",
 ];
 

@@ -14,6 +14,15 @@ import {
   subscribeCheckerAnswers,
   type CheckerAnswers,
 } from "@/lib/checker-session";
+import {
+  EMPTY_REMOTE_ACCESS_ANSWERS,
+  hasAnyRemoteAccessAnswer,
+  getRemoteAccessAnswersSnapshot,
+  getRemoteAccessAnswersServerSnapshot,
+  subscribeRemoteAccessAnswers,
+  describeRemoteAccessAnswers,
+  type RemoteAccessAnswers,
+} from "@/lib/remote-access-session";
 import { describeCheckerAnswers } from "@/components/nis2-scope-checker";
 
 const ACCENT = "#9a3412";
@@ -54,15 +63,21 @@ const EMPTY_FORM: FormState = {
 
 export function OtEnquiryForm({
   checkerAnswers,
+  remoteAccessAnswers,
   showCheckerNudge = true,
 }: {
-  // Live answers from the checker on the same page (components/ot-cyber-
-  // interactive.tsx). When omitted (opening /enquiry directly), the form
-  // falls back to whatever's in sessionStorage from an earlier checker
-  // session, per lib/checker-session.ts.
+  // Live answers from the NIS2 checker on the same page (components/ot-
+  // cyber-interactive.tsx). When omitted (opening /enquiry directly), the
+  // form falls back to whatever's in sessionStorage from an earlier
+  // checker session, per lib/checker-session.ts.
   checkerAnswers?: CheckerAnswers;
+  // Same idea, for the remote-access situation check (components/remote-
+  // access-check-interactive.tsx) via lib/remote-access-session.ts — a
+  // second, independent store so the two tools never need to agree on
+  // one answer shape.
+  remoteAccessAnswers?: RemoteAccessAnswers;
   // The "check your situation first" nudge only makes sense when this
-  // form isn't already sitting right below the checker on the same page.
+  // form isn't already sitting right below a tool on the same page.
   showCheckerNudge?: boolean;
 }) {
   const storedAnswers = useSyncExternalStore(
@@ -70,8 +85,16 @@ export function OtEnquiryForm({
     getCheckerAnswersSnapshot,
     getCheckerAnswersServerSnapshot,
   );
+  const storedRemoteAccessAnswers = useSyncExternalStore(
+    subscribeRemoteAccessAnswers,
+    getRemoteAccessAnswersSnapshot,
+    getRemoteAccessAnswersServerSnapshot,
+  );
   const effectiveAnswers = checkerAnswers ?? storedAnswers ?? EMPTY_CHECKER_ANSWERS;
-  const sourceIsChecker = hasAnyCheckerAnswer(effectiveAnswers);
+  const effectiveRemoteAccessAnswers = remoteAccessAnswers ?? storedRemoteAccessAnswers ?? EMPTY_REMOTE_ACCESS_ANSWERS;
+  const hasCheckerAnswer = hasAnyCheckerAnswer(effectiveAnswers);
+  const hasRemoteAccessAnswer = hasAnyRemoteAccessAnswer(effectiveRemoteAccessAnswers);
+  const sourceIsChecker = hasCheckerAnswer || hasRemoteAccessAnswer;
 
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [consent, setConsent] = useState(false);
@@ -122,7 +145,9 @@ export function OtEnquiryForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           country: effectiveAnswers.country || null,
-          answers: effectiveAnswers,
+          answers: hasRemoteAccessAnswer
+            ? { ...effectiveAnswers, remoteAccessCheck: effectiveRemoteAccessAnswers }
+            : effectiveAnswers,
           contact: { name: form.name, company: form.company, email: form.email },
           role: form.role,
           builderOrOperator: effectiveAnswers.audience ?? null,
@@ -162,7 +187,10 @@ export function OtEnquiryForm({
       {sourceIsChecker ? (
         <div className="rounded border border-[#3f4b52]/[0.2] bg-[#f6f5f1] p-4 mb-5">
           <p className="text-[12px] font-bold tracking-[0.07em] uppercase text-[#3f4b52] mb-1">Your result</p>
-          <p className="text-[14px] text-[#1a1d22]">{describeCheckerAnswers(effectiveAnswers)}</p>
+          {hasCheckerAnswer && <p className="text-[14px] text-[#1a1d22]">{describeCheckerAnswers(effectiveAnswers)}</p>}
+          {hasRemoteAccessAnswer && (
+            <p className="text-[14px] text-[#1a1d22]">{describeRemoteAccessAnswers(effectiveRemoteAccessAnswers)}</p>
+          )}
         </div>
       ) : (
         showCheckerNudge && (

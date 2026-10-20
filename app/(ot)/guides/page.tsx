@@ -32,6 +32,16 @@ const GUIDES = [
     title: "IEC 62443, explained",
     body: "A voluntary standard, not a law, though some customers or contracts require it.",
   },
+  {
+    href: "/guides/customer-security-questionnaire",
+    title: "Preparing to answer a customer's security questionnaire",
+    body: "What it typically asks, and how to prepare an honest answer.",
+  },
+  {
+    href: "/guides/iec-62443-remote-access",
+    title: "IEC 62443 and remote access for machine builders",
+    body: "A plain overview of the voluntary standard's general approach, no clause text.",
+  },
 ];
 
 export default function GuidesHubPage() {

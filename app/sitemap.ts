@@ -2,6 +2,14 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 
+// Forces this metadata route to render on every request rather than be
+// statically generated once at build time and then potentially served
+// stale from a CDN/ISR cache across later deploys — a fresh deploy must
+// always serve its own current route list, never a previous deploy's
+// cached sitemap.xml.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 // 2026-10-19 site replacement: the legacy marketplace routes (/eudr, /plm,
 // /battery-passport, /providers, /resources/*, /finder) are deliberately
 // left out of this sitemap per docs/OT-CYBER-PLAN.md Part B §B.1.5 (keep

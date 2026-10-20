@@ -10,18 +10,73 @@ const TABS: { label: string; value: OtEnquiryStatus | "all" }[] = [
   { label: "All", value: "all" },
 ];
 
+type SortKey = "created_at" | "company_name" | "country" | "tool" | "timeline";
+
+function toolOf(e: OtEnquiry): string {
+  const v = e.answers?.tool;
+  if (!v) return "checker";
+  return Array.isArray(v) ? v.join(", ") : v;
+}
+
+function sortValue(e: OtEnquiry, key: SortKey): string {
+  if (key === "tool") return toolOf(e);
+  if (key === "country") return e.country || "";
+  if (key === "company_name") return e.company_name || "";
+  if (key === "timeline") return e.timeline || "";
+  return e.created_at;
+}
+
+function SortableHeader({
+  label,
+  sortKey,
+  activeSort,
+  activeDir,
+  status,
+}: {
+  label: string;
+  sortKey: SortKey;
+  activeSort: SortKey;
+  activeDir: "asc" | "desc";
+  status: string;
+}) {
+  const isActive = activeSort === sortKey;
+  const nextDir = isActive && activeDir === "asc" ? "desc" : "asc";
+  return (
+    <th className="px-5 py-3">
+      <Link
+        href={`/admin/ot-enquiries?status=${status}&sort=${sortKey}&dir=${nextDir}`}
+        className="inline-flex items-center gap-1 hover:text-[#4f46e5]"
+      >
+        {label}
+        {isActive && <span>{activeDir === "asc" ? "↑" : "↓"}</span>}
+      </Link>
+    </th>
+  );
+}
+
 export default async function AdminOtEnquiriesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; sort?: string; dir?: string }>;
 }) {
-  const { status } = await searchParams;
+  const { status, sort, dir } = await searchParams;
   const activeTab = (status as OtEnquiryStatus | "all") || "new";
+  const activeSort: SortKey = (["created_at", "company_name", "country", "tool", "timeline"].includes(sort || "")
+    ? sort
+    : "created_at") as SortKey;
+  const activeDir: "asc" | "desc" = dir === "asc" ? "asc" : "desc";
 
   const supabase = createAdminClient();
   let query = supabase.from("ot_enquiries").select("*").order("created_at", { ascending: false });
   if (activeTab !== "all") query = query.eq("status", activeTab);
   const { data: enquiries } = await query;
+
+  const sorted = [...((enquiries as OtEnquiry[] | null) || [])].sort((a, b) => {
+    const av = sortValue(a, activeSort);
+    const bv = sortValue(b, activeSort);
+    const cmp = av.localeCompare(bv);
+    return activeDir === "asc" ? cmp : -cmp;
+  });
 
   return (
     <div>
@@ -53,38 +108,44 @@ export default async function AdminOtEnquiriesPage({
       </div>
 
       <div className="bg-white rounded-2xl border border-[#0d1117]/[0.08] overflow-hidden">
-        {(enquiries as OtEnquiry[] | null)?.length ? (
-          <table className="w-full text-left text-[14px]">
-            <thead className="bg-[#f6f7fb] text-[12px] font-bold uppercase tracking-[0.05em] text-[#79818f]">
-              <tr>
-                <th className="px-5 py-3">Company</th>
-                <th className="px-5 py-3">Country</th>
-                <th className="px-5 py-3">Builder/Operator</th>
-                <th className="px-5 py-3">Submitted</th>
-                <th className="px-5 py-3">Shared?</th>
-                <th className="px-5 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(enquiries as OtEnquiry[]).map((e) => (
-                <tr key={e.id} className="border-t border-[#0d1117]/[0.06]">
-                  <td className="px-5 py-3">
-                    <Link href={`/admin/ot-enquiries/${e.id}`} className="font-semibold text-[#4f46e5]">
-                      {e.company_name || "(no company name)"}
-                    </Link>
-                    <div className="text-[13px] text-[#79818f]">{e.contact_email}</div>
-                  </td>
-                  <td className="px-5 py-3">{e.country || "—"}</td>
-                  <td className="px-5 py-3">{e.builder_or_operator || "—"}</td>
-                  <td className="px-5 py-3">{new Date(e.created_at).toLocaleDateString()}</td>
-                  <td className="px-5 py-3">{e.shared_with ? `Yes — ${e.shared_with}` : "No"}</td>
-                  <td className="px-5 py-3">
-                    <OtStatusButtons id={e.id} status={e.status} />
-                  </td>
+        {sorted.length ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-[14px]">
+              <thead className="bg-[#f6f7fb] text-[12px] font-bold uppercase tracking-[0.05em] text-[#79818f]">
+                <tr>
+                  <SortableHeader label="Company" sortKey="company_name" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
+                  <SortableHeader label="Tool" sortKey="tool" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
+                  <SortableHeader label="Country" sortKey="country" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
+                  <th className="px-5 py-3">Builder/Operator</th>
+                  <SortableHeader label="Timeline" sortKey="timeline" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
+                  <SortableHeader label="Submitted" sortKey="created_at" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
+                  <th className="px-5 py-3">Shared?</th>
+                  <th className="px-5 py-3">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {sorted.map((e) => (
+                  <tr key={e.id} className="border-t border-[#0d1117]/[0.06]">
+                    <td className="px-5 py-3">
+                      <Link href={`/admin/ot-enquiries/${e.id}`} className="font-semibold text-[#4f46e5]">
+                        {e.company_name || "(no company name)"}
+                      </Link>
+                      <div className="text-[13px] text-[#79818f]">{e.contact_email}</div>
+                    </td>
+                    <td className="px-5 py-3">{toolOf(e)}</td>
+                    <td className="px-5 py-3">{e.country || "—"}</td>
+                    <td className="px-5 py-3">{e.builder_or_operator || "—"}</td>
+                    <td className="px-5 py-3">{e.timeline || "—"}</td>
+                    <td className="px-5 py-3">{new Date(e.created_at).toLocaleDateString()}</td>
+                    <td className="px-5 py-3">{e.shared_with ? `Yes — ${e.shared_with}` : "No"}</td>
+                    <td className="px-5 py-3">
+                      <OtStatusButtons id={e.id} status={e.status} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <p className="px-5 py-8 text-[14px] text-[#79818f]">No enquiries in this view.</p>
         )}

@@ -2,8 +2,15 @@ import { NextResponse, after } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { sendEmail } from "@/lib/resend";
-import { buildNewOtEnquiryAdminEmail, buildOtEnquiryConfirmationEmail, buildRoiCalculatorEmail } from "@/lib/email-templates";
+import {
+  buildNewOtEnquiryAdminEmail,
+  buildOtEnquiryConfirmationEmail,
+  buildRoiCalculatorEmail,
+  buildCountryReportEmail,
+} from "@/lib/email-templates";
 import type { RoiMode, RoiFieldState } from "@/lib/roi-calculator";
+import type { ReportCountry, CountryReportAnswers } from "@/lib/country-report";
+import type { RemoteAccessAnswers } from "@/lib/remote-access-session";
 import { isProductionDeploy } from "@/lib/environment";
 import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
 import { issueDownloadToken } from "@/lib/download-token";
@@ -13,6 +20,7 @@ interface OtEnquirySubmission {
   answers: Record<string, unknown>;
   contact: { name?: string; company?: string; email?: string };
   role?: string;
+  timeline?: string;
   builderOrOperator?: string | null;
   currentRemoteAccess?: string;
   consentReviewGiven: boolean;
@@ -29,7 +37,10 @@ interface OtEnquirySubmission {
   // "checklist": the vendor-demo comparison checklist request form —
   // same shape as "pack" (download token, no email attachment), just a
   // different private file and route (app/api/ot-enquiries/checklist).
-  source?: "checker" | "direct" | "pack" | "calculator" | "checklist";
+  // "country_report": the remote-access-check country report's "email
+  // me the full report" — sends buildCountryReportEmail(), recomputed
+  // server-side from answers.remoteAccessAnswers/countryReportAnswers.
+  source?: "checker" | "direct" | "pack" | "calculator" | "checklist" | "country_report";
 }
 
 export async function POST(request: Request) {
@@ -110,6 +121,7 @@ export async function POST(request: Request) {
       contact_email: email,
       answers,
       role: body.role || null,
+      timeline: body.timeline || null,
       builder_or_operator: body.builderOrOperator || null,
       current_remote_access: body.currentRemoteAccess || null,
       consent_review_given: true,
@@ -155,7 +167,15 @@ export async function POST(request: Request) {
       const { subject, html } =
         body.source === "calculator" && body.answers?.roiMode && body.answers?.roiInputs
           ? buildRoiCalculatorEmail(body.answers.roiMode as RoiMode, body.answers.roiInputs as RoiFieldState)
-          : buildOtEnquiryConfirmationEmail();
+          : body.source === "country_report" &&
+              body.answers?.countryReportAnswers &&
+              (body.answers.countryReportAnswers as CountryReportAnswers).country
+            ? buildCountryReportEmail(
+                (body.answers.countryReportAnswers as CountryReportAnswers).country as ReportCountry,
+                (body.answers.remoteAccessAnswers as RemoteAccessAnswers) ?? null,
+                body.answers.countryReportAnswers as CountryReportAnswers,
+              )
+            : buildOtEnquiryConfirmationEmail();
       await sendEmail({ to: email, subject, html });
     } catch (err) {
       console.error("Failed to send OT enquiry confirmation", err);

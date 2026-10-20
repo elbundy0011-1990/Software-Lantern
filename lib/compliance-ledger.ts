@@ -331,4 +331,186 @@ export const SUPPLEMENTARY_EVIDENCE: SupplementaryQuote[] = [
     },
     lastVerifiedDisplay: "19 October 2026",
   },
+
+  // --- Country report additions (2026-10-20): supervisory authority,
+  // registration duty, and incident-reporting duty per country, for the
+  // remote-access-check country report. Sourced only from official
+  // domains per instruction (rijksoverheid.nl, ncsc.nl, rdi.nl,
+  // ccb.belgium.be, safeonweb.be, ilr.lu, and national gazettes) — no
+  // claim below rests on a secondary/tracker source. Belgium's
+  // ccb.belgium.be and safeonweb.be themselves returned 403 to every
+  // fetch attempted in this pass, so all three Belgian claims are
+  // sourced directly from the official gazette instead (the law itself
+  // and its implementing Royal Decree), which the instruction's
+  // "gazettes" category also covers.
+  {
+    id: "nl-cbw-supervisory-authority",
+    citationLabel: "NCSC-NL, Cyberbeveiligingswet (NIS2) referral-tree overview",
+    citationUrl: "https://www.ncsc.nl/cyberbeveiligingswet-nis2/toezicht-op-de-cyberbeveiligingswet-nis2-hoe-zit-dat",
+    evidence: {
+      kind: "record",
+      fields: [
+        { label: "Sector (as listed)", value: "Vervaardiging (niet medische apparatuur): manufacturing, non-medical equipment" },
+        { label: "Competent authority (toezichthouder)", value: "RDI (Rijksinspectie Digitale Infrastructuur)" },
+        { label: "CSIRT", value: "NCSC (Nationaal Cyber Security Centrum)" },
+      ],
+    },
+    lastVerifiedDisplay: "20 October 2026",
+  },
+  {
+    id: "nl-cbw-registration-duty",
+    citationLabel: "RDI, “Registratieplicht Cyberbeveiligingswet”",
+    citationUrl: "https://www.rdi.nl/onderwerpen/digitale-weerbaarheid/cyberbeveiligingswet/registratieplicht",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Registratieplicht Cyberbeveiligingswet",
+          text: "Organisaties die onder de Cbw vallen, moeten zich registreren in het nationale entiteitenregister. Dit is verplicht vanaf 15 augustus 2026. Het register wordt in Nederland beheerd via Mijn.NCSC.nl.",
+          translation: "Organizations that fall under the Cbw must register in the national entity register. This is mandatory from 15 August 2026. The register is managed in the Netherlands via Mijn.NCSC.nl.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "20 October 2026",
+  },
+  {
+    id: "nl-cbw-incident-reporting-duty",
+    citationLabel: "NCSC-NL, “Meld incidenten onder de Cyberbeveiligingswet (meldplicht)”",
+    citationUrl: "https://www.ncsc.nl/cyberbeveiligingswet-nis2/meldplicht",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Meldplicht, vroegtijdige waarschuwing",
+          text: "Vroegtijdige waarschuwing binnen 24 uur.",
+          translation: "Early warning within 24 hours.",
+        },
+        {
+          article: "Meldplicht, melding",
+          text: "Melding binnen 72 uur.",
+          translation: "Notification within 72 hours.",
+        },
+        {
+          article: "Meldplicht, eindverslag",
+          text: "Eindverslag binnen 1 maand na je melding.",
+          translation: "Final report within 1 month after your notification.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "20 October 2026",
+  },
+  {
+    id: "be-nis2-supervisory-authority",
+    citationLabel: "Arrêté royal du 9 juin 2024 (Moniteur belge), Art. 3 §1",
+    citationUrl: "https://www.ejustice.just.fgov.be/cgi/article.pl?language=fr&lg_txt=f&numac_search=2024005260&sum_date=2024-06-24",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 3, § 1er",
+          text: "Le Centre pour la Cybersécurité Belgique, créé par l'arrêté royal du 10 octobre 2014 portant création du Centre pour la Cybersécurité Belgique, est désigné comme autorité nationale de cybersécurité.",
+          translation: "The Centre for Cybersecurity Belgium, created by the Royal Decree of 10 October 2014 establishing the Centre for Cybersecurity Belgium, is designated as the national cybersecurity authority.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "20 October 2026",
+  },
+  {
+    id: "be-nis2-registration-duty",
+    citationLabel: "Law of 26 April 2024 (Moniteur belge), Art. 13 §1",
+    citationUrl: "https://www.ejustice.just.fgov.be/eli/loi/2024/04/26/2024202344/justel",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 13, § 1er",
+          text: "Dans les cinq mois suivant l'entrée en vigueur de la loi ou l'identification visée à l'article 11, les entités essentielles, les entités importantes et les entités fournissant des services d'enregistrement de noms de domaine s'enregistrent auprès de l'autorité nationale de cybersécurité selon les modalités pratiques fixées par cette autorité et lui communiquent les informations suivantes.",
+          translation: "Within five months of the law's entry into force, or the identification referred to in Article 11, essential entities, important entities, and domain-name registration service entities must register with the national cybersecurity authority, in the practical manner it determines, and provide it with the following information.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "20 October 2026",
+  },
+  {
+    id: "be-nis2-incident-reporting-duty",
+    citationLabel: "Law of 26 April 2024 (Moniteur belge), Art. 35 §1",
+    citationUrl: "https://www.ejustice.just.fgov.be/eli/loi/2024/04/26/2024202344/justel",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 35, § 1er, 1°",
+          text: "Sans retard injustifié et en tout état de cause dans les vingt-quatre heures après avoir eu connaissance de l'incident significatif, une alerte précoce qui, le cas échéant, indique si l'on suspecte que l'incident significatif a été causé par des actes illicites ou malveillants ou s'il pourrait avoir un impact transfrontière.",
+          translation: "Without undue delay and in any case within twenty-four hours of becoming aware of the significant incident, an early warning indicating, where relevant, whether the significant incident is suspected to be caused by unlawful or malicious acts or could have a cross-border impact.",
+        },
+        {
+          article: "Article 35, § 1er, 2°",
+          text: "Sans retard injustifié et en tout état de cause dans les septante-deux heures après avoir eu connaissance de l'incident significatif, une notification d'incident qui, le cas échéant, met à jour les informations visées au 1° et fournit une évaluation initiale de l'incident significatif, y compris de sa gravité et de son impact, ainsi que des indicateurs de compromission, lorsqu'ils sont disponibles.",
+          translation: "Without undue delay and in any case within seventy-two hours of becoming aware of the significant incident, an incident notification updating the information referred to in point 1° and providing an initial assessment of the significant incident, including its severity and impact, as well as indicators of compromise where available.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "20 October 2026",
+  },
+  {
+    id: "lu-nis2-supervisory-authority",
+    citationLabel: "ILR, “Cybersecurity – NISS”",
+    citationUrl: "https://www.ilr.lu/en/sectors/niss/",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Cybersecurity – NISS",
+          text: "The Luxembourg Regulatory Institute is the competent authority responsible for cybersecurity under this Act and for the supervisory and enforcement tasks referred to in Chapter 6 for the sectors listed in Annexes I and II and critical entities.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "20 October 2026",
+  },
+  {
+    id: "lu-nis2-registration-duty",
+    citationLabel: "ILR, “Self-registration”",
+    citationUrl: "https://www.ilr.lu/en/sectors/niss/self-registration/",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Self-registration, legal obligation",
+          text: "Self-registration is a legal obligation that must be fulfilled within two months of the NIS 2 Act taking effect, i.e., no later than July 10, 2026.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "20 October 2026",
+  },
+  {
+    id: "lu-nis2-incident-reporting-duty",
+    citationLabel: "ILR, “Incident notification”",
+    citationUrl: "https://www.ilr.lu/en/sectors/niss/incident-notification/",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Incident notification, reporting duty",
+          text: "You must report incidents to the Institute within the first 24 hours.",
+        },
+        {
+          article: "Incident notification, step 2",
+          text: "Within 72 hours of becoming aware of the significant incident, the incident has to be formally notified, updating the information provided in the early warning.",
+        },
+        {
+          article: "Incident notification, final report",
+          text: "The final report must be submitted no later than one month after the incident notification.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "20 October 2026",
+  },
 ];

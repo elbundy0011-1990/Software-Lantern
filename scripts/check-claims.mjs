@@ -53,6 +53,8 @@ const OT_FILES = [
   "lib/roi-calculator.ts",
   "components/roi-calculator.tsx",
   "components/breadcrumb-structured-data.tsx",
+  "lib/country-report.ts",
+  "components/country-report-form.tsx",
   "app/api/ot-enquiries/questionnaire-pack/route.ts",
   "app/api/ot-enquiries/checklist/route.ts",
 ];

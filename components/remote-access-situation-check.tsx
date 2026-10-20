@@ -3,15 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
-import type {
-  ConnectionMethod,
-  AccessDecision,
-  Credentials,
-  YesNoUnsure,
-  Reach,
-  QuestionFrequency,
-  RemoteAccessAnswers,
+import {
+  remoteAccessAnswerRows,
+  type ConnectionMethod,
+  type AccessDecision,
+  type Credentials,
+  type YesNoUnsure,
+  type Reach,
+  type QuestionFrequency,
+  type RemoteAccessAnswers,
 } from "@/lib/remote-access-session";
+import { CountryReportForm } from "@/components/country-report-form";
 
 type Screen = "connection" | "decision" | "credentials" | "logging" | "mfa" | "reach" | "questions" | "result";
 
@@ -126,62 +128,7 @@ const backButtonClass =
 // breaks a rule — every area is shown the same way regardless of what
 // was answered.
 function AreasToLookAt({ answers }: { answers: RemoteAccessAnswers }) {
-  const rows: { label: string; value: string }[] = [
-    {
-      label: "How service engineers connect",
-      value:
-        answers.connectionMethod === "always_on_vpn"
-          ? "An always-on VPN into the customer's network"
-          : answers.connectionMethod === "remote_desktop"
-            ? "A remote desktop tool"
-            : answers.connectionMethod === "vendor_modem"
-              ? "A vendor-supplied modem or gateway"
-              : answers.connectionMethod === "on_site_only"
-                ? "On-site only"
-                : answers.connectionMethod === "other"
-                  ? "Something else"
-                  : "Not sure",
-    },
-    {
-      label: "Who decides when access is switched on",
-      value:
-        answers.accessDecision === "customer_each_time"
-          ? "The customer, each time"
-          : answers.accessDecision === "we_decide"
-            ? "We decide, without asking each time"
-            : answers.accessDecision === "always_on"
-              ? "It's always on"
-              : "Not sure",
-    },
-    {
-      label: "Whether access is named to a person or shared",
-      value: answers.credentials === "named" ? "Named" : answers.credentials === "shared" ? "Shared" : "Not sure",
-    },
-    {
-      label: "Whether sessions are logged and kept",
-      value: answers.sessionLogging === "yes" ? "Yes" : answers.sessionLogging === "no" ? "No" : "Not sure",
-    },
-    {
-      label: "Whether multi-factor authentication is used",
-      value: answers.mfa === "yes" ? "Yes" : answers.mfa === "no" ? "No" : "Not sure",
-    },
-    {
-      label: "What a connection can reach",
-      value:
-        answers.reach === "one_machine" ? "Just the one machine" : answers.reach === "whole_network" ? "More of the network" : "Not sure",
-    },
-    {
-      label: "How often customers ask about this",
-      value:
-        answers.customerQuestions === "often"
-          ? "Often"
-          : answers.customerQuestions === "sometimes"
-            ? "Sometimes"
-            : answers.customerQuestions === "never"
-              ? "Never"
-              : "Not sure",
-    },
-  ];
+  const rows = remoteAccessAnswerRows(answers);
   return (
     <div className="rounded border border-[#3f4b52]/[0.2] bg-white p-5 text-[14px] text-[#3f4b52] mb-4">
       <p className="font-semibold mb-3 text-[#1a1d22]">Areas worth being ready to describe</p>
@@ -438,6 +385,12 @@ export function RemoteAccessSituationCheck({
             </div>
           )}
         </div>
+
+        {screen === "result" && (
+          <div className="mt-10">
+            <CountryReportForm remoteAccessAnswers={answers} />
+          </div>
+        )}
 
         <p className="mt-6 text-[13px] leading-[1.6] text-[#3f4b52]">
           This is a general self-check, not legal advice, and not a substitute for your own

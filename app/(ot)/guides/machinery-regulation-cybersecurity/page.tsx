@@ -3,9 +3,14 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { COMPLIANCE_LEDGER, sourceLineText } from "@/lib/compliance-ledger";
+import { GuideStructuredData } from "@/components/guide-structured-data";
 
 const TITLE = "The Machinery Regulation's Cybersecurity Requirements";
-const DESCRIPTION = "What Regulation (EU) 2023/1230 means for cybersecurity and safety in machinery, with sources cited.";
+const DESCRIPTION = "What Regulation (EU) 2023/1230 means for cybersecurity and safety in machinery, with the application date and sources cited throughout.";
+const H1 = "The Machinery Regulation's cybersecurity requirements";
+const LAST_UPDATED_ISO = "2026-10-19";
+const LAST_UPDATED_DISPLAY = "October 19, 2026";
+const link = "font-semibold underline text-[#9a3412]";
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -24,15 +29,29 @@ export default function MachineryRegulationGuidePage() {
 
   return (
     <main data-screen-label="Machinery Regulation cybersecurity guide">
+      <GuideStructuredData
+        headline={H1}
+        path="/guides/machinery-regulation-cybersecurity"
+        datePublished={LAST_UPDATED_ISO}
+        dateModified={LAST_UPDATED_ISO}
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Guides", path: "/guides" },
+          { name: H1, path: "/guides/machinery-regulation-cybersecurity" },
+        ]}
+      />
       <section>
         <div className="max-w-[760px] mx-auto px-5 sm:px-8 pt-16 pb-16">
-          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-6 text-[#1a1d22]">
-            The Machinery Regulation&apos;s cybersecurity requirements
+          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-3 text-[#1a1d22]">
+            {H1}
           </h1>
+          <p className="text-[13px] leading-[1.7] text-[#3f4b52] mb-6">Last updated: {LAST_UPDATED_DISPLAY}</p>
 
           <p className={p}>
-            Regulation (EU) 2023/1230 replaces the Machinery Directive 2006/42/EC and applies from{" "}
-            <strong>{entry.display}</strong>.{" "}
+            Regulation (EU) 2023/1230 adds cybersecurity-related essential safety requirements to
+            machinery, treating a cyberattack that could create a physical hazard as a safety
+            matter the manufacturer must address. It replaces the Machinery Directive 2006/42/EC
+            and applies from <strong>{entry.display}</strong>.{" "}
             <a href={entry.citationUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline text-[#9a3412]">
               {entry.citationLabel}
             </a>
@@ -72,6 +91,18 @@ export default function MachineryRegulationGuidePage() {
             that create a physical hazard. The CRA is a cybersecurity regulation for products with
             digital elements generally. A connected machine can be covered by both, for different
             reasons, at the same time.
+          </p>
+
+          <h2 className={h2}>Related guides</h2>
+          <p className={p}>
+            <Link href="/guides/cyber-resilience-act-for-machine-builders" className={link}>
+              The Cyber Resilience Act for machine builders
+            </Link>{" "}
+            and{" "}
+            <Link href="/guides/regulation-overview" className={link}>
+              NIS2, the CRA, the Machinery Regulation, and IEC 62443
+            </Link>
+            .
           </p>
 
           <div className="mt-10 text-center">

@@ -3,10 +3,14 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { SUPPLEMENTARY_EVIDENCE, sourceLineText } from "@/lib/compliance-ledger";
+import { GuideStructuredData } from "@/components/guide-structured-data";
 
 const TITLE = "NIS2 for Small and Micro Manufacturers";
 const DESCRIPTION =
-  "What NIS2's own scope article says, quoted directly, for a small or micro machinery manufacturer.";
+  "What NIS2's own scope article says, quoted directly, for a small or micro machinery manufacturer wondering if it applies to them.";
+const H1 = "NIS2 for small and micro manufacturers";
+const LAST_UPDATED_ISO = "2026-10-20";
+const LAST_UPDATED_DISPLAY = "October 20, 2026";
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -32,15 +36,29 @@ export default function Nis2SmallMicroGuidePage() {
 
   return (
     <main data-screen-label="NIS2 small and micro manufacturers guide">
+      <GuideStructuredData
+        headline={H1}
+        path="/guides/nis2-small-and-micro-manufacturers"
+        datePublished={LAST_UPDATED_ISO}
+        dateModified={LAST_UPDATED_ISO}
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Guides", path: "/guides" },
+          { name: H1, path: "/guides/nis2-small-and-micro-manufacturers" },
+        ]}
+      />
       <section>
         <div className="max-w-[760px] mx-auto px-5 sm:px-8 pt-16 pb-16">
-          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-6 text-[#1a1d22]">
-            NIS2 for small and micro manufacturers
+          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-3 text-[#1a1d22]">
+            {H1}
           </h1>
+          <p className="text-[13px] leading-[1.7] text-[#3f4b52] mb-6">Last updated: {LAST_UPDATED_DISPLAY}</p>
 
           <p className={p}>
-            This page quotes NIS2&apos;s own scope article directly, for a small or micro machinery
-            manufacturer asking whether this Directive names them.
+            NIS2&apos;s own scope article names entities that are medium-sized or larger; it does
+            not name small or micro enterprises. A small or micro machinery manufacturer can still
+            face indirect pressure from an in-scope customer who must assess the security practices
+            of its own suppliers.
           </p>
 
           <h2 className={h2}>Who Article 2(1) names</h2>
@@ -112,6 +130,18 @@ export default function Nis2SmallMicroGuidePage() {
             <a href={supplyChain.citationUrl} target="_blank" rel="noopener noreferrer" className={link}>
               {sourceLineText(supplyChain)}
             </a>
+          </p>
+
+          <h2 className={h2}>Related guides</h2>
+          <p className={p}>
+            <Link href="/guides/nis2-supply-chain-and-remote-access" className={link}>
+              NIS2 supply chain and remote access, explained
+            </Link>{" "}
+            and{" "}
+            <Link href="/guides/nis2-proportionate-measures" className={link}>
+              What &ldquo;proportionate&rdquo; means under NIS2
+            </Link>
+            .
           </p>
 
           <div className="mt-10 text-center">

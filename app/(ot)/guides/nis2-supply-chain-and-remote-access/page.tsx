@@ -4,9 +4,14 @@ import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { OFFICIAL_SCOPE_TOOLS } from "@/lib/nis2-dates";
 import { COMPLIANCE_LEDGER, SUPPLEMENTARY_EVIDENCE, sourceLineText } from "@/lib/compliance-ledger";
+import { GuideStructuredData } from "@/components/guide-structured-data";
 
 const TITLE = "NIS2 Supply Chain and Remote Access, Explained";
 const DESCRIPTION = "What NIS2 Article 21(2) actually requires for supply-chain security and remote access, with sources cited, and what it does not require.";
+const H1 = "NIS2 supply chain and remote access, explained";
+// Git history, not build time: last commit to this file.
+const LAST_UPDATED_ISO = "2026-10-19";
+const LAST_UPDATED_DISPLAY = "October 19, 2026";
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -32,16 +37,29 @@ export default function SupplyChainArticlePage() {
 
   return (
     <main data-screen-label="NIS2 supply chain and remote access guide">
+      <GuideStructuredData
+        headline={H1}
+        path="/guides/nis2-supply-chain-and-remote-access"
+        datePublished={LAST_UPDATED_ISO}
+        dateModified={LAST_UPDATED_ISO}
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Guides", path: "/guides" },
+          { name: H1, path: "/guides/nis2-supply-chain-and-remote-access" },
+        ]}
+      />
       <section>
         <div className="max-w-[760px] mx-auto px-5 sm:px-8 pt-16 pb-16">
-          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-6 text-[#1a1d22]">
-            NIS2 supply chain and remote access, explained
+          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-3 text-[#1a1d22]">
+            {H1}
           </h1>
+          <p className="text-[13px] leading-[1.7] text-[#3f4b52] mb-6">Last updated: {LAST_UPDATED_DISPLAY}</p>
 
           <p className={p}>
-            This page answers one specific question plainly: what does NIS2 actually require about
-            supply-chain security and remote access, and what does it not require? It does not name
-            or recommend any specific product or vendor.
+            NIS2 Article 21(2)(d) requires an in-scope entity to assess the cybersecurity of its
+            suppliers, including a machine builder or integrator with remote access into its
+            systems. It does not name or require any specific product, technology, or vendor for
+            that access.
           </p>
 
           <h2 className={h2}>What NIS2 requires (Article 21(2))</h2>
@@ -179,6 +197,18 @@ export default function SupplyChainArticlePage() {
               (Belgium)
             </li>
           </ul>
+
+          <h2 className={h2}>Related guides</h2>
+          <p className={p}>
+            <Link href="/guides/nis2-proportionate-measures" className={link}>
+              What &ldquo;proportionate&rdquo; means under NIS2
+            </Link>{" "}
+            and{" "}
+            <Link href="/guides/customer-security-questionnaire" className={link}>
+              Preparing to answer a customer&apos;s security questionnaire
+            </Link>
+            .
+          </p>
 
           <div className="mt-10 text-center">
             <Link href="/checker" className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-white inline-block" style={{ background: "#9a3412" }}>

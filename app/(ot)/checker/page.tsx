@@ -6,7 +6,7 @@ import { OtCyberInteractive } from "@/components/ot-cyber-interactive";
 export const metadata: Metadata = pageMetadata({
   title: "NIS2, CRA & Machinery Regulation Scope Checker",
   description:
-    "Check whether NIS2, the Cyber Resilience Act, or the Machinery Regulation apply to your business as a machine builder, factory operator, or system integrator in the Netherlands, Belgium, or Luxembourg.",
+    "Check whether NIS2, the Cyber Resilience Act, or the Machinery Regulation apply to you as a machine builder, operator, or integrator in the Benelux.",
   path: "/checker",
   noindex: !OT_SITE_INDEXABLE,
   siteName: "Software Lantern",

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
-import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { OtEnquiryForm } from "@/components/ot-enquiry-form";
 
 const TITLE = "Send an Enquiry";
@@ -10,7 +9,9 @@ export const metadata: Metadata = pageMetadata({
   title: TITLE,
   description: DESCRIPTION,
   path: "/enquiry",
-  noindex: !OT_SITE_INDEXABLE,
+  // Hardcoded, not tied to OT_SITE_INDEXABLE: a lead-capture form page
+  // stays out of search even once the rest of the site is indexable.
+  noindex: true,
   siteName: "Software Lantern",
 });
 

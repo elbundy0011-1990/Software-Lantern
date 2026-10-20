@@ -2,10 +2,14 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
+import { GuideStructuredData } from "@/components/guide-structured-data";
 
 const TITLE = "IEC 62443 and Remote Access for Machine Builders";
 const DESCRIPTION =
   "A plain overview of how the voluntary IEC 62443 standard's general approach touches remote access, with public sources cited.";
+const H1 = "IEC 62443 and remote access for machine builders";
+const LAST_UPDATED_ISO = "2026-10-20";
+const LAST_UPDATED_DISPLAY = "October 20, 2026";
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -24,11 +28,23 @@ const link = "font-semibold underline text-[#9a3412]";
 export default function Iec62443RemoteAccessGuidePage() {
   return (
     <main data-screen-label="IEC 62443 and remote access guide">
+      <GuideStructuredData
+        headline={H1}
+        path="/guides/iec-62443-remote-access"
+        datePublished={LAST_UPDATED_ISO}
+        dateModified={LAST_UPDATED_ISO}
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Guides", path: "/guides" },
+          { name: H1, path: "/guides/iec-62443-remote-access" },
+        ]}
+      />
       <section>
         <div className="max-w-[760px] mx-auto px-5 sm:px-8 pt-16 pb-16">
-          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-6 text-[#1a1d22]">
-            IEC 62443 and remote access for machine builders
+          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-3 text-[#1a1d22]">
+            {H1}
           </h1>
+          <p className="text-[13px] leading-[1.7] text-[#3f4b52] mb-6">Last updated: {LAST_UPDATED_DISPLAY}</p>
 
           <p className={p}>
             <strong>IEC 62443 is a voluntary international standard, not a regulation.</strong> No
@@ -74,6 +90,18 @@ export default function Iec62443RemoteAccessGuidePage() {
             a standard a customer, insurer, or contract can choose to require, but no EU law
             requires it by itself. A machine builder can face some or all of these at once, for
             different reasons.
+          </p>
+
+          <h2 className={h2}>Related guides</h2>
+          <p className={p}>
+            <Link href="/guides/iec-62443-explained" className={link}>
+              IEC 62443, explained
+            </Link>{" "}
+            and{" "}
+            <Link href="/guides/customer-security-questionnaire" className={link}>
+              Preparing to answer a customer&apos;s security questionnaire
+            </Link>
+            .
           </p>
 
           <div className="mt-10 text-center">

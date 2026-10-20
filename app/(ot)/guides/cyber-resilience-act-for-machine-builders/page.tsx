@@ -3,9 +3,13 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { COMPLIANCE_LEDGER, SUPPLEMENTARY_EVIDENCE, sourceLineText } from "@/lib/compliance-ledger";
+import { GuideStructuredData } from "@/components/guide-structured-data";
 
 const TITLE = "The Cyber Resilience Act for Machine Builders";
-const DESCRIPTION = "What Regulation (EU) 2024/2847 requires of manufacturers of connected machinery, with sources cited.";
+const DESCRIPTION = "What Regulation (EU) 2024/2847 requires of manufacturers of connected machinery, with the dates that matter and sources cited throughout.";
+const H1 = "The Cyber Resilience Act for machine builders";
+const LAST_UPDATED_ISO = "2026-10-19";
+const LAST_UPDATED_DISPLAY = "October 19, 2026";
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -27,15 +31,29 @@ export default function CraGuidePage() {
 
   return (
     <main data-screen-label="CRA guide for machine builders">
+      <GuideStructuredData
+        headline={H1}
+        path="/guides/cyber-resilience-act-for-machine-builders"
+        datePublished={LAST_UPDATED_ISO}
+        dateModified={LAST_UPDATED_ISO}
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Guides", path: "/guides" },
+          { name: H1, path: "/guides/cyber-resilience-act-for-machine-builders" },
+        ]}
+      />
       <section>
         <div className="max-w-[760px] mx-auto px-5 sm:px-8 pt-16 pb-16">
-          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-6 text-[#1a1d22]">
-            The Cyber Resilience Act for machine builders
+          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-3 text-[#1a1d22]">
+            {H1}
           </h1>
+          <p className="text-[13px] leading-[1.7] text-[#3f4b52] mb-6">Last updated: {LAST_UPDATED_DISPLAY}</p>
 
           <p className={p}>
-            Regulation (EU) 2024/2847, &ldquo;horizontal cybersecurity requirements for products
-            with digital elements.&rdquo;
+            Regulation (EU) 2024/2847 (the Cyber Resilience Act) requires manufacturers of
+            connected machinery and other products with digital elements to build in cybersecurity
+            before placing them on the EU market, with obligations phased in from 2026. It
+            regulates the product itself, not your organization, and names no specific technology.
           </p>
 
           <h2 className={h2}>Dates that matter</h2>
@@ -85,6 +103,18 @@ export default function CraGuidePage() {
             be subject to one, the other, both, or neither, depending on its own size and sector
             (NIS2) versus simply placing a connected product on the EU market (the CRA, which isn&apos;t
             gated by company size the way NIS2 is).
+          </p>
+
+          <h2 className={h2}>Related guides</h2>
+          <p className={p}>
+            <Link href="/guides/machinery-regulation-cybersecurity" className={link}>
+              The Machinery Regulation&apos;s cybersecurity requirements
+            </Link>{" "}
+            and{" "}
+            <Link href="/guides/regulation-overview" className={link}>
+              NIS2, the CRA, the Machinery Regulation, and IEC 62443
+            </Link>
+            .
           </p>
 
           <div className="mt-10 text-center">

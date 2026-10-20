@@ -7,7 +7,7 @@ import { ComplianceLedger } from "@/components/compliance-ledger";
 export const metadata: Metadata = pageMetadata({
   title: "NIS2, CRA & Machinery Regulation for System Integrators",
   description:
-    "What NIS2, the Cyber Resilience Act, and the Machinery Regulation mean for system integrators installing and servicing equipment in the Netherlands, Belgium, and Luxembourg.",
+    "What NIS2, the Cyber Resilience Act, and the Machinery Regulation mean for system integrators installing and servicing equipment in the Benelux.",
   path: "/system-integrators",
   noindex: !OT_SITE_INDEXABLE,
   siteName: "Software Lantern",

@@ -13,8 +13,10 @@ export const metadata: Metadata = pageMetadata({
   // truncation threshold. The original 83-char version measured ~764px by
   // the same ratio, well past it — shortened for the 2026-10-19 audit.
   title: "Secure Remote Access: NIS2, CRA & Machinery Regulation",
+  // 153 chars, within the ~120-155 target (2026-10-20 metadata audit;
+  // the original 200-char version ran well past it).
   description:
-    "What NIS2/Cyberbeveiligingswet, the Cyber Resilience Act, and the Machinery Regulation mean for machine builders, factory operators, and system integrators in the Netherlands, Belgium, and Luxembourg.",
+    "What NIS2, the Cyber Resilience Act, and the Machinery Regulation mean for machine builders, operators, and integrators in the Benelux, cited throughout.",
   path: "/",
   noindex: !OT_SITE_INDEXABLE,
   siteName: "Software Lantern",

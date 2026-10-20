@@ -45,9 +45,9 @@ export function ComplianceLedger({ limit }: { limit?: number }) {
           </li>
         ))}
       </ul>
-      <p className="mt-3 text-[11px] text-[#6b7280]">
-        ● in force · ○ upcoming · last verified against the sources above on{" "}
-        {entries[0]?.lastVerified ?? ""}. Source: lib/compliance-ledger.ts.
+      <p className="mt-3 text-[11px] text-[#9ca3af]">
+        ● in force · ○ upcoming · checked against the sources above on{" "}
+        {entries[0]?.lastVerifiedDisplay ?? ""}.
       </p>
     </div>
   );

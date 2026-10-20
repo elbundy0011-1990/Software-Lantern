@@ -81,6 +81,7 @@ export default function OtLayout({ children }: { children: React.ReactNode }) {
               <Link href="/remote-access-check" className="text-[#9a3412] hover:underline">Remote access situation check</Link>
               <Link href="/roi-calculator" className="text-[#9a3412] hover:underline">ROI calculator</Link>
               <Link href="/questionnaire-pack" className="text-[#9a3412] hover:underline">Questionnaire pack</Link>
+              <Link href="/vendor-checklist" className="text-[#9a3412] hover:underline">Vendor comparison checklist</Link>
               <Link href="/guides" className="text-[#9a3412] hover:underline">Guides</Link>
             </div>
           </div>

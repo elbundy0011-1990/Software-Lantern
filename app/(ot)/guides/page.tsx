@@ -18,6 +18,11 @@ const GUIDES = [
     body: "Six approaches, how each works, trade-offs, and what to ask, no names.",
   },
   {
+    href: "/guides/what-to-compare-before-a-vendor-demo",
+    title: "What to compare before a vendor demo",
+    body: "Fourteen areas worth asking about, with a free 25-criteria checklist.",
+  },
+  {
     href: "/guides/nis2-supply-chain-and-remote-access",
     title: "NIS2 supply chain and remote access, explained",
     body: "What Article 21(2) actually requires, and what it doesn't.",

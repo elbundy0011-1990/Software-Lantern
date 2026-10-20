@@ -26,7 +26,42 @@ interface FormState {
 
 const EMPTY_FORM: FormState = { name: "", company: "", email: "" };
 
-export function QuestionnairePackForm() {
+// Two downloadable files share this exact form shape (name/work email/
+// company/consent, then a signed short-lived download link, never an
+// email attachment): the questionnaire pack and the vendor-demo
+// comparison checklist (components/vendor-checklist-page or wherever
+// it's used from). "product" picks which one — everything else about
+// the flow, including the API request shape, stays identical.
+interface ProductConfig {
+  heading: string;
+  downloadRoute: string;
+  downloadLabel: string;
+  source: "pack" | "checklist";
+  trackEvent: string;
+  buttonLabel: string;
+}
+
+const PRODUCTS: Record<"pack" | "checklist", ProductConfig> = {
+  pack: {
+    heading: "Get the questionnaire pack",
+    downloadRoute: "/api/ot-enquiries/questionnaire-pack",
+    downloadLabel: "Download the questionnaire pack",
+    source: "pack",
+    trackEvent: "enquiry_submit",
+    buttonLabel: "Get the file",
+  },
+  checklist: {
+    heading: "Get the vendor comparison checklist",
+    downloadRoute: "/api/ot-enquiries/checklist",
+    downloadLabel: "Download the checklist",
+    source: "checklist",
+    trackEvent: "checklist_request",
+    buttonLabel: "Get the file",
+  },
+};
+
+export function QuestionnairePackForm({ product = "pack" }: { product?: "pack" | "checklist" }) {
+  const config = PRODUCTS[product];
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [consent, setConsent] = useState(false);
   const [website, setWebsite] = useState(""); // honeypot
@@ -41,7 +76,7 @@ export function QuestionnairePackForm() {
   const markStarted = () => {
     if (startedRef.current) return;
     startedRef.current = true;
-    track("enquiry_start", { source: "pack" });
+    track("enquiry_start", { source: config.source });
   };
 
   const submit = async () => {
@@ -76,12 +111,12 @@ export function QuestionnairePackForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           country: null,
-          answers: {},
+          answers: { tool: config.source },
           contact: { name: form.name, company: form.company, email: form.email },
           consentReviewGiven: consent,
           website,
           turnstileToken: token,
-          source: "pack",
+          source: config.source,
         }),
       });
       const data = await res.json();
@@ -94,9 +129,9 @@ export function QuestionnairePackForm() {
       setStatus("done");
       setDryRun(Boolean(data.dryRun));
       if (data.downloadToken) {
-        setDownloadUrl(`/api/ot-enquiries/questionnaire-pack?token=${encodeURIComponent(data.downloadToken)}`);
+        setDownloadUrl(`${config.downloadRoute}?token=${encodeURIComponent(data.downloadToken)}`);
       }
-      track("enquiry_submit", { source: "pack" });
+      track(config.trackEvent, { source: config.source });
     } catch {
       setError("Something went wrong. Please try again.");
       setStatus("error");
@@ -114,7 +149,7 @@ export function QuestionnairePackForm() {
             className="inline-block mb-4 rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-white"
             style={{ background: ACCENT }}
           >
-            Download the questionnaire pack
+            {config.downloadLabel}
           </a>
         )}
         {dryRun && (
@@ -130,7 +165,7 @@ export function QuestionnairePackForm() {
 
   return (
     <section id="questionnaire-pack-form" className="max-w-[560px] mx-auto">
-      <h3 className="font-sans font-semibold text-[22px] mb-2 text-[#1a1d22]">Get the questionnaire pack</h3>
+      <h3 className="font-sans font-semibold text-[22px] mb-2 text-[#1a1d22]">{config.heading}</h3>
       <p className="text-[14px] text-[#3f4b52] mb-5"><ConsentText /></p>
 
       <div className="grid gap-3 mb-4">
@@ -203,7 +238,7 @@ export function QuestionnairePackForm() {
         className="w-full text-white rounded px-6 py-[13px] font-sans font-semibold text-[15px] disabled:opacity-50"
         style={{ background: ACCENT }}
       >
-        {status === "submitting" ? "Sending…" : "Get the file"}
+        {status === "submitting" ? "Sending…" : config.buttonLabel}
       </button>
     </section>
   );

@@ -54,6 +54,7 @@ const OT_FILES = [
   "components/roi-calculator.tsx",
   "components/breadcrumb-structured-data.tsx",
   "app/api/ot-enquiries/questionnaire-pack/route.ts",
+  "app/api/ot-enquiries/checklist/route.ts",
 ];
 
 // Files where a literal date is expected and allowed: the ledger itself

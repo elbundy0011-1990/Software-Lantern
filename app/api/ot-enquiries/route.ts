@@ -26,7 +26,10 @@ interface OtEnquirySubmission {
   // sends buildRoiCalculatorEmail() instead of the generic confirmation
   // below, recomputed server-side from answers.roiMode/roiInputs rather
   // than trusting a client-submitted total.
-  source?: "checker" | "direct" | "pack" | "calculator";
+  // "checklist": the vendor-demo comparison checklist request form —
+  // same shape as "pack" (download token, no email attachment), just a
+  // different private file and route (app/api/ot-enquiries/checklist).
+  source?: "checker" | "direct" | "pack" | "calculator" | "checklist";
 }
 
 export async function POST(request: Request) {
@@ -79,14 +82,15 @@ export async function POST(request: Request) {
   // production state (writing a row, sending an email) are skipped
   // outside an actual production deploy. The caller gets the identical
   // success response either way.
-  // The questionnaire pack is gated by this same form, but isn't sent by
-  // email (per instruction) — it's downloaded via a short-lived signed
-  // token instead, issued here regardless of dry-run, since the token
-  // itself is just a stateless claim ("this request just passed
-  // validation"), not a database row, and the file it unlocks isn't
-  // sensitive — it's the same file served to anyone who completes the
-  // form.
-  const downloadToken = body.source === "pack" ? issueDownloadToken() : undefined;
+  // The questionnaire pack and the vendor-demo checklist are both gated
+  // by this same form shape, but aren't sent by email (per instruction)
+  // — they're downloaded via a short-lived signed token instead, issued
+  // here regardless of dry-run, since the token itself is just a
+  // stateless claim ("this request just passed validation"), not a
+  // database row, and the file it unlocks isn't sensitive — it's the
+  // same file served to anyone who completes the form.
+  const downloadToken =
+    body.source === "pack" || body.source === "checklist" ? issueDownloadToken() : undefined;
 
   if (!isProductionDeploy()) {
     return NextResponse.json({ ok: true, dryRun: true, ...(downloadToken ? { downloadToken } : {}) });

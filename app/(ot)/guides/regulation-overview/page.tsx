@@ -3,10 +3,17 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { COMPLIANCE_LEDGER, SUPPLEMENTARY_EVIDENCE, sourceLineText } from "@/lib/compliance-ledger";
+import { GuideStructuredData } from "@/components/guide-structured-data";
 
-const TITLE = "NIS2, the CRA, the Machinery Regulation, and IEC 62443: an Overview";
+// 54 chars, ~497px at 20px Arial, under the ~600px SERP truncation
+// threshold (2026-10-20 metadata audit; the original 67-char/616px
+// version ran past it). The on-page <h1> below keeps the fuller phrase.
+const TITLE = "NIS2, CRA, Machinery Regulation & IEC 62443 Overview";
 const DESCRIPTION =
   "How the four frameworks relate for a machine builder, factory operator, or system integrator, each citation linking to the fuller guide.";
+const H1 = "NIS2, the CRA, the Machinery Regulation, and IEC 62443";
+const LAST_UPDATED_ISO = "2026-10-20";
+const LAST_UPDATED_DISPLAY = "October 20, 2026";
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -32,11 +39,23 @@ export default function RegulationOverviewPage() {
 
   return (
     <main data-screen-label="Regulation overview guide">
+      <GuideStructuredData
+        headline={H1}
+        path="/guides/regulation-overview"
+        datePublished={LAST_UPDATED_ISO}
+        dateModified={LAST_UPDATED_ISO}
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Guides", path: "/guides" },
+          { name: H1, path: "/guides/regulation-overview" },
+        ]}
+      />
       <section>
         <div className="max-w-[760px] mx-auto px-5 sm:px-8 pt-16 pb-16">
-          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-6 text-[#1a1d22]">
-            NIS2, the CRA, the Machinery Regulation, and IEC 62443
+          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-3 text-[#1a1d22]">
+            {H1}
           </h1>
+          <p className="text-[13px] leading-[1.7] text-[#3f4b52] mb-6">Last updated: {LAST_UPDATED_DISPLAY}</p>
 
           <p className={p}>
             Four different frameworks, binding different things for different reasons. This page

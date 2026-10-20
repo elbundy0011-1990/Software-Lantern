@@ -73,6 +73,9 @@ export default function OtLayout({ children }: { children: React.ReactNode }) {
           <div>
             <p className="mb-2 font-bold text-[12px] uppercase tracking-[0.07em] text-[#3f4b52]">Site</p>
             <div className="grid gap-2">
+              <Link href="/machine-builders" className="text-[#9a3412] hover:underline">Machine builders</Link>
+              <Link href="/factory-operators" className="text-[#9a3412] hover:underline">Factory operators</Link>
+              <Link href="/system-integrators" className="text-[#9a3412] hover:underline">System integrators</Link>
               <Link href="/checker" className="text-[#9a3412] hover:underline">Check your situation</Link>
               <Link href="/remote-access-check" className="text-[#9a3412] hover:underline">Remote access situation check</Link>
               <Link href="/questionnaire-pack" className="text-[#9a3412] hover:underline">Questionnaire pack</Link>

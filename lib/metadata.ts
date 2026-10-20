@@ -39,8 +39,15 @@ export function pageMetadata({
   return {
     title,
     description,
+    // Canonical always resolves against SITE_URL (the www production
+    // host, lib/site.ts), via metadataBase set on the root layout — so
+    // this never needs the host repeated per page, and can never drift
+    // to a different host than the one actually serving the page.
     ...(path ? { alternates: { canonical: path } } : {}),
-    ...(noindex ? { robots: { index: false, follow: false } } : {}),
+    // Explicit every time, never left to the "absence means index"
+    // default: a page search engines should crawl says so with a real
+    // index/follow tag, not just the lack of a noindex one.
+    robots: noindex ? { index: false, follow: false } : { index: true, follow: true },
     openGraph: {
       title,
       description: ogDesc,

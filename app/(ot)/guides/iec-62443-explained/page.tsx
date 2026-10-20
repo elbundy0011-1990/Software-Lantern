@@ -2,9 +2,14 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
+import { GuideStructuredData } from "@/components/guide-structured-data";
 
 const TITLE = "IEC 62443, Explained";
 const DESCRIPTION = "IEC 62443 is a voluntary industrial-cybersecurity standard, not a law. What it actually is, and when it becomes relevant in practice.";
+const H1 = "IEC 62443, explained";
+const LAST_UPDATED_ISO = "2026-10-19";
+const LAST_UPDATED_DISPLAY = "October 19, 2026";
+const link = "font-semibold underline text-[#9a3412]";
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -20,11 +25,23 @@ const p = "text-[16px] leading-[1.7] text-[#3f4b52] mb-4";
 export default function Iec62443GuidePage() {
   return (
     <main data-screen-label="IEC 62443 guide">
+      <GuideStructuredData
+        headline={H1}
+        path="/guides/iec-62443-explained"
+        datePublished={LAST_UPDATED_ISO}
+        dateModified={LAST_UPDATED_ISO}
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Guides", path: "/guides" },
+          { name: H1, path: "/guides/iec-62443-explained" },
+        ]}
+      />
       <section>
         <div className="max-w-[760px] mx-auto px-5 sm:px-8 pt-16 pb-16">
-          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-6 text-[#1a1d22]">
-            IEC 62443, explained
+          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-3 text-[#1a1d22]">
+            {H1}
           </h1>
+          <p className="text-[13px] leading-[1.7] text-[#3f4b52] mb-6">Last updated: {LAST_UPDATED_DISPLAY}</p>
 
           <p className={p}>
             <strong>IEC 62443 is a voluntary international standard, not a regulation.</strong> No
@@ -51,6 +68,18 @@ export default function Iec62443GuidePage() {
             Article 21(2)(d)&apos;s supply-chain pressure applies here too: a customer can require
             IEC 62443 conformance as a condition of doing business, which is real and worth
             preparing for, without that making it a general legal requirement.
+          </p>
+
+          <h2 className={h2}>Related guides</h2>
+          <p className={p}>
+            <Link href="/guides/iec-62443-remote-access" className={link}>
+              IEC 62443 and remote access for machine builders
+            </Link>{" "}
+            and{" "}
+            <Link href="/guides/regulation-overview" className={link}>
+              NIS2, the CRA, the Machinery Regulation, and IEC 62443
+            </Link>
+            .
           </p>
 
           <div className="mt-10 text-center">

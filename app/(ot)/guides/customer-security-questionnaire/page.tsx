@@ -3,10 +3,14 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { SUPPLEMENTARY_EVIDENCE, sourceLineText } from "@/lib/compliance-ledger";
+import { GuideStructuredData } from "@/components/guide-structured-data";
 
 const TITLE = "Preparing to Answer a Customer's Security Questionnaire";
 const DESCRIPTION =
   "What a customer's remote-access security questionnaire typically asks a machine builder, and how to prepare an honest answer.";
+const H1 = "Preparing to answer a customer's security questionnaire";
+const LAST_UPDATED_ISO = "2026-10-20";
+const LAST_UPDATED_DISPLAY = "October 20, 2026";
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -26,11 +30,23 @@ export default function CustomerQuestionnaireGuidePage() {
 
   return (
     <main data-screen-label="Customer security questionnaire guide">
+      <GuideStructuredData
+        headline={H1}
+        path="/guides/customer-security-questionnaire"
+        datePublished={LAST_UPDATED_ISO}
+        dateModified={LAST_UPDATED_ISO}
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Guides", path: "/guides" },
+          { name: H1, path: "/guides/customer-security-questionnaire" },
+        ]}
+      />
       <section>
         <div className="max-w-[760px] mx-auto px-5 sm:px-8 pt-16 pb-16">
-          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-6 text-[#1a1d22]">
-            Preparing to answer a customer&apos;s security questionnaire
+          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-3 text-[#1a1d22]">
+            {H1}
           </h1>
+          <p className="text-[13px] leading-[1.7] text-[#3f4b52] mb-6">Last updated: {LAST_UPDATED_DISPLAY}</p>
 
           <p className={p}>
             If a customer has sent you a questionnaire about how you secure remote access to the
@@ -113,6 +129,18 @@ export default function CustomerQuestionnaireGuidePage() {
             your own answer and no suggested &ldquo;compliant&rdquo; answers.{" "}
             <Link href="/questionnaire-pack" className={link}>
               Get the questionnaire pack
+            </Link>
+            .
+          </p>
+
+          <h2 className={h2}>Related guides</h2>
+          <p className={p}>
+            <Link href="/guides/nis2-supply-chain-and-remote-access" className={link}>
+              NIS2 supply chain and remote access, explained
+            </Link>{" "}
+            and{" "}
+            <Link href="/guides/iec-62443-remote-access" className={link}>
+              IEC 62443 and remote access for machine builders
             </Link>
             .
           </p>

@@ -3,9 +3,13 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { SUPPLEMENTARY_EVIDENCE, sourceLineText } from "@/lib/compliance-ledger";
+import { GuideStructuredData } from "@/components/guide-structured-data";
 
 const TITLE = "What 'Proportionate' Means Under NIS2";
-const DESCRIPTION = "Article 21(1), quoted directly, and the factors it names for assessing proportionality.";
+const DESCRIPTION = "Article 21(1), quoted directly, and the factors it names for assessing what counts as a proportionate NIS2 security measure.";
+const H1 = "What “proportionate” means under NIS2";
+const LAST_UPDATED_ISO = "2026-10-20";
+const LAST_UPDATED_DISPLAY = "October 20, 2026";
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -27,19 +31,33 @@ export default function Nis2ProportionateGuidePage() {
 
   return (
     <main data-screen-label="NIS2 proportionate measures guide">
+      <GuideStructuredData
+        headline={H1}
+        path="/guides/nis2-proportionate-measures"
+        datePublished={LAST_UPDATED_ISO}
+        dateModified={LAST_UPDATED_ISO}
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Guides", path: "/guides" },
+          { name: H1, path: "/guides/nis2-proportionate-measures" },
+        ]}
+      />
       <section>
         <div className="max-w-[760px] mx-auto px-5 sm:px-8 pt-16 pb-16">
-          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-6 text-[#1a1d22]">
-            What &ldquo;proportionate&rdquo; means under NIS2
+          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-3 text-[#1a1d22]">
+            {H1}
           </h1>
+          <p className="text-[13px] leading-[1.7] text-[#3f4b52] mb-6">Last updated: {LAST_UPDATED_DISPLAY}</p>
 
           <p className={p}>
-            NIS2&apos;s{" "}
+            NIS2 Article 21(1) requires security measures to be &ldquo;appropriate and
+            proportionate&rdquo; to an entity&apos;s own risk, size, and exposure, not a fixed
+            checklist applied identically to everyone. The article itself names the specific
+            factors that determine proportionality, introducing the{" "}
             <Link href="/guides/nis2-supply-chain-and-remote-access" className={link}>
               Article 21(2) measures
             </Link>{" "}
-            are introduced by Article 21(1), which is where the words &ldquo;appropriate and
-            proportionate&rdquo; actually come from. Verbatim:
+            that follow. Verbatim:
           </p>
           {quote && (
             <blockquote className="border-l-4 border-[#9a3412]/40 pl-4 italic text-[16px] leading-[1.7] text-[#3f4b52] mb-4">
@@ -82,6 +100,18 @@ export default function Nis2ProportionateGuidePage() {
               ))}
             </p>
           )}
+
+          <h2 className={h2}>Related guides</h2>
+          <p className={p}>
+            <Link href="/guides/nis2-supply-chain-and-remote-access" className={link}>
+              NIS2 supply chain and remote access, explained
+            </Link>{" "}
+            and{" "}
+            <Link href="/guides/nis2-small-and-micro-manufacturers" className={link}>
+              NIS2 for small and micro manufacturers
+            </Link>
+            .
+          </p>
 
           <div className="mt-10 text-center">
             <Link href="/checker" className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-white inline-block" style={{ background: "#9a3412" }}>

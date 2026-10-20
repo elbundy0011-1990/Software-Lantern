@@ -279,7 +279,7 @@ export function buildRoiCalculatorEmail(mode: RoiMode, fields: RoiFieldState): {
     </p>
     <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Your estimate</p>
     <div style="margin:0 0 24px;">${roiResultRows(full)}</div>
-    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Conservative check — at 50% of your own estimate</p>
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Conservative check: at 50% of your own estimate</p>
     <div style="margin:0 0 8px;">${roiResultRows(half)}</div>
   `;
 

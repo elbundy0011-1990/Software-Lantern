@@ -13,6 +13,11 @@ export const metadata: Metadata = pageMetadata({
 
 const GUIDES = [
   {
+    href: "/guides/remote-access-approaches",
+    title: "Remote access approaches for machines, compared",
+    body: "Six approaches, how each works, trade-offs, and what to ask, no names.",
+  },
+  {
     href: "/guides/nis2-supply-chain-and-remote-access",
     title: "NIS2 supply chain and remote access, explained",
     body: "What Article 21(2) actually requires, and what it doesn't.",

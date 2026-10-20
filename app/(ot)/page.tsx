@@ -143,6 +143,9 @@ export default function OtHomePage() {
         <div className="max-w-[900px] mx-auto px-5 sm:px-8 py-16">
           <h2 className="font-sans font-semibold text-[22px] mb-4 text-[#1a1d22]">Guides</h2>
           <div className="grid gap-2 text-[15px]">
+            <Link href="/guides/remote-access-approaches" className="text-[#9a3412] hover:underline">
+              Remote access approaches for machines, compared
+            </Link>
             <Link href="/guides/nis2-supply-chain-and-remote-access" className="text-[#9a3412] hover:underline">
               NIS2 supply chain and remote access, explained
             </Link>

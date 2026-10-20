@@ -27,6 +27,7 @@ const OT_ROUTES: { path: string; lastModified: string }[] = [
   { path: "/roi-calculator", lastModified: "2026-10-20" },
   { path: "/questionnaire-pack", lastModified: "2026-10-20" },
   { path: "/guides", lastModified: "2026-10-20" },
+  { path: "/guides/remote-access-approaches", lastModified: "2026-10-20" },
   { path: "/guides/nis2-supply-chain-and-remote-access", lastModified: "2026-10-19" },
   { path: "/guides/cyber-resilience-act-for-machine-builders", lastModified: "2026-10-19" },
   { path: "/guides/machinery-regulation-cybersecurity", lastModified: "2026-10-19" },

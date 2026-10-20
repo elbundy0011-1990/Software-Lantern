@@ -350,7 +350,7 @@ export function RoiCalculator() {
             calculator does not store anything you type unless you choose to email it below.
           </p>
           <ResultBlock title="Your estimate" result={fullResult} />
-          <ResultBlock title="Conservative check — at 50% of your own estimate above" result={halfResult} />
+          <ResultBlock title="Conservative check: at 50% of your own estimate above" result={halfResult} />
         </div>
       )}
 

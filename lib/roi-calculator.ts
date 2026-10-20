@@ -134,7 +134,7 @@ export function calculatePlantOperatorRoi(i: PlantOperatorInputs, estimateMultip
 }
 
 export function formatEur(amount: number | null): string {
-  if (amount === null) return "not calculated — add this field to see it";
+  if (amount === null) return "not calculated, add this field to see it";
   return new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(amount);
 }
 

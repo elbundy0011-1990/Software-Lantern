@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/check-claims.mjs",
+    "prebuild": "node scripts/check-claims.mjs && node scripts/check-sitemap.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "check-claims": "node scripts/check-claims.mjs"
+    "check-claims": "node scripts/check-claims.mjs",
+    "check-sitemap": "node scripts/check-sitemap.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

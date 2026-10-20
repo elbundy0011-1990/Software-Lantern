@@ -68,10 +68,10 @@ export default function RemoteAccessApproachesGuidePage() {
           What does this connection actually reach once established? Is access scoped per visit,
           or left available continuously? Does connecting require more than a password?{" "}
           <a href={CISA_EXPOSURE_URL} target="_blank" rel="noopener noreferrer" className={link}>
-            CISA&apos;s internet exposure reduction guidance
+            CISA&apos;s guidance
           </a>{" "}
-          generally recommends routing remote access through a centrally managed gateway rather
-          than connecting directly to a controller, HMI, or RTU.
+          recommends routing necessary remote access through a secure gateway or centrally
+          managed access solution, rather than connecting directly to a controller, HMI or RTU.
         </>
       ),
     },
@@ -134,13 +134,7 @@ export default function RemoteAccessApproachesGuidePage() {
         <>
           Is access to the jump host itself behind multi-factor authentication? Are sessions
           through it logged and reviewed? Who else uses the same jump host to reach the same
-          systems?{" "}
-          <a href={CISA_EXPOSURE_URL} target="_blank" rel="noopener noreferrer" className={link}>
-            CISA&apos;s guidance
-          </a>{" "}
-          describes a jump host this way: a specialized, secured system that is the sole access
-          point into a protected network segment, paired with multi-factor authentication and
-          traffic monitoring where possible.
+          systems?
         </>
       ),
     },
@@ -242,8 +236,9 @@ export default function RemoteAccessApproachesGuidePage() {
         <>
           A physical control is harder to bypass through a purely software compromise, which is
           its main strength, but it also means remote access depends on someone being physically
-          present to enable it, which can slow down exactly the kind of urgent response an{" "}
-          <Link href="/roi-calculator" className={link}>urgent-incident situation</Link> turns on.
+          present to enable it, which can add to{" "}
+          <Link href="/roi-calculator" className={link}>the cost of delay</Link> during an
+          urgent incident.
         </>
       ),
       ask: (

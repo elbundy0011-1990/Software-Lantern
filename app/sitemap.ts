@@ -24,6 +24,7 @@ const OT_ROUTES: { path: string; lastModified: string }[] = [
   { path: "/system-integrators", lastModified: "2026-10-19" },
   { path: "/checker", lastModified: "2026-10-19" },
   { path: "/remote-access-check", lastModified: "2026-10-20" },
+  { path: "/roi-calculator", lastModified: "2026-10-20" },
   { path: "/questionnaire-pack", lastModified: "2026-10-20" },
   { path: "/guides", lastModified: "2026-10-20" },
   { path: "/guides/nis2-supply-chain-and-remote-access", lastModified: "2026-10-19" },
@@ -48,6 +49,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${SITE_URL}${path}`,
     lastModified,
     changeFrequency: path === "/" ? "weekly" : "monthly",
-    priority: path === "/" ? 1 : path === "/checker" ? 0.9 : 0.7,
+    priority: path === "/" ? 1 : path === "/checker" || path === "/roi-calculator" ? 0.9 : 0.7,
   }));
 }

@@ -28,6 +28,7 @@ const NAV = [
   { label: "Machine builders", href: "/machine-builders" },
   { label: "Factory operators", href: "/factory-operators" },
   { label: "System integrators", href: "/system-integrators" },
+  { label: "ROI calculator", href: "/roi-calculator" },
   { label: "Guides", href: "/guides" },
 ];
 
@@ -78,6 +79,7 @@ export default function OtLayout({ children }: { children: React.ReactNode }) {
               <Link href="/system-integrators" className="text-[#9a3412] hover:underline">System integrators</Link>
               <Link href="/checker" className="text-[#9a3412] hover:underline">Check your situation</Link>
               <Link href="/remote-access-check" className="text-[#9a3412] hover:underline">Remote access situation check</Link>
+              <Link href="/roi-calculator" className="text-[#9a3412] hover:underline">ROI calculator</Link>
               <Link href="/questionnaire-pack" className="text-[#9a3412] hover:underline">Questionnaire pack</Link>
               <Link href="/guides" className="text-[#9a3412] hover:underline">Guides</Link>
             </div>

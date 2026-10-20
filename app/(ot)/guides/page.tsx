@@ -64,9 +64,15 @@ export default function GuidesHubPage() {
     <main data-screen-label="Guides hub">
       <section>
         <div className="max-w-[760px] mx-auto px-5 sm:px-8 pt-16 pb-16">
-          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-8 text-[#1a1d22]">
+          <h1 className="font-sans font-semibold text-[clamp(30px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-4 text-[#1a1d22]">
             Guides
           </h1>
+          <p className="text-[15px] text-[#3f4b52] mb-8">
+            Prefer a tool to a guide?{" "}
+            <Link href="/checker" className="text-[#9a3412] underline">Check your situation</Link>,{" "}
+            <Link href="/remote-access-check" className="text-[#9a3412] underline">check your remote access setup</Link>, or{" "}
+            <Link href="/roi-calculator" className="text-[#9a3412] underline">calculate the ROI</Link>.
+          </p>
           <div className="grid gap-5">
             {GUIDES.map((g) => (
               <Link key={g.href} href={g.href} className="block rounded border border-[#3f4b52]/[0.2] bg-white px-6 py-6 hover:border-[#9a3412]">

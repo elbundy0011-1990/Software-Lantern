@@ -80,6 +80,12 @@ export default function OtHomePage() {
             >
               Remote access situation check
             </Link>
+            <Link
+              href="/roi-calculator"
+              className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-[#1a1d22] border border-[#3f4b52]/[0.3] inline-block"
+            >
+              ROI calculator
+            </Link>
           </div>
           <ComplianceLedger />
         </div>

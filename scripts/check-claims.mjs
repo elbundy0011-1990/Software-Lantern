@@ -50,6 +50,9 @@ const OT_FILES = [
   "lib/remote-access-session.ts",
   "lib/download-token.ts",
   "lib/email-templates.ts",
+  "lib/roi-calculator.ts",
+  "components/roi-calculator.tsx",
+  "components/breadcrumb-structured-data.tsx",
   "app/api/ot-enquiries/questionnaire-pack/route.ts",
 ];
 

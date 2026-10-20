@@ -2,7 +2,8 @@ import { NextResponse, after } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { sendEmail } from "@/lib/resend";
-import { buildNewOtEnquiryAdminEmail, buildOtEnquiryConfirmationEmail } from "@/lib/email-templates";
+import { buildNewOtEnquiryAdminEmail, buildOtEnquiryConfirmationEmail, buildRoiCalculatorEmail } from "@/lib/email-templates";
+import type { RoiMode, RoiFieldState } from "@/lib/roi-calculator";
 import { isProductionDeploy } from "@/lib/environment";
 import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
 import { issueDownloadToken } from "@/lib/download-token";
@@ -21,7 +22,11 @@ interface OtEnquirySubmission {
   // questionnaire-pack-form.tsx) — no checker involved, stored in the
   // existing answers jsonb rather than a new column, and the only
   // source that gets a signed download token back.
-  source?: "checker" | "direct" | "pack";
+  // "calculator": the ROI calculator's "email me this calculation" —
+  // sends buildRoiCalculatorEmail() instead of the generic confirmation
+  // below, recomputed server-side from answers.roiMode/roiInputs rather
+  // than trusting a client-submitted total.
+  source?: "checker" | "direct" | "pack" | "calculator";
 }
 
 export async function POST(request: Request) {
@@ -143,7 +148,10 @@ export async function POST(request: Request) {
   // above are both unaffected.
   after(async () => {
     try {
-      const { subject, html } = buildOtEnquiryConfirmationEmail();
+      const { subject, html } =
+        body.source === "calculator" && body.answers?.roiMode && body.answers?.roiInputs
+          ? buildRoiCalculatorEmail(body.answers.roiMode as RoiMode, body.answers.roiInputs as RoiFieldState)
+          : buildOtEnquiryConfirmationEmail();
       await sendEmail({ to: email, subject, html });
     } catch (err) {
       console.error("Failed to send OT enquiry confirmation", err);

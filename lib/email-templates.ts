@@ -1,5 +1,15 @@
 import "server-only";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
+import {
+  calculateMachineBuilderRoi,
+  calculatePlantOperatorRoi,
+  parseMachineBuilderFields,
+  parsePlantOperatorFields,
+  formatEur,
+  type RoiMode,
+  type RoiFieldState,
+  type RoiResult,
+} from "@/lib/roi-calculator";
 
 function escapeHtml(input: string): string {
   return input
@@ -218,5 +228,68 @@ export function buildOtEnquiryConfirmationEmail(): { subject: string; html: stri
     </div>
   </body>
 </html>`,
+  };
+}
+
+function roiResultRows(result: RoiResult): string {
+  const lineRows = result.lines
+    .map(
+      (l) =>
+        `<tr><td style="padding:6px 0;font-size:14px;color:#0d1117;">${escapeHtml(l.label)}<div style="font-size:12px;color:#79818f;margin-top:2px;">Formula: ${escapeHtml(l.formula)}</div></td><td style="padding:6px 0;font-size:14px;font-weight:700;color:#0d1117;text-align:right;white-space:nowrap;">${escapeHtml(formatEur(l.amount))}</td></tr>`,
+    )
+    .join("");
+  const totalRow = `<tr><td style="padding:10px 0 0;font-size:14px;font-weight:700;color:#0d1117;border-top:1px solid rgba(13,17,23,0.1);">Total estimated annual saving</td><td style="padding:10px 0 0;font-size:15px;font-weight:700;color:#4f46e5;text-align:right;white-space:nowrap;border-top:1px solid rgba(13,17,23,0.1);">${escapeHtml(formatEur(result.totalAnnualSavings))}</td></tr>`;
+  const netRow =
+    result.netAnnualSavings !== null
+      ? `<tr><td style="padding:6px 0;font-size:14px;color:#0d1117;">Net, after the solution cost entered</td><td style="padding:6px 0;font-size:14px;font-weight:700;color:#0d1117;text-align:right;white-space:nowrap;">${escapeHtml(formatEur(result.netAnnualSavings))}</td></tr>`
+      : "";
+  const paybackRow =
+    result.paybackMonths !== null
+      ? `<tr><td style="padding:6px 0;font-size:14px;color:#0d1117;">Payback period</td><td style="padding:6px 0;font-size:14px;font-weight:700;color:#0d1117;text-align:right;white-space:nowrap;">${result.paybackMonths} months</td></tr>`
+      : "";
+  const contextRows = result.contextLines
+    .map(
+      (l) =>
+        `<tr><td style="padding:6px 0;font-size:13px;color:#79818f;">${escapeHtml(l.label)}<div style="font-size:12px;color:#79818f;margin-top:2px;">Formula: ${escapeHtml(l.formula)}</div></td><td style="padding:6px 0;font-size:13px;font-weight:700;color:#79818f;text-align:right;white-space:nowrap;">${escapeHtml(formatEur(l.amount))}</td></tr>`,
+    )
+    .join("");
+  return `<table style="width:100%;border-collapse:collapse;">${lineRows}${totalRow}${netRow}${paybackRow}${contextRows}</table>`;
+}
+
+// TRIGGER: "Email me this calculation" on /roi-calculator. Recomputes
+// from the same raw field values the visitor typed, through the exact
+// same lib/roi-calculator.ts functions the live page uses — never trusts
+// a client-submitted total — so the number in this email is always the
+// number the page actually showed, not a separately-typed restatement of
+// it that could drift out of sync.
+export function buildRoiCalculatorEmail(mode: RoiMode, fields: RoiFieldState): { subject: string; html: string } {
+  const full =
+    mode === "machine_builder"
+      ? calculateMachineBuilderRoi(parseMachineBuilderFields(fields), 1)
+      : calculatePlantOperatorRoi(parsePlantOperatorFields(fields), 1);
+  const half =
+    mode === "machine_builder"
+      ? calculateMachineBuilderRoi(parseMachineBuilderFields(fields), 0.5)
+      : calculatePlantOperatorRoi(parsePlantOperatorFields(fields), 0.5);
+
+  const bodyHtml = `
+    <p style="margin:0 0 20px;font-size:14px;line-height:1.6;color:#79818f;">
+      These figures are an estimate calculated directly from the numbers you entered. They are not
+      a guarantee, a benchmark, or data about any other company.
+    </p>
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Your estimate</p>
+    <div style="margin:0 0 24px;">${roiResultRows(full)}</div>
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Conservative check — at 50% of your own estimate</p>
+    <div style="margin:0 0 8px;">${roiResultRows(half)}</div>
+  `;
+
+  return {
+    subject: "Your remote access ROI calculation",
+    html: emailLayout({
+      heading: "Your remote access ROI calculation",
+      bodyHtml,
+      ctaHref: `${SITE_URL}/checker`,
+      ctaLabel: "Check your situation",
+    }),
   };
 }

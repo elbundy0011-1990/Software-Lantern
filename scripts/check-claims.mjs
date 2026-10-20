@@ -42,12 +42,15 @@ const OT_FILES = [
   "components/disclosure-slot.tsx",
   "components/remote-access-situation-check.tsx",
   "components/remote-access-check-interactive.tsx",
+  "components/questionnaire-pack-form.tsx",
   "lib/compliance-ledger.ts",
   "lib/nis2-dates.ts",
   "lib/consent-text.ts",
   "lib/checker-session.ts",
   "lib/remote-access-session.ts",
+  "lib/download-token.ts",
   "lib/email-templates.ts",
+  "app/api/ot-enquiries/questionnaire-pack/route.ts",
 ];
 
 // Files where a literal date is expected and allowed: the ledger itself

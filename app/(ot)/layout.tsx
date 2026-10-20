@@ -75,6 +75,7 @@ export default function OtLayout({ children }: { children: React.ReactNode }) {
             <div className="grid gap-2">
               <Link href="/checker" className="text-[#9a3412] hover:underline">Check your situation</Link>
               <Link href="/remote-access-check" className="text-[#9a3412] hover:underline">Remote access situation check</Link>
+              <Link href="/questionnaire-pack" className="text-[#9a3412] hover:underline">Questionnaire pack</Link>
               <Link href="/guides" className="text-[#9a3412] hover:underline">Guides</Link>
             </div>
           </div>

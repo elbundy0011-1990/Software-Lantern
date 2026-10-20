@@ -73,19 +73,29 @@ export default function PrivacyPolicyPage() {
               Luxembourg, or other), whether you identify as a machine builder, operator, or system
               integrator, company size, and remote-access status
             </li>
+            <li>
+              Your answers to the remote access situation check if you used it: how you connect to
+              machines today, who decides when access is on, whether accounts are named or shared,
+              whether sessions are logged, whether multi-factor authentication is used, what a
+              connection can reach, and how often customers ask about this
+            </li>
           </ul>
-          <p className={p}><strong>b) If you submit a legacy marketplace requirements form (buyer):</strong></p>
+          <p className={p}><strong>b) If you request the customer security questionnaire pack:</strong></p>
+          <ul className={ul}>
+            <li>Name, work email address, and company name only</li>
+          </ul>
+          <p className={p}><strong>c) If you submit a legacy marketplace requirements form (buyer):</strong></p>
           <ul className={ul}>
             <li>Name, company name, work email address, phone number</li>
             <li>Details of your software requirement (current vendor, budget range, timeline, and answers to the requirements questionnaire)</li>
           </ul>
-          <p className={p}><strong>c) If you have a legacy marketplace partner account:</strong></p>
+          <p className={p}><strong>d) If you have a legacy marketplace partner account:</strong></p>
           <ul className={ul}>
             <li>Company name, contact email address</li>
             <li>Account authentication data (via our authentication provider, Supabase)</li>
             <li>Payment-related data when you unlock a lead (processed by Stripe; we do not store your card details ourselves)</li>
           </ul>
-          <p className={p}><strong>d) Automatically collected data:</strong></p>
+          <p className={p}><strong>e) Automatically collected data:</strong></p>
           <ul className={ul}>
             <li>Basic technical data needed to operate the site and prevent abuse</li>
             <li>Bot-verification signals via Cloudflare Turnstile when you submit a form</li>
@@ -110,6 +120,14 @@ export default function PrivacyPolicyPage() {
                   </td>
                   <td className="py-2.5 px-1">Enquiry form data</td>
                   <td className="py-2.5 px-1">Consent (given when you submit the form, and again before any specific sharing)</td>
+                </tr>
+                <tr className="border-b border-[#3f4b52]/[0.15] align-top">
+                  <td className="py-2.5 px-1">
+                    Sending you the customer security questionnaire pack you requested, and, only
+                    if you separately agree, sharing your enquiry with a specific named company
+                  </td>
+                  <td className="py-2.5 px-1">Name, work email, company name</td>
+                  <td className="py-2.5 px-1">Consent (given when you submit the form)</td>
                 </tr>
                 <tr className="border-b border-[#3f4b52]/[0.15] align-top">
                   <td className="py-2.5 px-1">

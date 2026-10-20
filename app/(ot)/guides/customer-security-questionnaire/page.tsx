@@ -106,6 +106,17 @@ export default function CustomerQuestionnaireGuidePage() {
             way to get it written down.
           </p>
 
+          <h2 className={h2}>Get the full pack</h2>
+          <p className={p}>
+            A downloadable spreadsheet with about 30 questions across these topics, why a customer
+            typically asks each one, and the kind of evidence to prepare, with a blank column for
+            your own answer and no suggested &ldquo;compliant&rdquo; answers.{" "}
+            <Link href="/questionnaire-pack" className={link}>
+              Get the questionnaire pack
+            </Link>
+            .
+          </p>
+
           <div className="mt-10 text-center">
             <Link href="/checker" className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-white inline-block" style={{ background: "#9a3412" }}>
               Check your situation →

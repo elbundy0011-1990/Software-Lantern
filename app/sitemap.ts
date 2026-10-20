@@ -14,6 +14,7 @@ const OT_ROUTES = [
   "/system-integrators",
   "/checker",
   "/remote-access-check",
+  "/questionnaire-pack",
   "/guides",
   "/guides/nis2-supply-chain-and-remote-access",
   "/guides/cyber-resilience-act-for-machine-builders",

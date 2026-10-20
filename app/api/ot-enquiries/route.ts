@@ -5,6 +5,7 @@ import { sendEmail } from "@/lib/resend";
 import { buildNewOtEnquiryAdminEmail, buildOtEnquiryConfirmationEmail } from "@/lib/email-templates";
 import { isProductionDeploy } from "@/lib/environment";
 import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
+import { issueDownloadToken } from "@/lib/download-token";
 
 interface OtEnquirySubmission {
   country: string | null;
@@ -16,6 +17,11 @@ interface OtEnquirySubmission {
   consentReviewGiven: boolean;
   website?: string; // honeypot — must arrive empty
   turnstileToken?: string;
+  // "pack": the questionnaire-pack request form (components/
+  // questionnaire-pack-form.tsx) — no checker involved, stored in the
+  // existing answers jsonb rather than a new column, and the only
+  // source that gets a signed download token back.
+  source?: "checker" | "direct" | "pack";
 }
 
 export async function POST(request: Request) {
@@ -68,9 +74,21 @@ export async function POST(request: Request) {
   // production state (writing a row, sending an email) are skipped
   // outside an actual production deploy. The caller gets the identical
   // success response either way.
+  // The questionnaire pack is gated by this same form, but isn't sent by
+  // email (per instruction) — it's downloaded via a short-lived signed
+  // token instead, issued here regardless of dry-run, since the token
+  // itself is just a stateless claim ("this request just passed
+  // validation"), not a database row, and the file it unlocks isn't
+  // sensitive — it's the same file served to anyone who completes the
+  // form.
+  const downloadToken = body.source === "pack" ? issueDownloadToken() : undefined;
+
   if (!isProductionDeploy()) {
-    return NextResponse.json({ ok: true, dryRun: true });
+    return NextResponse.json({ ok: true, dryRun: true, ...(downloadToken ? { downloadToken } : {}) });
   }
+
+  const answers =
+    body.source === "pack" ? { ...(body.answers || {}), source: "pack" } : body.answers || {};
 
   const supabase = createAdminClient();
   const { data: inserted, error } = await supabase
@@ -81,7 +99,7 @@ export async function POST(request: Request) {
       company_name: company,
       contact_name: name,
       contact_email: email,
-      answers: body.answers || {},
+      answers,
       role: body.role || null,
       builder_or_operator: body.builderOrOperator || null,
       current_remote_access: body.currentRemoteAccess || null,
@@ -132,5 +150,5 @@ export async function POST(request: Request) {
     }
   });
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, ...(downloadToken ? { downloadToken } : {}) });
 }

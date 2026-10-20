@@ -10,6 +10,8 @@ import {
   type RoiFieldState,
   type RoiResult,
 } from "@/lib/roi-calculator";
+import { remoteAccessAnswerRows, REMOTE_ACCESS_QUESTIONS, type RemoteAccessAnswers } from "@/lib/remote-access-session";
+import { getCountrySection, evidenceSummary, sourceLineText, REPORT_COUNTRIES, type ReportCountry, type CountryReportAnswers } from "@/lib/country-report";
 
 function escapeHtml(input: string): string {
   return input
@@ -287,6 +289,89 @@ export function buildRoiCalculatorEmail(mode: RoiMode, fields: RoiFieldState): {
     subject: "Your remote access ROI calculation",
     html: emailLayout({
       heading: "Your remote access ROI calculation",
+      bodyHtml,
+      ctaHref: `${SITE_URL}/checker`,
+      ctaLabel: "Check your situation",
+    }),
+  };
+}
+
+// TRIGGER: "Email me the full report for [country]" on /remote-access-
+// check's country report (components/country-report-form.tsx). Restates
+// the visitor's own answers, phrases the original 7-question check's
+// topics as questions (REMOTE_ACCESS_QUESTIONS, shared with the
+// on-screen result so the two never phrase a topic differently), adds
+// the country section when one exists for the chosen country (NL, BE,
+// LU — "other" gets none, by design, see lib/country-report.ts), and
+// links to related guides. Every country-section claim traces to a
+// lib/compliance-ledger.ts entry sourced only from an official domain or
+// gazette, per instruction.
+export function buildCountryReportEmail(
+  country: ReportCountry,
+  remoteAccessAnswers: RemoteAccessAnswers | null,
+  countryAnswers: CountryReportAnswers,
+): { subject: string; html: string } {
+  const countryLabel = REPORT_COUNTRIES.find((c) => c.value === country)?.label ?? "your country";
+
+  const areasHtml = REMOTE_ACCESS_QUESTIONS.map(
+    (q) => `<li style="margin:0 0 10px;font-size:14px;line-height:1.5;color:#0d1117;">${escapeHtml(q.question)}</li>`,
+  ).join("");
+
+  const remoteAccessRowsHtml = remoteAccessAnswers
+    ? remoteAccessAnswerRows(remoteAccessAnswers)
+        .map((r) => fieldRow(r.label, r.value))
+        .join("")
+    : "";
+
+  const countryAnswerRows = [
+    fieldRow("Role", countryAnswers.role),
+    fieldRow("Sector", countryAnswers.sector),
+    fieldRow("Number of sites or machines", countryAnswers.numSites),
+    fieldRow("Who approves access", countryAnswers.accessApprover),
+    fieldRow("Session logging", countryAnswers.sessionLoggingDuration),
+    fieldRow("Incident process", countryAnswers.incidentProcess),
+    fieldRow("Customer questionnaires per year", countryAnswers.questionnairesPerYear),
+    fieldRow("Timeline to act", countryAnswers.timeline),
+  ].join("");
+
+  const section = getCountrySection(country);
+  const countrySectionHtml = section
+    ? `
+    <p style="margin:24px 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">${escapeHtml(countryLabel)}</p>
+    <table style="width:100%;border-collapse:collapse;margin:0 0 4px;">
+      ${fieldRow("In force", `${section.inForce.display}`)}
+      ${fieldRow("Supervisory authority", evidenceSummary(section.authority))}
+      ${fieldRow("Registration duty", evidenceSummary(section.registration))}
+      ${fieldRow("Incident-reporting duty", evidenceSummary(section.incident))}
+    </table>
+    <p style="margin:0 0 20px;font-size:12px;line-height:1.6;color:#79818f;">
+      <a href="${section.inForce.citationUrl}" style="color:#79818f;">${escapeHtml(sourceLineText(section.inForce))}</a><br>
+      <a href="${section.authority.citationUrl}" style="color:#79818f;">${escapeHtml(sourceLineText(section.authority))}</a><br>
+      <a href="${section.registration.citationUrl}" style="color:#79818f;">${escapeHtml(sourceLineText(section.registration))}</a><br>
+      <a href="${section.incident.citationUrl}" style="color:#79818f;">${escapeHtml(sourceLineText(section.incident))}</a>
+    </p>`
+    : `<p style="margin:24px 0 20px;font-size:14px;line-height:1.6;color:#79818f;">No country section is available for &ldquo;${escapeHtml(countryLabel)}.&rdquo;</p>`;
+
+  const bodyHtml = `
+    <p style="margin:0 0 20px;font-size:14px;line-height:1.6;color:#3d4653;">
+      This is not a pass or fail, and it doesn't name or favor any product.
+    </p>
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Your answers</p>
+    <table style="width:100%;border-collapse:collapse;margin:0 0 20px;">${remoteAccessRowsHtml}${countryAnswerRows}</table>
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Areas worth being ready to describe</p>
+    <ul style="margin:0 0 20px;padding-left:18px;">${areasHtml}</ul>
+    ${countrySectionHtml}
+    <p style="margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Related guides</p>
+    <p style="margin:0;font-size:14px;line-height:1.6;color:#0d1117;">
+      <a href="${SITE_URL}/guides/nis2-supply-chain-and-remote-access" style="color:#0d1117;">NIS2 supply chain and remote access, explained</a><br>
+      <a href="${SITE_URL}/guides/customer-security-questionnaire" style="color:#0d1117;">Preparing to answer a customer's security questionnaire</a>
+    </p>
+  `;
+
+  return {
+    subject: `Your remote access report for ${countryLabel}`,
+    html: emailLayout({
+      heading: `Your remote access report for ${countryLabel}`,
       bodyHtml,
       ctaHref: `${SITE_URL}/checker`,
       ctaLabel: "Check your situation",

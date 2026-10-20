@@ -27,7 +27,7 @@ export default function PrivacyPolicyPage() {
           <h1 className="font-sans font-semibold text-[clamp(32px,4.4vw,44px)] leading-[1.1] tracking-[-0.03em] mb-3 text-[#1a1d22]">
             Privacy Policy
           </h1>
-          <p className="text-[15px] text-[#3f4b52] mb-14">Last updated: 19 October 2026</p>
+          <p className="text-[15px] text-[#3f4b52] mb-14">Last updated: 20 October 2026</p>
 
           <h2 className={`${h2} mt-0`}>1. Who we are</h2>
           <p className={p}>
@@ -79,8 +79,18 @@ export default function PrivacyPolicyPage() {
               whether sessions are logged, whether multi-factor authentication is used, what a
               connection can reach, and how often customers ask about this
             </li>
+            <li>
+              If you request the country report: your country, role, sector, number of sites or
+              machines, who approves access, whether sessions are logged and for how long, your
+              incident process, how many customer questionnaires you receive per year, and your
+              timeline to act
+            </li>
+            <li>
+              If you use the ROI calculator and choose to email yourself the result: the euro
+              figures and estimates you entered into the calculator
+            </li>
           </ul>
-          <p className={p}><strong>b) If you request the customer security questionnaire pack:</strong></p>
+          <p className={p}><strong>b) If you request the customer security questionnaire pack or the vendor comparison checklist:</strong></p>
           <ul className={ul}>
             <li>Name, work email address, and company name only</li>
           </ul>
@@ -123,10 +133,19 @@ export default function PrivacyPolicyPage() {
                 </tr>
                 <tr className="border-b border-[#3f4b52]/[0.15] align-top">
                   <td className="py-2.5 px-1">
-                    Sending you the customer security questionnaire pack you requested, and, only
-                    if you separately agree, sharing your enquiry with a specific named company
+                    Sending you the questionnaire pack or vendor comparison checklist you
+                    requested, and, only if you separately agree, sharing your enquiry with a
+                    specific named company
                   </td>
                   <td className="py-2.5 px-1">Name, work email, company name</td>
+                  <td className="py-2.5 px-1">Consent (given when you submit the form)</td>
+                </tr>
+                <tr className="border-b border-[#3f4b52]/[0.15] align-top">
+                  <td className="py-2.5 px-1">
+                    Emailing you the ROI calculation or country report you generated, and, only if
+                    you separately agree, sharing your enquiry with a specific named company
+                  </td>
+                  <td className="py-2.5 px-1">Name, work email, company name, and the figures or answers you entered</td>
                   <td className="py-2.5 px-1">Consent (given when you submit the form)</td>
                 </tr>
                 <tr className="border-b border-[#3f4b52]/[0.15] align-top">

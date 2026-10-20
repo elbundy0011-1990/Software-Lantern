@@ -146,6 +146,9 @@ export default function OtHomePage() {
             <Link href="/guides/remote-access-approaches" className="text-[#9a3412] hover:underline">
               Remote access approaches for machines, compared
             </Link>
+            <Link href="/guides/what-to-compare-before-a-vendor-demo" className="text-[#9a3412] hover:underline">
+              What to compare before a vendor demo
+            </Link>
             <Link href="/guides/nis2-supply-chain-and-remote-access" className="text-[#9a3412] hover:underline">
               NIS2 supply chain and remote access, explained
             </Link>

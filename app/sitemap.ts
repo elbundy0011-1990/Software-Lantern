@@ -22,6 +22,9 @@ const OT_ROUTES = [
   "/guides/iec-62443-explained",
   "/guides/customer-security-questionnaire",
   "/guides/iec-62443-remote-access",
+  "/guides/nis2-small-and-micro-manufacturers",
+  "/guides/nis2-proportionate-measures",
+  "/guides/regulation-overview",
   "/enquiry",
   "/privacy",
 ];

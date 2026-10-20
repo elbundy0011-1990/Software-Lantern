@@ -42,6 +42,21 @@ const GUIDES = [
     title: "IEC 62443 and remote access for machine builders",
     body: "A plain overview of the voluntary standard's general approach, no clause text.",
   },
+  {
+    href: "/guides/nis2-small-and-micro-manufacturers",
+    title: "NIS2 for small and micro manufacturers",
+    body: "What NIS2's own scope article says, quoted directly.",
+  },
+  {
+    href: "/guides/nis2-proportionate-measures",
+    title: "What “proportionate” means under NIS2",
+    body: "Article 21(1), quoted directly, and the factors it names.",
+  },
+  {
+    href: "/guides/regulation-overview",
+    title: "NIS2, the CRA, the Machinery Regulation, and IEC 62443",
+    body: "A short hub comparing the four, linking to each fuller guide.",
+  },
 ];
 
 export default function GuidesHubPage() {

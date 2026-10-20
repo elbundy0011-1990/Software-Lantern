@@ -122,7 +122,11 @@ export default function OtHomePage() {
           </div>
           <p className="mt-6 text-[14px] text-[#3f4b52]">
             A machine builder can face all three at once, for the same machine, for different
-            reasons. None of them name or require any specific product category.
+            reasons. None of them name or require any specific product category.{" "}
+            <Link href="/guides/regulation-overview" className="text-[#9a3412] underline">
+              See how these and IEC 62443 relate
+            </Link>
+            .
           </p>
         </div>
       </section>
@@ -148,6 +152,15 @@ export default function OtHomePage() {
             </Link>
             <Link href="/guides/iec-62443-remote-access" className="text-[#9a3412] hover:underline">
               IEC 62443 and remote access for machine builders
+            </Link>
+            <Link href="/guides/nis2-small-and-micro-manufacturers" className="text-[#9a3412] hover:underline">
+              NIS2 for small and micro manufacturers
+            </Link>
+            <Link href="/guides/nis2-proportionate-measures" className="text-[#9a3412] hover:underline">
+              What &ldquo;proportionate&rdquo; means under NIS2
+            </Link>
+            <Link href="/guides/regulation-overview" className="text-[#9a3412] hover:underline">
+              NIS2, the CRA, the Machinery Regulation, and IEC 62443
             </Link>
           </div>
         </div>

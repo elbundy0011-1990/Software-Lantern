@@ -47,6 +47,10 @@ export interface LedgerEntry {
   // record transposes).
   subjectLabel?: string;
   subjectUrl?: string;
+  // Official Journal reference for an EU act (e.g. "OJ L 333, 27.12.2022,
+  // p. 80"). Required by scripts/check-claims.mjs for every entry citing
+  // EUR-Lex, so the act can be located without the URL.
+  ojReference?: string;
   evidence: LedgerEvidence;
   lastVerified: string; // ISO date this specific entry was last checked
   lastVerifiedDisplay: string; // human display date, e.g. "19 October 2026" — used in the public "Source: ..., checked ..." line
@@ -141,6 +145,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     status: "upcoming",
     citationLabel: "Regulation (EU) 2024/2847, Art. 71(2)",
     citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng",
+    ojReference: "OJ L, 2024/2847, 20.11.2024",
     evidence: {
       kind: "quote",
       tier: "primary",
@@ -163,6 +168,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     status: "upcoming",
     citationLabel: "Regulation (EU) 2023/1230, Art. 54",
     citationUrl: "https://eur-lex.europa.eu/eli/reg/2023/1230/oj/eng",
+    ojReference: "OJ L 165, 29.6.2023, p. 1",
     evidence: {
       kind: "quote",
       tier: "primary",
@@ -187,6 +193,7 @@ export const COMPLIANCE_LEDGER: LedgerEntry[] = [
     status: "upcoming",
     citationLabel: "Regulation (EU) 2024/2847, Art. 71(2)",
     citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng",
+    ojReference: "OJ L, 2024/2847, 20.11.2024",
     evidence: {
       kind: "quote",
       tier: "primary",
@@ -218,6 +225,7 @@ export interface SupplementaryQuote {
   id: string;
   citationLabel: string;
   citationUrl: string;
+  ojReference?: string;
   evidence: LedgerEvidence;
   lastVerifiedDisplay: string;
 }
@@ -227,6 +235,7 @@ export const SUPPLEMENTARY_EVIDENCE: SupplementaryQuote[] = [
     id: "nis2-article-21-2-d",
     citationLabel: "Directive (EU) 2022/2555, Art. 21(2)(d)",
     citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng",
+    ojReference: "OJ L 333, 27.12.2022, p. 80",
     evidence: {
       kind: "quote",
       tier: "primary",
@@ -243,6 +252,7 @@ export const SUPPLEMENTARY_EVIDENCE: SupplementaryQuote[] = [
     id: "cra-scope-art2-1",
     citationLabel: "Regulation (EU) 2024/2847, Art. 2(1)",
     citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/2024-11-20/eng",
+    ojReference: "OJ L, 2024/2847, 20.11.2024",
     evidence: {
       kind: "quote",
       tier: "primary",
@@ -259,6 +269,7 @@ export const SUPPLEMENTARY_EVIDENCE: SupplementaryQuote[] = [
     id: "nis2-scope-art2-1",
     citationLabel: "Directive (EU) 2022/2555, Art. 2(1)",
     citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/2022-12-27",
+    ojReference: "OJ L 333, 27.12.2022, p. 80",
     evidence: {
       kind: "quote",
       tier: "primary",
@@ -275,6 +286,7 @@ export const SUPPLEMENTARY_EVIDENCE: SupplementaryQuote[] = [
     id: "nis2-important-entities-art3-2",
     citationLabel: "Directive (EU) 2022/2555, Art. 3(2)",
     citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/2022-12-27",
+    ojReference: "OJ L 333, 27.12.2022, p. 80",
     evidence: {
       kind: "quote",
       tier: "primary",
@@ -291,6 +303,7 @@ export const SUPPLEMENTARY_EVIDENCE: SupplementaryQuote[] = [
     id: "nis2-art21-1",
     citationLabel: "Directive (EU) 2022/2555, Art. 21(1)",
     citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng",
+    ojReference: "OJ L 333, 27.12.2022, p. 80",
     evidence: {
       kind: "quote",
       tier: "corroborated",
@@ -313,6 +326,7 @@ export const SUPPLEMENTARY_EVIDENCE: SupplementaryQuote[] = [
     id: "nis2-annex2-5d",
     citationLabel: "Directive (EU) 2022/2555, Annex II, point 5(d)",
     citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng",
+    ojReference: "OJ L 333, 27.12.2022, p. 80",
     evidence: {
       kind: "quote",
       tier: "corroborated",
@@ -512,5 +526,282 @@ export const SUPPLEMENTARY_EVIDENCE: SupplementaryQuote[] = [
       ],
     },
     lastVerifiedDisplay: "20 October 2026",
+  },
+
+  // --- Regional report v2 additions (2026-10-21). EUR-Lex itself returns a
+  // bot challenge to automated reads, so each text below was read from the
+  // EU Publications Office repository (publications.europa.eu/resource/
+  // celex/<CELEX>), which serves the Official Journal text of the same act.
+  // Accepted as a primary read on 2026-10-21. citationUrl stays the EUR-Lex
+  // ELI link readers can open; ojReference records the OJ publication.
+  {
+    id: "nis2-art20-1-governance",
+    citationLabel: "Directive (EU) 2022/2555, Art. 20(1)",
+    citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng",
+    ojReference: "OJ L 333, 27.12.2022, p. 80",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 20(1)",
+          text: "Member States shall ensure that the management bodies of essential and important entities approve the cybersecurity risk-management measures taken by those entities in order to comply with Article 21, oversee its implementation and can be held liable for infringements by the entities of that Article.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "nis2-art21-2-i-access-control",
+    citationLabel: "Directive (EU) 2022/2555, Art. 21(2)(i)",
+    citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng",
+    ojReference: "OJ L 333, 27.12.2022, p. 80",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Article 21(2)(i)", text: "human resources security, access control policies and asset management;" }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "nis2-art21-2-j-mfa",
+    citationLabel: "Directive (EU) 2022/2555, Art. 21(2)(j)",
+    citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng",
+    ojReference: "OJ L 333, 27.12.2022, p. 80",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 21(2)(j)",
+          text: "the use of multi-factor authentication or continuous authentication solutions, secured voice, video and text communications and secured emergency communication systems within the entity, where appropriate.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "nis2-art21-3-suppliers",
+    citationLabel: "Directive (EU) 2022/2555, Art. 21(3)",
+    citationUrl: "https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng",
+    ojReference: "OJ L 333, 27.12.2022, p. 80",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 21(3)",
+          text: "Member States shall ensure that, when considering which measures referred to in paragraph 2, point (d), of this Article are appropriate, entities take into account the vulnerabilities specific to each direct supplier and service provider and the overall quality of products and cybersecurity practices of their suppliers and service providers, including their secure development procedures.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "cra-art13-1-essential-requirements",
+    citationLabel: "Regulation (EU) 2024/2847, Art. 13(1)",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng",
+    ojReference: "OJ L, 2024/2847, 20.11.2024",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 13(1)",
+          text: "When placing a product with digital elements on the market, manufacturers shall ensure that it has been designed, developed and produced in accordance with the essential cybersecurity requirements set out in Part I of Annex I.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "cra-annex1-2d-unauthorised-access",
+    citationLabel: "Regulation (EU) 2024/2847, Annex I, Part I, point (2)(d)",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng",
+    ojReference: "OJ L, 2024/2847, 20.11.2024",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Annex I, Part I, (2)(d)",
+          text: "ensure protection from unauthorised access by appropriate control mechanisms, including but not limited to authentication, identity or access management systems, and report on possible unauthorised access;",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "cra-annex1-2j-attack-surface",
+    citationLabel: "Regulation (EU) 2024/2847, Annex I, Part I, point (2)(j)",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng",
+    ojReference: "OJ L, 2024/2847, 20.11.2024",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Annex I, Part I, (2)(j)",
+          text: "be designed, developed and produced to limit attack surfaces, including external interfaces;",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "cra-annex1-2l-activity-recording",
+    citationLabel: "Regulation (EU) 2024/2847, Annex I, Part I, point (2)(l)",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng",
+    ojReference: "OJ L, 2024/2847, 20.11.2024",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Annex I, Part I, (2)(l)",
+          text: "provide security related information by recording and monitoring relevant internal activity, including the access to or modification of data, services or functions, with an opt-out mechanism for the user;",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "cra-art13-8-support-period",
+    citationLabel: "Regulation (EU) 2024/2847, Art. 13(8)",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng",
+    ojReference: "OJ L, 2024/2847, 20.11.2024",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 13(8), first subparagraph",
+          text: "Manufacturers shall ensure, when placing a product with digital elements on the market, and for the support period, that vulnerabilities of that product, including its components, are handled effectively and in accordance with the essential cybersecurity requirements set out in Part II of Annex I.",
+        },
+        {
+          article: "Article 13(8), third subparagraph",
+          text: "Without prejudice to the second subparagraph, the support period shall be at least five years. Where the product with digital elements is expected to be in use for less than five years, the support period shall correspond to the expected use time.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "cra-art14-1-vulnerability-reporting",
+    citationLabel: "Regulation (EU) 2024/2847, Art. 14(1)",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng",
+    ojReference: "OJ L, 2024/2847, 20.11.2024",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 14(1)",
+          text: "A manufacturer shall notify any actively exploited vulnerability contained in the product with digital elements that it becomes aware of simultaneously to the CSIRT designated as coordinator, in accordance with paragraph 7 of this Article, and to ENISA.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "cra-annex3-class1-iam-vpn",
+    citationLabel: "Regulation (EU) 2024/2847, Annex III, Class I, points 1 and 5",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2024/2847/oj/eng",
+    ojReference: "OJ L, 2024/2847, 20.11.2024",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Annex III, Class I, point 1",
+          text: "Identity management systems and privileged access management software and hardware, including authentication and access control readers, including biometric readers",
+        },
+        {
+          article: "Annex III, Class I, point 5",
+          text: "Products with digital elements with the function of virtual private network (VPN)",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "mr-art10-1-manufacturer",
+    citationLabel: "Regulation (EU) 2023/1230, Art. 10(1)",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2023/1230/oj/eng",
+    ojReference: "OJ L 165, 29.6.2023, p. 1",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 10(1)",
+          text: "When placing machinery or a related product on the market or putting it into service, manufacturers shall ensure that it has been designed and constructed in accordance with the essential health and safety requirements set out in Annex III.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "mr-annex3-1-1-9-corruption",
+    citationLabel: "Regulation (EU) 2023/1230, Annex III, section 1.1.9",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2023/1230/oj/eng",
+    ojReference: "OJ L 165, 29.6.2023, p. 1",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Annex III, 1.1.9, first paragraph",
+          text: "The machinery or related product shall be designed and constructed so that the connection to it of another device, via any feature of the connected device itself or via any remote device that communicates with the machinery or related product does not lead to a hazardous situation.",
+        },
+        {
+          article: "Annex III, 1.1.9, last paragraph",
+          text: "The machinery or related product shall collect evidence of a legitimate or illegitimate intervention in the software or a modification of the software installed on the machinery or related product or its configuration.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "mr-annex3-1-2-1-control-systems",
+    citationLabel: "Regulation (EU) 2023/1230, Annex III, section 1.2.1",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2023/1230/oj/eng",
+    ojReference: "OJ L 165, 29.6.2023, p. 1",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Annex III, 1.2.1, point (a)",
+          text: "they can withstand, where appropriate to the circumstances and the risks, the intended operating stresses and intended and unintended external influences, including reasonably foreseeable malicious attempts from third parties leading to a hazardous situation;",
+        },
+        {
+          article: "Annex III, 1.2.1, point (f)",
+          text: "the tracing log of the data generated in relation to an intervention and of the versions of safety software uploaded after the machinery or related product has been placed on the market or put into service is enabled for five years after such upload, exclusively to demonstrate the conformity of the machinery or related product with this Annex further to a reasoned request from a competent national authority.",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "mr-art18-substantial-modification",
+    citationLabel: "Regulation (EU) 2023/1230, Art. 18 and Art. 3, point (16)",
+    citationUrl: "https://eur-lex.europa.eu/eli/reg/2023/1230/oj/eng",
+    ojReference: "OJ L 165, 29.6.2023, p. 1",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [
+        {
+          article: "Article 18, first paragraph (opening)",
+          text: "A natural or legal person that carries out a substantial modification of machinery or a related product shall be considered to be a manufacturer for the purposes of this Regulation and shall be subject to the obligations of the manufacturer set out in Article 10 for that machinery or related product",
+        },
+        {
+          article: "Article 3, point (16) (opening)",
+          text: "‘substantial modification’ means a modification of machinery or a related product, by physical or digital means after that machinery or related product has been placed on the market or put into service, which is not foreseen or planned by the manufacturer, and which affects the safety of that machinery or related product, by creating a new hazard, or by increasing an existing risk",
+        },
+      ],
+    },
+    lastVerifiedDisplay: "21 October 2026",
   },
 ];

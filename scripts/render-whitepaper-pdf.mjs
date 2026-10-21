@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 // Renders the regional report PDF from its print-only page
-// (app/(ot)/reports/remote-access-belgium-netherlands/print) via Playwright, and
+// (app/(print)/reports/remote-access-belgium-netherlands/print) via Playwright, and
 // saves it to private/reports/ (never /public), where app/api/ot-enquiries/
 // whitepaper/route.ts serves it after a signed-token check. This is a one-off
 // build tool, run by hand when the report's content changes, not part of `npm
-// run build` — Vercel's build environment isn't a reliable place to launch a full
+// run build`: Vercel's build environment isn't a reliable place to launch a full
 // Chromium instance, and the PDF doesn't need to regenerate on every deploy.
 //
 // Usage: the dev (or production) server must already be running on PORT below.
@@ -12,7 +12,7 @@
 //   node scripts/render-whitepaper-pdf.mjs
 //
 // The title/edition/date strings below must match lib/whitepaper-content.ts and
-// lib/eurostat-data.ts's EUROSTAT_SOURCE — this script runs standalone via plain
+// lib/eurostat-data.ts's EUROSTAT_SOURCE: this script runs standalone via plain
 // Node, not through Next's TypeScript pipeline, so it can't import those .ts
 // files directly. Update both places together if either changes.
 
@@ -27,8 +27,8 @@ const PRINT_URL = `http://localhost:${PORT}/reports/remote-access-belgium-nether
 const OUT_DIR = join(ROOT, "private", "reports");
 const OUT_FILE = join(OUT_DIR, "remote-access-belgium-netherlands.pdf");
 
-const REPORT_TITLE = "Securing Remote Access to Industrial Machines in Belgium and the Netherlands";
-const REPORT_EDITION = "Winter 2026/27 edition";
+const REPORT_TITLE = "Remote Access Is a Governance Problem";
+const REPORT_EDITION = "Winter 2026/27 edition, revised";
 const EXTRACTION_DATE_DISPLAY = "21 October 2026";
 
 async function main() {
@@ -46,7 +46,7 @@ async function main() {
 
   const footerTemplate = `
     <div style="font-size:8px; width:100%; text-align:center; color:#6b7280; padding:0 24px; font-family: Arial, sans-serif;">
-      ${REPORT_TITLE}. ${REPORT_EDITION}. Data extracted ${EXTRACTION_DATE_DISPLAY}.
+      ${REPORT_TITLE}. ${REPORT_EDITION}. Sources checked ${EXTRACTION_DATE_DISPLAY}.
       Page <span class="pageNumber"></span> of <span class="totalPages"></span>.
     </div>
   `;
@@ -55,6 +55,9 @@ async function main() {
     path: OUT_FILE,
     format: "A4",
     printBackground: true,
+    // Printed at 0.8 so the 880px print column fits A4 with each part on one
+    // page; type stays at a readable 10 to 11pt equivalent.
+    scale: 0.8,
     displayHeaderFooter: true,
     headerTemplate: "<span></span>",
     footerTemplate,

@@ -18,6 +18,17 @@
 //      {entry.display}, never typed out again as a string.
 //   D. Any in-scope file references a ledger entry whose verified flag
 //      is false — a pulled claim must never be looked up for display.
+//   E. A lib/compliance-ledger.ts entry citing EUR-Lex has no ojReference
+//      (the Official Journal reference of the act).
+//   F. A lib/incident-evidence.ts entry lacks a record URL, record ID,
+//      check date, primary tier, contested: false, or a verbatim quote.
+//      Any other in-scope file that names a cited or excluded incident
+//      must import from lib/incident-evidence.ts, and no in-scope file
+//      may retype an incident quote instead of rendering it from there.
+//   G. A regional report file retypes a ledger quote instead of rendering
+//      it from the ledger, contains an em-dash, uses "independent",
+//      "neutral" or "unbiased", or says a regulation requires buying
+//      something.
 //
 // See docs/CLAIMS.md for how to add a new, compliant claim.
 
@@ -63,17 +74,35 @@ const OT_FILES = [
   "lib/vendor-checklist-rows.ts",
   "lib/whitepaper-content.ts",
   "components/whitepaper/size-class-chart.tsx",
-  "components/whitepaper/regulatory-timeline.tsx",
   "components/whitepaper/report-sections.tsx",
   "components/whitepaper-form.tsx",
   "app/api/ot-enquiries/whitepaper/route.ts",
   "app/(print)/reports/remote-access-belgium-netherlands/print/page.tsx",
+  "lib/incident-evidence.ts",
+  "components/whitepaper/access-sprawl-model.tsx",
 ];
+
+// The regional report's own files: held to rule G on top of everything else.
+const REPORT_FILES = new Set([
+  "lib/whitepaper-content.ts",
+  "lib/incident-evidence.ts",
+  "components/whitepaper/report-sections.tsx",
+  "components/whitepaper/size-class-chart.tsx",
+  "components/whitepaper/access-sprawl-model.tsx",
+  "components/whitepaper-form.tsx",
+  "app/(ot)/reports/remote-access-belgium-netherlands/page.tsx",
+  "app/(print)/reports/remote-access-belgium-netherlands/print/page.tsx",
+]);
 
 // Files where a literal date is expected and allowed: the ledger itself
 // (the one place dates are allowed to be typed out), and the privacy
 // policy's own "Last updated" line.
-const DATE_ALLOWLIST = new Set(["lib/compliance-ledger.ts", "lib/eurostat-data.ts", "app/(ot)/privacy/page.tsx"]);
+const DATE_ALLOWLIST = new Set([
+  "lib/compliance-ledger.ts",
+  "lib/eurostat-data.ts",
+  "lib/incident-evidence.ts",
+  "app/(ot)/privacy/page.tsx",
+]);
 
 function walk(dir, out) {
   for (const name of readdirSync(dir)) {
@@ -199,6 +228,64 @@ for (const block of extractArray(ledgerSource, "SUPPLEMENTARY_EVIDENCE")) {
   if (err) errors.push(err);
 }
 
+// E. Every entry citing EUR-Lex records the act's Official Journal reference.
+for (const name of ["COMPLIANCE_LEDGER", "SUPPLEMENTARY_EVIDENCE"]) {
+  for (const block of extractArray(ledgerSource, name)) {
+    if (!/citationUrl:\s*"https:\/\/eur-lex\.europa\.eu\//.test(block)) continue;
+    if (!/ojReference:\s*"OJ [^"]+"/.test(block)) {
+      const idMatch = block.match(/id:\s*"([^"]+)"/);
+      errors.push(`Ledger entry "${idMatch ? idMatch[1] : "(unknown id)"}" cites EUR-Lex but has no ojReference.`);
+    }
+  }
+}
+
+// F. Incident evidence: same discipline as the ledger.
+const incidentPath = join(ROOT, "lib/incident-evidence.ts");
+const incidentSource = readFileSync(incidentPath, "utf8");
+const incidentBlocks = extractArray(incidentSource, "INCIDENT_EVIDENCE");
+if (incidentBlocks.length === 0) errors.push("lib/incident-evidence.ts: INCIDENT_EVIDENCE not found or empty.");
+const incidentNames = [];
+for (const block of incidentBlocks) {
+  const id = (block.match(/id:\s*"([^"]+)"/) || [])[1] || "(unknown id)";
+  const missing = [];
+  if (!/recordUrl:\s*"https:\/\/[^"]+"/.test(block)) missing.push("recordUrl");
+  if (!/recordId:\s*"[^"]+"/.test(block)) missing.push("recordId");
+  if (!/lastVerifiedDisplay:\s*"[^"]+"/.test(block)) missing.push("lastVerifiedDisplay");
+  if (!/tier:\s*"primary"/.test(block)) missing.push('tier: "primary"');
+  if (!/contested:\s*false/.test(block)) missing.push("contested: false");
+  if (!/quotes:\s*\[[\s\S]*text:\s*"/.test(block)) missing.push("at least one verbatim quote");
+  if (missing.length) errors.push(`Incident entry "${id}" is missing: ${missing.join(", ")}.`);
+  const nameMatch = block.match(/name:\s*"([^"]+)"/);
+  if (nameMatch) incidentNames.push(nameMatch[1]);
+}
+for (const block of extractArray(incidentSource, "EXCLUDED_INCIDENTS")) {
+  const nameMatch = block.match(/name:\s*"([^",(]+)/);
+  if (nameMatch) incidentNames.push(nameMatch[1].trim());
+}
+// Names to watch for in other files: each incident's first word is enough
+// to catch a retelling ("Colonial", "Ukrainian", "Oldsmar").
+const incidentKeywords = [...new Set(incidentNames.map((n) => n.split(/\s+/)[0]))];
+
+// Quote texts from both evidence files, for the "no retyping" checks.
+function quoteTexts(source) {
+  const out = [];
+  for (const m of source.matchAll(/\btext:\s*"((?:[^"\\]|\\.)*)"/g)) out.push(m[1]);
+  return out;
+}
+const incidentQuotes = quoteTexts(incidentSource);
+const ledgerQuotes = quoteTexts(ledgerSource);
+// True if `text` contains any 40-character run of `quote`.
+function retypes(text, quote) {
+  if (quote.length < 40) return text.includes(quote) && quote.length >= 25;
+  for (let i = 0; i + 40 <= quote.length; i += 20) {
+    if (text.includes(quote.slice(i, i + 40))) return true;
+  }
+  return false;
+}
+
+const BANNED_SELF_DESCRIPTIONS = /\b(independent|neutral|unbiased)\b/i;
+const PURCHASE_MANDATE = /\b(requires?|mandates?|obliges?)\s+(you\s+)?(to\s+)?(buy|buying|purchas\w*)\b|\b(must|required to|have to)\s+(buy|purchase)\b/i;
+
 // Collect every ledger id that is NOT verified, for check D below.
 const pulledIds = [];
 for (const block of extractArray(ledgerSource, "COMPLIANCE_LEDGER")) {
@@ -239,6 +326,32 @@ for (const { abs, rel } of files) {
     }
   }
 
+  // F. Incidents are named only via lib/incident-evidence.ts, and its
+  //    quotes are never retyped elsewhere.
+  if (rel !== "lib/incident-evidence.ts") {
+    const named = incidentKeywords.filter((k) => text.includes(k));
+    if (named.length && !text.includes("@/lib/incident-evidence")) {
+      errors.push(`${rel}: names an incident (${named.join(", ")}) without importing from lib/incident-evidence.ts.`);
+    }
+    for (const q of incidentQuotes) {
+      if (retypes(text, q)) errors.push(`${rel}: retypes an incident quote ("${q.slice(0, 50)}..."). Render it from lib/incident-evidence.ts.`);
+    }
+  }
+
+  // G. Report wording rules.
+  if (REPORT_FILES.has(rel)) {
+    if (text.includes("\u2014")) errors.push(`${rel}: contains an em-dash.`);
+    const banned = text.match(BANNED_SELF_DESCRIPTIONS);
+    if (banned) errors.push(`${rel}: contains "${banned[0]}", which the report never uses.`);
+    const mandate = text.match(PURCHASE_MANDATE);
+    if (mandate) errors.push(`${rel}: "${mandate[0]}" reads as a regulation requiring a purchase.`);
+    if (rel !== "lib/incident-evidence.ts") {
+      for (const q of ledgerQuotes) {
+        if (retypes(text, q)) errors.push(`${rel}: retypes a ledger quote ("${q.slice(0, 50)}..."). Render it from lib/compliance-ledger.ts.`);
+      }
+    }
+  }
+
   // D. A pulled (unverified) ledger entry must never be referenced.
   for (const id of pulledIds) {
     if (text.includes(`e.id === "${id}"`) || text.includes(`id === "${id}"`)) {
@@ -254,4 +367,6 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Claims guard passed (${files.length} files scanned, ${pulledIds.length} pulled entries).`);
+console.log(
+  `Claims guard passed (${files.length} files scanned, ${pulledIds.length} pulled entries, ${incidentBlocks.length} incidents).`,
+);

@@ -5,18 +5,31 @@ import { GuideStructuredData } from "@/components/guide-structured-data";
 import { WhitepaperForm } from "@/components/whitepaper-form";
 import { ReportViewTracker } from "@/components/whitepaper/view-tracker";
 import {
-  ExecutiveSummarySection,
-  CountryComparisonSection,
-  RegulatoryTimelineSection,
+  HowToRead,
   TableOfContents,
+  BriefingSection,
+  SprawlSection,
+  FailuresSection,
 } from "@/components/whitepaper/report-sections";
-import { REPORT_TITLE, REPORT_SUBTITLE, REPORT_EDITION, REPORT_PATH } from "@/lib/whitepaper-content";
+import {
+  REPORT_TITLE,
+  REPORT_SUBTITLE,
+  REPORT_EDITION,
+  REPORT_PATH,
+  REPORT_SECTIONS,
+  partLabel,
+  DISCLAIMER,
+} from "@/lib/whitepaper-content";
 import { EUROSTAT_SOURCE } from "@/lib/eurostat-data";
 
-const TITLE = "Remote Access Security: Belgium & Netherlands Report";
+const TITLE = "Remote Access Governance: Belgium & Netherlands Report";
 const DESCRIPTION =
-  "A regulatory and buyer's guide to securing remote access to industrial machines in Belgium and the Netherlands, winter 2026/27, with an original size-class analysis and no vendor names.";
+  "Why industrial remote access is a governance problem, what NIS2, the CRA and the Machinery Regulation say about it, and a 90-day plan. Belgium and the Netherlands.";
 const H1 = REPORT_TITLE;
+
+// Parts shown on the open page; the rest is in the PDF.
+const OPEN_PARTS = new Set(["briefing", "sprawl", "failures"]);
+const PDF_ONLY = REPORT_SECTIONS.filter((s) => !OPEN_PARTS.has(s.id));
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -26,9 +39,11 @@ export const metadata: Metadata = pageMetadata({
   siteName: "Software Lantern",
 });
 
+const wrap = "max-w-[860px] mx-auto px-5 sm:px-8";
+
 export default function RemoteAccessBelgiumNetherlandsReportPage() {
   return (
-    <main data-screen-label="Regional report: remote access, Belgium and Netherlands">
+    <main data-screen-label="Regional report: remote access governance, Belgium and Netherlands">
       <ReportViewTracker />
       <GuideStructuredData
         headline={H1}
@@ -42,65 +57,63 @@ export default function RemoteAccessBelgiumNetherlandsReportPage() {
         ]}
       />
       <section className="border-b border-[#3f4b52]/[0.15]">
-        <div className="max-w-[860px] mx-auto px-5 sm:px-8 pt-16 pb-10">
+        <div className={`${wrap} pt-16 pb-10`}>
           <p className="mb-3 text-[13px] font-bold uppercase tracking-[0.08em] text-[#9a3412]">
-            {REPORT_EDITION} &middot; Regional guide
+            {REPORT_EDITION} &middot; Regional report
           </p>
           <h1 className="font-sans font-semibold text-[clamp(28px,4.2vw,42px)] leading-[1.1] tracking-[-0.03em] mb-3 text-[#1a1d22]">
             {H1}
           </h1>
-          <p className="text-[18px] text-[#3f4b52] mb-6">{REPORT_SUBTITLE}</p>
-          <p className="text-[16px] leading-[1.7] text-[#3f4b52] mb-8 max-w-[680px]">
-            An original regional guide, not a market study: five traceable findings, an original
-            size-class analysis of machinery and equipment manufacturers in both countries from
-            Eurostat&apos;s own data, the regulatory timeline, and a buyer&apos;s evaluation matrix
-            that names no vendor. Free, full PDF after a short form.
-          </p>
+          <p className="text-[18px] text-[#3f4b52] mb-8">{REPORT_SUBTITLE}</p>
+          <HowToRead />
         </div>
       </section>
 
       <section className="border-b border-[#3f4b52]/[0.15]">
-        <div className="max-w-[860px] mx-auto px-5 sm:px-8 py-12">
+        <div className={`${wrap} py-10`}>
           <TableOfContents />
         </div>
       </section>
 
       <section className="border-b border-[#3f4b52]/[0.15]">
-        <div className="max-w-[860px] mx-auto px-5 sm:px-8 py-12">
-          <ExecutiveSummarySection />
+        <div className={`${wrap} py-12`}>
+          <BriefingSection />
         </div>
       </section>
 
       <section className="border-b border-[#3f4b52]/[0.15]">
-        <div className="max-w-[860px] mx-auto px-5 sm:px-8 py-12">
-          <CountryComparisonSection />
+        <div className={`${wrap} py-12`}>
+          <SprawlSection interactive />
         </div>
       </section>
 
       <section className="border-b border-[#3f4b52]/[0.15]">
-        <div className="max-w-[860px] mx-auto px-5 sm:px-8 py-12">
-          <RegulatoryTimelineSection mode="live" />
+        <div className={`${wrap} py-12`}>
+          <FailuresSection />
         </div>
       </section>
 
       <section>
-        <div className="max-w-[860px] mx-auto px-5 sm:px-8 py-16">
-          <p className="text-center text-[16px] text-[#3f4b52] mb-8 max-w-[560px] mx-auto">
-            The full PDF continues with how remote access works in practice, six trade-offs worth
-            weighing deliberately, a 25-criteria buyer&apos;s evaluation matrix, three illustrative
-            scenarios, and a 90-day action plan.
-          </p>
+        <div className={`${wrap} py-16`}>
+          <div className="max-w-[560px] mx-auto mb-8">
+            <p className="text-[16px] text-[#3f4b52] mb-3">The full PDF continues with:</p>
+            <ul className="space-y-1 text-[15px] text-[#3f4b52]">
+              {PDF_ONLY.map((s) => (
+                <li key={s.id}>
+                  <strong className="text-[#1a1d22]">{partLabel(s.id)}:</strong> {s.title}
+                </li>
+              ))}
+            </ul>
+          </div>
           <WhitepaperForm />
         </div>
       </section>
 
       <section>
-        <div className="max-w-[860px] mx-auto px-5 sm:px-8 pb-16">
+        <div className={`${wrap} pb-16`}>
           <hr className="border-[#3f4b52]/[0.2] mb-6" />
           <p className="text-[13px] leading-[1.7] text-[#3f4b52] italic">
-            This is a general guide based on published sources, not legal or security advice, and
-            names no vendor or competitor. Confirm your specific obligations with the official
-            government tool linked throughout or a qualified advisor.
+            {DISCLAIMER} This report names no vendor or competitor.
           </p>
         </div>
       </section>

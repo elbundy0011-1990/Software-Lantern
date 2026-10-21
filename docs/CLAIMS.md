@@ -30,7 +30,39 @@ the build if:
 4. Any in-scope file references a ledger entry whose `verified` flag is
    `false` (a pulled claim must never be looked up for display).
 
+5. An entry citing EUR-Lex has no `ojReference` (the act's Official
+   Journal reference, e.g. `"OJ L 333, 27.12.2022, p. 80"`).
+6. An entry in `lib/incident-evidence.ts` lacks a `recordUrl`, `recordId`,
+   `lastVerifiedDisplay`, `tier: "primary"`, `contested: false`, or at
+   least one verbatim quote; or another in-scope file names a cited or
+   excluded incident without importing from `lib/incident-evidence.ts`,
+   or retypes one of its quotes.
+7. A regional report file (`lib/whitepaper-content.ts`, `lib/incident-
+   evidence.ts`, `components/whitepaper/*`, the report page and its print
+   source) retypes a ledger quote instead of rendering it from the
+   ledger, contains an em-dash, uses "independent", "neutral" or
+   "unbiased", or reads as a regulation requiring a purchase.
+
 Run it on its own with `npm run check-claims`.
+
+## EU texts read from the Publications Office
+
+EUR-Lex blocks automated reads. Since 21 October 2026, a verbatim read
+from the EU Publications Office repository
+(`publications.europa.eu/resource/celex/<CELEX>`, which serves the
+Official Journal text) counts as a **primary** read. The entry still
+links the EUR-Lex ELI URL as `citationUrl`, and records the act's
+`ojReference`.
+
+## Incident evidence
+
+Real incidents follow the same discipline as regulatory claims, in
+`lib/incident-evidence.ts`: a primary record only (an official hearing
+record or a government agency alert), quoted verbatim, with the record's
+URL, identifier, and check date. A case whose public record is contested
+goes in `EXCLUDED_INCIDENTS` with the reason, and is never described as
+an incident. Quotes that would name a vendor are left out; state their
+point as Interpretation instead.
 
 ## Evidence tiers
 

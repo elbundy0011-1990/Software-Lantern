@@ -1,3 +1,6 @@
+-- LEGACY, DO NOT RUN. The marketplace this file created was removed; see
+-- supabase/cleanup-marketplace.sql. Kept only as a record of the old schema.
+
 -- Software Lantern schema: leads, partners, unlocks + RLS.
 -- Run this once in the Supabase SQL editor (or via psql) against your project.
 

@@ -2,9 +2,8 @@ import { ImageResponse } from "next/og";
 import { LANTERN_PATHS } from "@/lib/lantern-paths";
 
 // Favicon for the OT site only (route-segment metadata override), rust
-// lantern mark on warm paper. The root app/icon.png is untouched and
-// keeps serving the legacy marketplace pages and anything without its own
-// override. See lib/lantern-paths.ts for how the glyph was built.
+// lantern mark on warm paper. The root app/icon.png serves anything
+// without its own override. See lib/lantern-paths.ts for how the glyph was built.
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 

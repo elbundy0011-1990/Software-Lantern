@@ -105,8 +105,7 @@ export default async function AdminOtEnquiriesPage({
         <p className="mb-1 text-[12px] font-bold tracking-[0.09em] uppercase text-[#4f46e5]">Admin</p>
         <h1 className="font-sans font-semibold text-[30px]">OT Cybersecurity Enquiries</h1>
         <p className="mt-2 text-[14px] text-[#5c6573] max-w-[640px]">
-          Separate table from the EUDR/PLM/Battery Passport leads, never shown to any partner, no
-          publish step. Sharing with any other company is a manual action you record on the
+          No publish step. Sharing with any other company is a manual action you record on the
           enquiry page after you&apos;ve separately asked the person and they said yes.
         </p>
       </div>

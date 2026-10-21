@@ -13,12 +13,7 @@ export const metadata: Metadata = {
   description: `${OT_TAGLINE}: what NIS2, the Cyber Resilience Act, and the Machinery Regulation mean for machine builders, factory operators, and system integrators in the Netherlands, Belgium, and Luxembourg.`,
 };
 
-// New site identity, deliberately separate from components/site-header.tsx
-// / components/site-footer.tsx (the EUDR/PLM/Battery-Passport marketplace
-// nav): this is the site's new public identity, and /admin, /portal, and
-// the marketplace pages are deliberately not linked from here (constraint
-// 8), while staying reachable at their existing URLs for anyone who
-// already has them.
+// The site's public identity. /admin is deliberately not linked from here.
 //
 // The disclosure slot (components/disclosure-slot.tsx) is intentionally
 // not rendered here per the 2026-10-19 instruction. The component is kept

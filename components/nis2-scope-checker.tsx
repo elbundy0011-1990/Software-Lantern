@@ -16,9 +16,7 @@ export type Size = "medium_large" | "small_micro" | "not_sure";
 export type RemoteAccess = "yes" | "no" | "not_sure";
 type Screen = "country" | "audience" | "size" | "remote_access" | "result";
 
-// Palette per docs/OT-CYBER-PLAN.md Part B §B.2.4 — deliberately not the
-// rest of the site's indigo/pill-button theme, so this reads as its own
-// identity rather than a section of the Software Lantern marketplace.
+// Palette per docs/OT-CYBER-PLAN.md Part B §B.2.4.
 const ACCENT = "#9a3412";
 const ACCENT_DARK = "#7c2d12";
 

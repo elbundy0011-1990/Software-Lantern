@@ -5,12 +5,6 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { OtEnquiryStatus } from "@/lib/types";
 
-// Deliberately kept out of app/admin/(protected)/actions.ts: that file is
-// the marketplace's (leads/partners/unlocks), this one is OT enquiries'.
-// Keeping them in separate files mirrors the separate-table decision in
-// supabase/ot-cyber-schema.sql — nothing here ever touches leads,
-// partners, or unlocks, and nothing there ever touches ot_enquiries.
-
 export async function setOtEnquiryStatus(id: string, status: OtEnquiryStatus) {
   await requireAdmin();
   const supabase = createAdminClient();

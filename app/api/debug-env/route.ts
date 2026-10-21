@@ -25,8 +25,6 @@ export async function GET() {
       NEXT_PUBLIC_SUPABASE_ANON_KEY: mask(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
       SUPABASE_SERVICE_ROLE_KEY: mask(process.env.SUPABASE_SERVICE_ROLE_KEY),
       ADMIN_EMAIL: process.env.ADMIN_EMAIL || null,
-      STRIPE_SECRET_KEY: mask(process.env.STRIPE_SECRET_KEY),
-      STRIPE_WEBHOOK_SECRET: mask(process.env.STRIPE_WEBHOOK_SECRET),
       NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || null,
       TURNSTILE_SECRET_KEY: mask(process.env.TURNSTILE_SECRET_KEY),
       RESEND_API_KEY: mask(process.env.RESEND_API_KEY),

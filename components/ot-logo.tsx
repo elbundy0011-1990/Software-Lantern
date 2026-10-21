@@ -2,9 +2,6 @@ import { LANTERN_VIEWBOX, LANTERN_PATHS } from "@/lib/lantern-paths";
 
 // Recolored Software Lantern mark for the OT site (warm paper background,
 // rust accent) — see lib/lantern-paths.ts for how the glyph was rebuilt.
-// Deliberately a separate component from components/logo.tsx, which keeps
-// serving the legacy marketplace pages in their original navy palette
-// unchanged.
 export function OtLogo({ height = 28 }: { height?: number }) {
   const width = Math.round((height * 120) / 160);
   return (

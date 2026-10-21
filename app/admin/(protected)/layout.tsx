@@ -13,12 +13,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             Software Lantern <span className="text-[#4f46e5]">Admin</span>
           </Link>
           <nav className="flex items-center gap-5 text-[14px] font-semibold text-[#5c6573]">
-            <Link href="/admin" className="hover:text-[#4f46e5]">
-              Leads
-            </Link>
-            <Link href="/admin/partners" className="hover:text-[#4f46e5]">
-              Partners
-            </Link>
             <Link href="/admin/ot-enquiries" className="hover:text-[#4f46e5]">
               OT Enquiries
             </Link>

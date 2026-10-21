@@ -84,8 +84,7 @@ export async function POST(request: Request) {
   if (!/^[^\s@]+@[^\s@.]+\.[^\s@]{2,}$/.test(email)) {
     return NextResponse.json({ error: "A valid email address is required." }, { status: 400 });
   }
-  // Work emails only — same shared list and check as /api/leads uses,
-  // reused here rather than duplicated, per the 2026-10-19 instruction.
+  // Work emails only, using the shared list in lib/email-domains.ts.
   const domain = email.split("@")[1];
   if (FREE_EMAIL_DOMAINS.includes(domain)) {
     return NextResponse.json({ error: "Please use your work email address." }, { status: 400 });

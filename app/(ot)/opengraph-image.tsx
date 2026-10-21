@@ -2,9 +2,7 @@ import { ImageResponse } from "next/og";
 import { LANTERN_PATHS } from "@/lib/lantern-paths";
 
 // Social share image for the OT site only (route-segment override). New
-// palette throughout: warm paper background, rust mark, ink text, not the
-// marketplace's indigo gradient. The root app/opengraph-image.tsx is
-// untouched and keeps serving the legacy marketplace pages.
+// palette throughout: warm paper background, rust mark, ink text.
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

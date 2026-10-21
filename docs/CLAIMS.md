@@ -4,10 +4,7 @@ Scope: `app/(ot)/**`, the OT-specific components (`nis2-scope-checker.tsx`,
 `ot-enquiry-form.tsx`, `ot-cyber-interactive.tsx`, `compliance-ledger.tsx`,
 `ot-logo.tsx`, `disclosure-slot.tsx`), and the OT-specific lib files
 (`compliance-ledger.ts`, `nis2-dates.ts`, `consent-text.ts`,
-`checker-session.ts`, `email-templates.ts`). The legacy EUDR/Fashion
-PLM/Battery Passport marketplace is a separate product with its own
-sourcing discipline (`lib/eudr-dates.ts`, `lib/battery-passport-dates.ts`,
-`docs/ICP.md`) and is out of scope here.
+`checker-session.ts`, `email-templates.ts`).
 
 ## The rule
 

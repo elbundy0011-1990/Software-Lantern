@@ -25,9 +25,7 @@ export function pageMetadata({
   // name="description">; defaults to the same description otherwise.
   ogDescription?: string;
   // Set true for a page that should carry robots noindex/nofollow — used
-  // both for the legacy marketplace pages (2026-10-19 wind-down decision:
-  // keep live, noindex, unlinked, out of sitemap) and, via
-  // lib/site-config.ts's OT_SITE_INDEXABLE flag, for the OT pages before
+  // via lib/site-config.ts's OT_SITE_INDEXABLE flag for the OT pages before
   // that flag is flipped on in production.
   noindex?: boolean;
   // Override SITE_NAME for a page/section with its own brand identity

@@ -7,10 +7,13 @@ import {
   buildOtEnquiryConfirmationEmail,
   buildRoiCalculatorEmail,
   buildCountryReportEmail,
+  buildCheckerBriefEmail,
+  buildReviewSheetEmail,
 } from "@/lib/email-templates";
 import type { RoiMode, RoiFieldState } from "@/lib/roi-calculator";
 import type { ReportCountry, CountryReportAnswers } from "@/lib/country-report";
 import type { RemoteAccessAnswers } from "@/lib/remote-access-session";
+import type { CheckerAnswers } from "@/lib/checker-session";
 import { isProductionDeploy } from "@/lib/environment";
 import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
 import { issueDownloadToken } from "@/lib/download-token";
@@ -40,7 +43,14 @@ interface OtEnquirySubmission {
   // "country_report": the remote-access-check country report's "email
   // me the full report" — sends buildCountryReportEmail(), recomputed
   // server-side from answers.remoteAccessAnswers/countryReportAnswers.
-  source?: "checker" | "direct" | "pack" | "calculator" | "checklist" | "country_report";
+  // "checker_brief": "Email me a copy" on the /checker result (components/
+  // result-actions.tsx) — sends buildCheckerBriefEmail(), recomputed
+  // server-side from answers.checkerAnswers, never trusting a client-
+  // rendered copy of the brief.
+  // "review_sheet": "Email me a copy" on the /remote-access-check result
+  // — sends buildReviewSheetEmail(), recomputed server-side from
+  // answers.remoteAccessAnswers, same reasoning.
+  source?: "checker" | "direct" | "pack" | "calculator" | "checklist" | "country_report" | "checker_brief" | "review_sheet";
 }
 
 export async function POST(request: Request) {
@@ -175,7 +185,11 @@ export async function POST(request: Request) {
                 (body.answers.remoteAccessAnswers as RemoteAccessAnswers) ?? null,
                 body.answers.countryReportAnswers as CountryReportAnswers,
               )
-            : buildOtEnquiryConfirmationEmail();
+            : body.source === "checker_brief" && body.answers?.checkerAnswers
+              ? buildCheckerBriefEmail(body.answers.checkerAnswers as CheckerAnswers)
+              : body.source === "review_sheet" && body.answers?.remoteAccessAnswers
+                ? buildReviewSheetEmail(body.answers.remoteAccessAnswers as RemoteAccessAnswers)
+                : buildOtEnquiryConfirmationEmail();
       await sendEmail({ to: email, subject, html });
     } catch (err) {
       console.error("Failed to send OT enquiry confirmation", err);

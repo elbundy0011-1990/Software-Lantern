@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { OFFICIAL_SCOPE_TOOLS, LUXEMBOURG_AUTHORITY, type Nis2Country } from "@/lib/nis2-dates";
-import { COMPLIANCE_LEDGER, SUPPLEMENTARY_EVIDENCE, sourceLineText } from "@/lib/compliance-ledger";
-import { CONSENT_SENTENCE } from "@/lib/consent-text";
+import { sourceLineText } from "@/lib/compliance-ledger";
+import { buildCheckerBrief, checkerBriefToText, CUSTOMER_QUESTIONS_CITATION, type CheckerBriefContent } from "@/lib/checker-brief";
+import type { CheckerAnswers } from "@/lib/checker-session";
+import { Countdown } from "@/components/countdown";
+import { ResultActions } from "@/components/result-actions";
 import { ComplianceLedger } from "./compliance-ledger";
 
 export type Audience = "builder" | "operator" | "integrator" | "not_sure";
@@ -18,7 +21,6 @@ type Screen = "country" | "audience" | "size" | "remote_access" | "result";
 // identity rather than a section of the Software Lantern marketplace.
 const ACCENT = "#9a3412";
 const ACCENT_DARK = "#7c2d12";
-const IN_FORCE = "#166534";
 
 const COUNTRY_OPTIONS: { value: Nis2Country; label: string }[] = [
   { value: "NL", label: "Netherlands" },
@@ -122,18 +124,6 @@ function OptionCard({
 const backButtonClass =
   "rounded px-5 py-[10px] font-sans font-semibold text-[14px] text-[#3f4b52] border border-[#3f4b52]/[0.3] hover:bg-[#3f4b52]/[0.06]";
 
-// The in-force date/citation sentence in Nis2OrgStatus below reads
-// straight from the matching Compliance Ledger entry, and only renders
-// once that entry is verified, so an unsourced claim never renders
-// publicly. Flip the entry in lib/compliance-ledger.ts, no separate
-// edit needed here.
-function countryLedgerEntry(country: Nis2Country | null) {
-  const id = country === "NL" ? "nis2-nl" : country === "BE" ? "nis2-be" : country === "LU" ? "nis2-lu" : null;
-  if (!id) return null;
-  const entry = COMPLIANCE_LEDGER.find((e) => e.id === id);
-  return entry && entry.verified ? entry : null;
-}
-
 function OfficialToolNote({ country }: { country: Nis2Country | null }) {
   const tool = country === "NL" ? OFFICIAL_SCOPE_TOOLS.NL : country === "BE" ? OFFICIAL_SCOPE_TOOLS.BE : null;
   return (
@@ -167,35 +157,6 @@ function OfficialToolNote({ country }: { country: Nis2Country | null }) {
   );
 }
 
-// The required branch for anyone (builder, operator, or integrator)
-// outside NIS2's direct organizational scope on size: phrased throughout
-// as commercial/contractual pressure that may come from a customer's own
-// compliance obligations, never as a legal requirement on them directly.
-function SupplyChainPressureNote({ audience, remoteAccess }: { audience: Audience | null; remoteAccess: RemoteAccess | null }) {
-  const subject = audience === "operator" ? "your suppliers' remote-access practices" : "your own remote-access practices";
-  return (
-    <div className="rounded border p-5 text-[14px] text-[#3f4b52] mb-4" style={{ borderColor: `${ACCENT}33`, background: `${ACCENT}0d` }}>
-      <p className="font-semibold mb-2" style={{ color: ACCENT_DARK }}>
-        A likely commercial pressure, not a legal requirement
-      </p>
-      <p className="mb-2">
-        NIS2 Article 21(2)(d) requires companies that <em>are</em> in scope to assess the security
-        practices of their direct suppliers, including machine builders and integrators with remote
-        access into their systems. If one or more of {audience === "operator" ? "your suppliers' customers" : "your customers"} are
-        themselves in scope, this can create pressure around {subject}, even though it isn&apos;t a
-        separate legal requirement on you under NIS2 itself.
-      </p>
-      {remoteAccess === "yes" && (
-        <p>
-          Since you&apos;ve indicated remote access into machines is part of how you work, this is a
-          realistic scenario worth preparing for even though it isn&apos;t a legal obligation on you
-          directly.
-        </p>
-      )}
-    </div>
-  );
-}
-
 function Iec62443Note() {
   return (
     <p className="text-[13px] text-[#3f4b52] text-center mb-4">
@@ -209,46 +170,9 @@ function Iec62443Note() {
   );
 }
 
-// Product-level rules (CRA, Machinery Regulation) apply to manufacturers
-// placing products on the market, not gated by the same organizational
-// size thresholds as NIS2 — shown for builders and integrators, who sit on
-// the "placing a product on the market" side of this.
-function ProductRulesNote() {
-  const cra = COMPLIANCE_LEDGER.find((e) => e.id === "cra-reporting")!;
-  const craFull = COMPLIANCE_LEDGER.find((e) => e.id === "cra-full")!;
-  const machinery = COMPLIANCE_LEDGER.find((e) => e.id === "machinery-regulation")!;
-  return (
-    <div className="rounded border border-[#3f4b52]/[0.2] bg-white p-5 text-[14px] text-[#3f4b52] mb-4">
-      <p className="font-semibold mb-2 text-[#1a1d22]">Separately, your product has its own rules</p>
-      <p className="mb-2">
-        Your company&apos;s size mainly affects whether NIS2&apos;s organizational rules apply to you. It
-        generally does not affect two separate, product-level rules that apply to manufacturers
-        regardless of size: the Cyber Resilience Act, under which Article 14 applies from{" "}
-        <strong>{cra.display}</strong> and the Regulation fully applies from{" "}
-        <strong>{craFull.display}</strong> (
-        <a href={cra.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
-          {sourceLineText(cra)}
-        </a>
-        ), and the Machinery Regulation, which applies from{" "}
-        <strong>{machinery.display}</strong> (
-        <a href={machinery.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
-          {sourceLineText(machinery)}
-        </a>
-        ).
-      </p>
-      <p>
-        Neither names or requires any specific product or vendor. Both set outcomes (secure by
-        design, protection against corruption that could create a safety hazard), leaving the
-        implementation to you.
-      </p>
-    </div>
-  );
-}
-
-// The four outcomes the result screen's CTA block reads, distinct from
-// ResultHeading's three-way "tone" below: "in_scope" and "not_sure" share
-// one CTA (the evidence-review angle), "small_micro" splits in two
-// depending on whether remote access makes a customer ask realistic.
+// The four outcome categories used only for analytics ("outcome" on
+// result_viewed/brief_download/brief_copy/brief_email_request/talk_request), never
+// for a verdict shown on screen.
 export type Outcome = "in_scope" | "not_sure" | "customer_evidence" | "clearly_out";
 
 export function computeOutcome(size: Size | null, remoteAccess: RemoteAccess | null): Outcome {
@@ -293,145 +217,6 @@ export function describeCheckerAnswers({
         ? ", without remote access into machines"
         : "";
   return `${sizePart} ${audiencePart}${countryPart}${remoteAccessPart}`;
-}
-
-const resultCtaPrimaryClass =
-  "rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-white inline-block";
-const resultCtaSecondaryClass =
-  "rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-[#1a1d22] border border-[#3f4b52]/[0.3] inline-block";
-
-function ResultCta({
-  country,
-  audience,
-  size,
-  remoteAccess,
-  restart,
-}: {
-  country: Nis2Country | null;
-  audience: Audience | null;
-  size: Size | null;
-  remoteAccess: RemoteAccess | null;
-  restart: () => void;
-}) {
-  const outcome = computeOutcome(size, remoteAccess);
-
-  if (outcome === "clearly_out") {
-    return (
-      <div className="mt-7 pt-6 border-t border-[#3f4b52]/[0.15] text-center">
-        <p className="text-[15px] text-[#3f4b52] mb-4 max-w-[480px] mx-auto">
-          Based on your answers, there&apos;s nothing here pointing to pressure from customers or
-          regulators. See the guides to understand the wider landscape.
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          <Link href="/guides" className={resultCtaSecondaryClass}>
-            Read the guides
-          </Link>
-          <button onClick={restart} className="text-[14px] font-semibold text-[#3f4b52] underline underline-offset-2">
-            Start over
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  const recap = describeCheckerAnswers({ country, audience, size, remoteAccess });
-  const bodyText =
-    outcome === "customer_evidence"
-      ? "Your customers may ask how you secure remote access. Send your result for review and we will look at it with you."
-      : `Your answers point to ${recap}. If you want to talk through what this means for how your machines are serviced remotely, send your result for review.`;
-
-  return (
-    <div className="mt-7 pt-6 border-t border-[#3f4b52]/[0.15] text-center">
-      <p className="text-[15px] text-[#3f4b52] mb-4 max-w-[520px] mx-auto">{bodyText}</p>
-      <a
-        href="#ot-enquiry-form"
-        onClick={() => track("result_cta_click", { outcome })}
-        className={resultCtaPrimaryClass}
-        style={{ background: ACCENT }}
-      >
-        Send my result for review
-      </a>
-      <p className="mt-3 text-[12px] leading-[1.6] text-[#3f4b52] max-w-[480px] mx-auto">
-        Work email required. {CONSENT_SENTENCE}
-      </p>
-      <div className="mt-4">
-        <button onClick={restart} className="text-[14px] font-semibold text-[#3f4b52] underline underline-offset-2">
-          Start over
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function ResultHeading({ children, tone }: { children: React.ReactNode; tone: "in_scope" | "out_of_scope" | "not_sure" }) {
-  const color = tone === "in_scope" ? ACCENT_DARK : tone === "out_of_scope" ? IN_FORCE : "#3f4b52";
-  const bg = tone === "in_scope" ? `${ACCENT}0d` : tone === "out_of_scope" ? `${IN_FORCE}0d` : "#ffffff";
-  const border = tone === "in_scope" ? `${ACCENT}40` : tone === "out_of_scope" ? `${IN_FORCE}33` : "rgba(63,75,82,0.2)";
-  return (
-    <div className="rounded border p-7 sm:p-9 text-center mb-6" style={{ borderColor: border, background: bg }}>
-      <p className="mb-2 text-[13px] font-bold tracking-[0.08em] uppercase" style={{ color }}>
-        Based on your answers
-      </p>
-      <p className="font-sans font-semibold leading-tight tracking-[-0.02em] text-[#1a1d22]" style={{ fontSize: "clamp(24px,4vw,30px)" }}>
-        {children}
-      </p>
-    </div>
-  );
-}
-
-function Nis2OrgStatus({ country, size, audience }: { country: Nis2Country | null; size: Size | null; audience: Audience | null }) {
-  const entry = countryLedgerEntry(country);
-  const annex2 = SUPPLEMENTARY_EVIDENCE.find((e) => e.id === "nis2-annex2-5d")!;
-  const importantEntities = SUPPLEMENTARY_EVIDENCE.find((e) => e.id === "nis2-important-entities-art3-2")!;
-  if (size === "small_micro") {
-    return (
-      <p className="text-[15px] text-[#3f4b52] text-center mb-4">
-        NIS2&apos;s organizational rules generally only apply to medium and large companies (broadly:
-        50 or more staff, or over €10m turnover or balance sheet total). A small or micro business is
-        generally outside its direct scope, unless a specific exception applies, such as being
-        identified individually as critical by your country&apos;s authority.
-      </p>
-    );
-  }
-  if (size === "medium_large") {
-    return (
-      <p className="text-[15px] text-[#3f4b52] text-center mb-4">
-        {audience === "operator" ? (
-          "Whether NIS2 applies to you as an organization depends on your specific sector among its 18 covered sectors, which this checker doesn't attempt to classify (the official tool below does). Size is generally the first gate: at medium or large, you clear that threshold if your sector is covered."
-        ) : (
-          <>
-            Machinery and equipment manufacturing sits in NIS2{" "}
-            <a href={annex2.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
-              Annex II, point 5(d)
-            </a>
-            , which generally produces{" "}
-            <a href={importantEntities.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
-              important-entity
-            </a>{" "}
-            status for medium and large companies, not essential.
-          </>
-        )}
-        {entry && country !== "other" && country !== "not_sure" && (
-          <>
-            {" "}In{" "}
-            {country === "NL" ? "the Netherlands" : country === "BE" ? "Belgium" : "Luxembourg"}, this
-            has applied since <strong>{entry.display}</strong> (
-            <a href={entry.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
-              {sourceLineText(entry)}
-            </a>
-            ).
-          </>
-        )}
-      </p>
-    );
-  }
-  return (
-    <p className="text-[15px] text-[#3f4b52] text-center mb-4">
-      Whether NIS2&apos;s organizational rules apply to you generally depends on your sector and your
-      company size (broadly: 50 or more staff, or over €10m turnover or balance sheet total is the
-      threshold that&apos;s in scope; below that, you&apos;re generally outside it).
-    </p>
-  );
 }
 
 export function Nis2ScopeChecker({
@@ -490,17 +275,17 @@ export function Nis2ScopeChecker({
     setRemoteAccess(null);
   };
 
-  const showProductRules = audience === "builder" || audience === "integrator";
-  const showSupplyChainPressure = size === "small_micro" || size === "not_sure";
+  const checkerAnswers: CheckerAnswers = { country, audience, size, remoteAccess };
+  const outcome = computeOutcome(size, remoteAccess);
+  const brief: CheckerBriefContent | null = screen === "result" ? buildCheckerBrief(checkerAnswers) : null;
 
-  const resultTone: "in_scope" | "out_of_scope" | "not_sure" =
-    size === "medium_large" ? "in_scope" : size === "small_micro" ? "out_of_scope" : "not_sure";
-
-  const resultHeadingText = () => {
-    if (size === "medium_large") return "Likely in scope for NIS2's organizational rules";
-    if (size === "small_micro") return "Generally outside NIS2's direct scope, based on size";
-    return "Not enough to give you a definite answer on NIS2";
-  };
+  useEffect(() => {
+    if (screen === "result") track("result_viewed", { tool: "checker", outcome });
+    // Only the screen transition itself should fire this, not every
+    // re-render while already on the result screen (e.g. the countdown
+    // ticking over a minute boundary).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen]);
 
   return (
     <section id="nis2-scope-checker" className="border-b border-[#3f4b52]/[0.15]">
@@ -576,15 +361,166 @@ export function Nis2ScopeChecker({
             </div>
           )}
 
-          {screen === "result" && (
-            <div key="result">
-              <ResultHeading tone={resultTone}>{resultHeadingText()}</ResultHeading>
-              <Nis2OrgStatus country={country} size={size} audience={audience} />
-              {showSupplyChainPressure && <SupplyChainPressureNote audience={audience} remoteAccess={remoteAccess} />}
-              {showProductRules && <ProductRulesNote />}
+          {screen === "result" && brief && (
+            <div key="result" id="checker-brief" className="print-area">
+              <p className="mb-1 text-[12px] font-bold tracking-[0.08em] uppercase" style={{ color: ACCENT_DARK }}>
+                Your brief
+              </p>
+              <h3 className="font-sans font-semibold text-[24px] sm:text-[28px] mb-6 text-[#1a1d22]">
+                Which EU rules likely apply to you
+              </h3>
+
+              <div className="grid gap-4 mb-8">
+                {brief.regulations.map((r) => (
+                  <div key={r.id} className="rounded border border-[#3f4b52]/[0.2] bg-white p-5">
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 mb-2">
+                      <p className="font-semibold text-[16px] text-[#1a1d22]">{r.name}</p>
+                      <p className="text-[13px] font-semibold" style={{ color: ACCENT_DARK }}>{r.applicabilityLabel}</p>
+                    </div>
+                    <p className="text-[14px] text-[#3f4b52] mb-2">{r.explanation}</p>
+                    {r.quote && (
+                      <blockquote className="text-[13px] italic text-[#3f4b52] border-l-2 pl-3 mb-2" style={{ borderColor: `${ACCENT}55` }}>
+                        &ldquo;{r.quote.translation ?? r.quote.text}&rdquo;
+                      </blockquote>
+                    )}
+                    {r.citationUrl && r.sourceLine && (
+                      <a href={r.citationUrl} target="_blank" rel="noopener noreferrer" className="text-[12px] underline" style={{ color: ACCENT_DARK }}>
+                        {r.sourceLine}
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded border border-[#3f4b52]/[0.2] bg-white p-5 mb-8">
+                <p className="font-semibold text-[15px] mb-3 text-[#1a1d22]">Dates that matter</p>
+                <ul className="grid gap-3">
+                  {brief.dates.map((d) => (
+                    <li key={d.id} className="flex flex-wrap justify-between gap-x-3 border-b border-[#3f4b52]/[0.1] pb-2">
+                      <span className="text-[14px] text-[#3f4b52]">{d.label}</span>
+                      <span className="text-[13px] font-semibold text-[#1a1d22] text-right">
+                        {d.display && d.dateIso ? (
+                          <>
+                            {d.display} &middot; <Countdown dateIso={d.dateIso} />
+                          </>
+                        ) : (
+                          <span className="font-normal text-[#3f4b52]">{d.note}</span>
+                        )}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded border border-[#3f4b52]/[0.2] bg-white p-5 mb-8">
+                <p className="font-semibold text-[15px] mb-3 text-[#1a1d22]">Your country</p>
+                {brief.countrySection ? (
+                  <ul className="grid gap-2 text-[14px] text-[#3f4b52]">
+                    <li>
+                      <strong className="text-[#1a1d22]">In force since:</strong> {brief.countrySection.inForce.display} (
+                      <a href={brief.countrySection.inForce.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
+                        {sourceLineText(brief.countrySection.inForce)}
+                      </a>
+                      )
+                    </li>
+                    <li>
+                      <strong className="text-[#1a1d22]">Supervisory authority:</strong>{" "}
+                      <a href={brief.countrySection.authority.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
+                        {brief.countrySection.authority.citationLabel}
+                      </a>
+                    </li>
+                    <li>
+                      <strong className="text-[#1a1d22]">Registration step:</strong>{" "}
+                      <a href={brief.countrySection.registration.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
+                        {brief.countrySection.registration.citationLabel}
+                      </a>
+                    </li>
+                    <li>
+                      <strong className="text-[#1a1d22]">Incident-reporting duty:</strong>{" "}
+                      <a href={brief.countrySection.incident.citationUrl} target="_blank" rel="noopener noreferrer" className="underline">
+                        {brief.countrySection.incident.citationLabel}
+                      </a>
+                    </li>
+                  </ul>
+                ) : (
+                  <p className="text-[14px] text-[#3f4b52]">
+                    {country === "not_sure"
+                      ? "You said not sure, or multiple countries, so no single country section applies. Use the official tool(s) below for each country that's relevant."
+                      : "No country-specific section is available for “elsewhere.” Use the official tool(s) below."}
+                  </p>
+                )}
+              </div>
+
+              <div className="rounded border p-5 mb-8" style={{ borderColor: `${ACCENT}33`, background: `${ACCENT}0d` }}>
+                <p className="font-semibold mb-2" style={{ color: ACCENT_DARK }}>
+                  A likely commercial pressure, not a legal requirement
+                </p>
+                <p className="text-[14px] text-[#3f4b52] mb-3">
+                  NIS2 Article 21(2)(d) requires companies that are in scope to assess the security
+                  practices of their direct suppliers, including machine builders and integrators with
+                  remote access into their systems. That is the legal mechanism behind{" "}
+                  {brief.customerQuestionsFraming}, even where NIS2 doesn&apos;t apply to you directly.
+                </p>
+                <ul className="grid gap-2 text-[14px] text-[#3f4b52] mb-3">
+                  {brief.customerQuestions.map((q) => (
+                    <li key={q.id} className="flex gap-2">
+                      <span style={{ color: ACCENT_DARK }}>&#8226;</span>
+                      <span>{q.question}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a href={CUSTOMER_QUESTIONS_CITATION.citationUrl} target="_blank" rel="noopener noreferrer" className="text-[12px] underline" style={{ color: ACCENT_DARK }}>
+                  {sourceLineText(CUSTOMER_QUESTIONS_CITATION)}
+                </a>
+              </div>
+
               <Iec62443Note />
-              <OfficialToolNote country={country} />
-              <ResultCta country={country} audience={audience} size={size} remoteAccess={remoteAccess} restart={restart} />
+              <div id="official-tool">
+                <OfficialToolNote country={country} />
+              </div>
+
+              <div className="rounded border border-[#3f4b52]/[0.2] bg-white p-5 mb-2">
+                <p className="font-semibold text-[15px] mb-3 text-[#1a1d22]">Next steps</p>
+                <ol className="grid gap-2 text-[14px] text-[#3f4b52] list-decimal pl-5">
+                  {brief.nextSteps.map((step) => {
+                    const isAnchor = step.href.includes("#");
+                    const onPageHref = step.href.startsWith("/checker") ? step.href.slice("/checker".length) : step.href;
+                    return (
+                      <li key={step.text}>
+                        {isAnchor ? (
+                          <a href={onPageHref} className="underline font-semibold" style={{ color: ACCENT_DARK }}>
+                            {step.text}
+                          </a>
+                        ) : (
+                          <Link href={step.href} className="underline font-semibold" style={{ color: ACCENT_DARK }}>
+                            {step.text}
+                          </Link>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
+
+              <div data-no-print>
+                <ResultActions
+                  tool="checker"
+                  outcome={outcome}
+                  downloadLabel="Download my brief"
+                  getCopyText={() => checkerBriefToText(checkerAnswers)}
+                  emailRequestBody={{
+                    answers: { tool: "checker_brief", checkerAnswers },
+                    source: "checker_brief",
+                    country,
+                  }}
+                  talkExplanation="A short conversation about your result. We will contact you by email to arrange it."
+                />
+                <div className="mt-2 text-center">
+                  <button onClick={restart} className="text-[14px] font-semibold text-[#3f4b52] underline underline-offset-2">
+                    Start over
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>

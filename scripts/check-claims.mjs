@@ -57,6 +57,12 @@ const OT_FILES = [
   "components/country-report-form.tsx",
   "app/api/ot-enquiries/questionnaire-pack/route.ts",
   "app/api/ot-enquiries/checklist/route.ts",
+  "lib/checker-brief.ts",
+  "lib/review-sheet.ts",
+  "lib/questionnaire-pack-rows.ts",
+  "components/result-actions.tsx",
+  "components/countdown.tsx",
+  "components/example-output.tsx",
 ];
 
 // Files where a literal date is expected and allowed: the ledger itself

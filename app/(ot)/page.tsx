@@ -57,6 +57,9 @@ export default function OtHomePage() {
             Belgium, and Luxembourg. Three different EU rules, three different reasons they apply,
             explained plainly and cited.
           </p>
+          <p className="text-[15px] font-semibold text-[#1a1d22] mb-4">
+            A one-page brief on which EU rules apply to you, with sources and next steps.
+          </p>
           <div className="flex flex-wrap items-start gap-x-3 gap-y-2 mb-10">
             <div>
               <Link

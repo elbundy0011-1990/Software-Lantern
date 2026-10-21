@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
 import {
-  remoteAccessAnswerRows,
   type ConnectionMethod,
   type AccessDecision,
   type Credentials,
@@ -13,7 +12,9 @@ import {
   type QuestionFrequency,
   type RemoteAccessAnswers,
 } from "@/lib/remote-access-session";
+import { buildReviewSheet, reviewSheetToText, type ReviewSheetContent } from "@/lib/review-sheet";
 import { CountryReportForm } from "@/components/country-report-form";
+import { ResultActions } from "@/components/result-actions";
 
 type Screen = "connection" | "decision" | "credentials" | "logging" | "mfa" | "reach" | "questions" | "result";
 
@@ -122,25 +123,92 @@ function OptionCard({
 const backButtonClass =
   "rounded px-5 py-[10px] font-sans font-semibold text-[14px] text-[#3f4b52] border border-[#3f4b52]/[0.3] hover:bg-[#3f4b52]/[0.06]";
 
-// The result: a plain list of areas worth being able to describe,
-// phrased as questions, restating the visitor's own answer. No score,
-// no pass/fail, no product category, and no claim that any answer
-// breaks a rule — every area is shown the same way regardless of what
-// was answered.
-function AreasToLookAt({ answers }: { answers: RemoteAccessAnswers }) {
-  const rows = remoteAccessAnswerRows(answers);
+// The review sheet: a neutral summary of the visitor's own answers, questions to
+// resolve, controls to verify, evidence to prepare, and the most relevant
+// questionnaire-pack rows (lib/review-sheet.ts chooses these deterministically from
+// the seven answers). No score, no pass/fail, no product category, and no claim
+// that any answer breaks a rule: every answer is restated the same way regardless
+// of what it was, and every task is phrased as a question or a thing to do.
+function ReviewSheetView({ content }: { content: ReviewSheetContent }) {
+  const bullet = (text: string) => (
+    <li key={text} className="flex gap-2">
+      <span style={{ color: "#9a3412" }}>&#8226;</span>
+      <span>{text}</span>
+    </li>
+  );
   return (
-    <div className="rounded border border-[#3f4b52]/[0.2] bg-white p-5 text-[14px] text-[#3f4b52] mb-4">
-      <p className="font-semibold mb-3 text-[#1a1d22]">Areas worth being ready to describe</p>
-      <ul className="grid gap-2">
-        {rows.map((r) => (
+    <div>
+      <p className="font-semibold mb-3 text-[#1a1d22]">Your setup, as described</p>
+      <ul className="grid gap-2 mb-6 text-[14px] text-[#3f4b52]">
+        {content.answerRows.map((r) => (
           <li key={r.label} className="flex flex-wrap justify-between gap-x-3 border-b border-[#3f4b52]/[0.1] pb-2">
             <span>{r.label}</span>
             <span className="font-semibold text-[#1a1d22]">{r.value}</span>
           </li>
         ))}
       </ul>
-      <p className="mt-4">
+
+      {content.questionsToResolve.length > 0 && (
+        <div className="mb-6">
+          <p className="font-semibold mb-2 text-[#1a1d22]">Questions to resolve</p>
+          <ul className="grid gap-2 text-[14px] text-[#3f4b52]">{content.questionsToResolve.map((t) => bullet(t.text))}</ul>
+        </div>
+      )}
+
+      <div className="mb-6">
+        <p className="font-semibold mb-2 text-[#1a1d22]">Controls to verify</p>
+        <ul className="grid gap-2 text-[14px] text-[#3f4b52]">{content.controlsToVerify.map((t) => bullet(t.text))}</ul>
+      </div>
+
+      <div className="mb-6">
+        <p className="font-semibold mb-2 text-[#1a1d22]">Evidence to prepare</p>
+        <ul className="grid gap-2 text-[14px] text-[#3f4b52]">{content.evidenceToPrepare.map((e) => bullet(e))}</ul>
+      </div>
+
+      <div className="rounded border border-[#3f4b52]/[0.2] bg-[#f6f5f1] p-5 mb-6">
+        <p className="font-semibold mb-3 text-[#1a1d22]">Relevant rows from the customer security questionnaire pack</p>
+        <ul className="grid gap-3 text-[14px]">
+          {content.packRows.map((row) => (
+            <li key={row.id} className="border-b border-[#3f4b52]/[0.12] pb-3">
+              <p className="text-[12px] font-bold uppercase tracking-[0.06em] text-[#3f4b52] mb-1">{row.category}</p>
+              <p className="font-semibold text-[#1a1d22] mb-1">{row.question}</p>
+              <p className="text-[13px] text-[#3f4b52]">{row.why}</p>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-3 text-[13px]">
+          <Link href="/questionnaire-pack" className="underline font-semibold" style={{ color: "#7c2d12" }}>
+            Get the full pack (about 30 questions across 8 topics)
+          </Link>
+        </p>
+      </div>
+
+      {content.showVendorRequirements && (
+        <div className="rounded border p-5 mb-6" style={{ borderColor: "#9a341233", background: "#9a34120d" }}>
+          <p className="font-semibold mb-2" style={{ color: "#7c2d12" }}>Vendor demo requirements</p>
+          <p className="text-[13px] text-[#3f4b52] mb-3">
+            Since you noted a vendor-supplied modem or gateway, here&apos;s a starting list of what to
+            ask a vendor to confirm, whether that&apos;s the one you have today or one you&apos;re
+            comparing it against.
+          </p>
+          <ul className="grid gap-3 text-[14px]">
+            {content.vendorRequirements.map((v) => (
+              <li key={v.topic} className="border-b border-[#3f4b52]/[0.1] pb-2">
+                <p className="font-semibold text-[#1a1d22]">{v.topic}</p>
+                <p className="text-[13px] text-[#3f4b52]">{v.today}</p>
+                <p className="text-[13px] text-[#1a1d22]">{v.askTheVendor}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-[13px]">
+            <Link href="/vendor-checklist" className="underline font-semibold" style={{ color: "#7c2d12" }}>
+              See the full 25-criteria vendor comparison checklist
+            </Link>
+          </p>
+        </div>
+      )}
+
+      <p className="text-[14px] text-[#3f4b52]">
         This is not a pass or fail, and it doesn&apos;t name or favor any product. A customer&apos;s
         own questionnaire will ask about these same topics in its own words.{" "}
         <Link href="/guides/customer-security-questionnaire" className="underline font-semibold" style={{ color: "#7c2d12" }}>
@@ -222,7 +290,11 @@ export function RemoteAccessSituationCheck({
       setCustomerQuestions(v);
       setScreen("result");
       emit({ customerQuestions: v });
-      track("remote_access_check_complete", { connectionMethod: connectionMethod ?? "unknown" });
+      // No answer value here, by design: the privacy policy promises every
+      // answer to this check stays in the browser unless the visitor chooses
+      // to email or submit it, so analytics only ever sees that the flow
+      // was completed, never what was answered.
+      track("remote_access_check_complete", {});
     },
   };
 
@@ -246,6 +318,17 @@ export function RemoteAccessSituationCheck({
     reach,
     customerQuestions,
   };
+
+  // No score and no verdict, so "outcome" here is only a flow category for
+  // analytics (which branch of the review sheet rendered), never a judgment on
+  // the setup described.
+  const outcome = connectionMethod === "vendor_modem" ? "vendor_evaluation" : "standard";
+  const reviewSheet: ReviewSheetContent | null = screen === "result" ? buildReviewSheet(answers) : null;
+
+  useEffect(() => {
+    if (screen === "result") track("result_viewed", { tool: "remote_access_check", outcome });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen]);
 
   return (
     <section id="remote-access-situation-check" className="border-b border-[#3f4b52]/[0.15]">
@@ -361,22 +444,30 @@ export function RemoteAccessSituationCheck({
             </div>
           )}
 
-          {screen === "result" && (
-            <div key="result">
-              <AreasToLookAt answers={answers} />
-              <div className="mt-7 pt-6 border-t border-[#3f4b52]/[0.15] text-center">
-                <p className="text-[15px] text-[#3f4b52] mb-4 max-w-[480px] mx-auto">
-                  If you&apos;d like to talk through any of this, send your result for review.
-                </p>
-                <a
-                  href="#ot-enquiry-form"
-                  onClick={() => track("result_cta_click", { tool: "remote_access_check" })}
-                  className="rounded px-6 py-[13px] font-sans font-semibold text-[15px] text-white inline-block"
-                  style={{ background: ACCENT }}
-                >
-                  Send my result for review
-                </a>
-                <div className="mt-4">
+          {screen === "result" && reviewSheet && (
+            <div key="result" id="review-sheet" className="print-area">
+              <p className="mb-1 text-[12px] font-bold tracking-[0.08em] uppercase" style={{ color: "#7c2d12" }}>
+                Your review sheet
+              </p>
+              <h3 className="font-sans font-semibold text-[24px] sm:text-[28px] mb-6 text-[#1a1d22]">
+                Build your remote access review sheet
+              </h3>
+
+              <ReviewSheetView content={reviewSheet} />
+
+              <div data-no-print>
+                <ResultActions
+                  tool="remote_access_check"
+                  outcome={outcome}
+                  downloadLabel="Download my review sheet"
+                  getCopyText={() => reviewSheetToText(answers)}
+                  emailRequestBody={{
+                    answers: { tool: "review_sheet", remoteAccessAnswers: answers },
+                    source: "review_sheet",
+                  }}
+                  talkExplanation="A short conversation about your result. We will contact you by email to arrange it."
+                />
+                <div className="mt-2 text-center">
                   <button onClick={restart} className="text-[14px] font-semibold text-[#3f4b52] underline underline-offset-2">
                     Start over
                   </button>

@@ -12,6 +12,9 @@ import {
 } from "@/lib/roi-calculator";
 import { remoteAccessAnswerRows, REMOTE_ACCESS_QUESTIONS, type RemoteAccessAnswers } from "@/lib/remote-access-session";
 import { getCountrySection, evidenceSummary, sourceLineText, REPORT_COUNTRIES, type ReportCountry, type CountryReportAnswers } from "@/lib/country-report";
+import { buildCheckerBrief } from "@/lib/checker-brief";
+import type { CheckerAnswers } from "@/lib/checker-session";
+import { buildReviewSheet } from "@/lib/review-sheet";
 
 function escapeHtml(input: string): string {
   return input
@@ -375,6 +378,141 @@ export function buildCountryReportEmail(
       bodyHtml,
       ctaHref: `${SITE_URL}/checker`,
       ctaLabel: "Check your situation",
+    }),
+  };
+}
+
+// TRIGGER: "Email me a copy" on the /checker result (components/result-
+// actions.tsx, source "checker_brief"). Recomputes the brief server-side from the
+// visitor's own four answers through the exact same lib/checker-brief.ts functions
+// the on-screen result uses, so this email can never drift from, or show anything
+// beyond, what the page itself displays. No score, no verdict, no vendor name.
+export function buildCheckerBriefEmail(answers: CheckerAnswers): { subject: string; html: string } {
+  const brief = buildCheckerBrief(answers);
+
+  const regulationsHtml = brief.regulations
+    .map(
+      (r) => `
+    <tr><td style="padding:10px 0;border-bottom:1px solid rgba(13,17,23,0.08);">
+      <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#0d1117;">${escapeHtml(r.name)}: ${escapeHtml(r.applicabilityLabel)}</p>
+      <p style="margin:0 0 4px;font-size:13px;color:#3d4653;">${escapeHtml(r.explanation)}</p>
+      ${r.sourceLine && r.citationUrl ? `<a href="${r.citationUrl}" style="font-size:12px;color:#79818f;">${escapeHtml(r.sourceLine)}</a>` : ""}
+    </td></tr>`,
+    )
+    .join("");
+
+  const datesHtml = brief.dates
+    .map((d) => fieldRow(d.label, d.display ? `${d.display}${d.sourceLine ? ` (${d.sourceLine})` : ""}` : d.note || ""))
+    .join("");
+
+  const countryHtml = brief.countrySection
+    ? `<table style="width:100%;border-collapse:collapse;margin:0 0 4px;">
+      ${fieldRow("In force since", brief.countrySection.inForce.display)}
+      ${fieldRow("Supervisory authority", brief.countrySection.authority.citationLabel)}
+      ${fieldRow("Registration step", brief.countrySection.registration.citationLabel)}
+      ${fieldRow("Incident-reporting duty", brief.countrySection.incident.citationLabel)}
+    </table>`
+    : `<p style="margin:0 0 12px;font-size:14px;color:#79818f;">No country-specific section is available. Official tool(s): ${
+        brief.officialTools.map((t) => `<a href="${t.url}" style="color:#79818f;">${escapeHtml(t.name)}</a>`).join(", ") ||
+        "see your country's own tool"
+      }.</p>`;
+
+  const questionsHtml = brief.customerQuestions
+    .map((q) => `<li style="margin:0 0 8px;font-size:14px;color:#0d1117;">${escapeHtml(q.question)}</li>`)
+    .join("");
+
+  const nextStepsHtml = brief.nextSteps
+    .map((s) => `<li style="margin:0 0 8px;font-size:14px;color:#0d1117;">${escapeHtml(s.text)}</li>`)
+    .join("");
+
+  const bodyHtml = `
+    <p style="margin:0 0 20px;font-size:14px;line-height:1.6;color:#3d4653;">
+      This is a general guide, not legal advice. It deliberately says &ldquo;generally&rdquo; because
+      real exceptions exist.
+    </p>
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Which rules likely apply</p>
+    <table style="width:100%;border-collapse:collapse;margin:0 0 20px;">${regulationsHtml}</table>
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Dates that matter</p>
+    <table style="width:100%;border-collapse:collapse;margin:0 0 20px;">${datesHtml}</table>
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Your country</p>
+    ${countryHtml}
+    <p style="margin:20px 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">${escapeHtml(brief.customerQuestionsFraming)}</p>
+    <ul style="margin:0 0 20px;padding-left:18px;">${questionsHtml}</ul>
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Next steps</p>
+    <ol style="margin:0;padding-left:18px;">${nextStepsHtml}</ol>
+  `;
+
+  return {
+    subject: "Your brief: which EU rules apply to you",
+    html: emailLayout({
+      heading: "Your brief: which EU rules apply to you",
+      bodyHtml,
+      ctaHref: `${SITE_URL}/remote-access-check`,
+      ctaLabel: "Build your remote access review sheet",
+    }),
+  };
+}
+
+// TRIGGER: "Email me a copy" on the /remote-access-check result (components/
+// result-actions.tsx, source "review_sheet"). Recomputes the review sheet server-
+// side from the visitor's own seven answers through the exact same lib/review-
+// sheet.ts functions the on-screen result uses. No score, no verdict, no vendor
+// name; the vendor-demo-requirements section only appears when the same
+// deterministic condition (lib/questionnaire-pack-rows.ts's showsVendorEvaluation)
+// that shows it on screen is true.
+export function buildReviewSheetEmail(answers: RemoteAccessAnswers): { subject: string; html: string } {
+  const sheet = buildReviewSheet(answers);
+
+  const answerRowsHtml = sheet.answerRows.map((r) => fieldRow(r.label, r.value)).join("");
+  const questionsToResolveHtml = sheet.questionsToResolve
+    .map((t) => `<li style="margin:0 0 8px;font-size:14px;color:#0d1117;">${escapeHtml(t.text)}</li>`)
+    .join("");
+  const controlsHtml = sheet.controlsToVerify
+    .map((t) => `<li style="margin:0 0 8px;font-size:14px;color:#0d1117;">${escapeHtml(t.text)}</li>`)
+    .join("");
+  const evidenceHtml = sheet.evidenceToPrepare
+    .map((e) => `<li style="margin:0 0 8px;font-size:14px;color:#0d1117;">${escapeHtml(e)}</li>`)
+    .join("");
+  const packRowsHtml = sheet.packRows
+    .map((r) => `<li style="margin:0 0 10px;font-size:14px;color:#0d1117;"><strong>[${escapeHtml(r.category)}]</strong> ${escapeHtml(r.question)}</li>`)
+    .join("");
+  const vendorHtml = sheet.showVendorRequirements
+    ? `<p style="margin:20px 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Vendor demo requirements</p>
+       <ul style="margin:0;padding-left:18px;">${sheet.vendorRequirements
+         .map(
+           (v) =>
+             `<li style="margin:0 0 10px;font-size:14px;color:#0d1117;"><strong>${escapeHtml(v.topic)}</strong> (${escapeHtml(v.today)}): ${escapeHtml(v.askTheVendor)}</li>`,
+         )
+         .join("")}</ul>`
+    : "";
+
+  const bodyHtml = `
+    <p style="margin:0 0 20px;font-size:14px;line-height:1.6;color:#3d4653;">
+      This is not a pass or fail, and it doesn&#39;t name or favor any product.
+    </p>
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Your answers</p>
+    <table style="width:100%;border-collapse:collapse;margin:0 0 20px;">${answerRowsHtml}</table>
+    ${
+      sheet.questionsToResolve.length
+        ? `<p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Questions to resolve</p><ul style="margin:0 0 20px;padding-left:18px;">${questionsToResolveHtml}</ul>`
+        : ""
+    }
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Controls to verify</p>
+    <ul style="margin:0 0 20px;padding-left:18px;">${controlsHtml}</ul>
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Evidence to prepare</p>
+    <ul style="margin:0 0 20px;padding-left:18px;">${evidenceHtml}</ul>
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Relevant questionnaire pack rows</p>
+    <ul style="margin:0 0 20px;padding-left:18px;">${packRowsHtml}</ul>
+    ${vendorHtml}
+  `;
+
+  return {
+    subject: "Your remote access review sheet",
+    html: emailLayout({
+      heading: "Your remote access review sheet",
+      bodyHtml,
+      ctaHref: `${SITE_URL}/questionnaire-pack`,
+      ctaLabel: "Get the full questionnaire pack",
     }),
   };
 }

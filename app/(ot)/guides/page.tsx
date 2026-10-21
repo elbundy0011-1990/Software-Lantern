@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
+import { CHECKLIST_ROW_COUNT } from "@/lib/vendor-checklist-rows";
 
 export const metadata: Metadata = pageMetadata({
   title: "Guides: NIS2, Cyber Resilience Act & Machinery Regulation",
@@ -25,7 +26,7 @@ const GUIDES = [
   {
     href: "/guides/what-to-compare-before-a-vendor-demo",
     title: "What to compare before a vendor demo",
-    body: "Fourteen areas worth asking about, with a free 25-criteria checklist.",
+    body: `${CHECKLIST_ROW_COUNT} questions under five governance dimensions plus fit, with a free comparison checklist.`,
   },
   {
     href: "/guides/nis2-supply-chain-and-remote-access",

@@ -89,6 +89,7 @@ const REPORT_FILES = new Set([
   "components/whitepaper/report-sections.tsx",
   "components/whitepaper/size-class-chart.tsx",
   "components/whitepaper/access-sprawl-model.tsx",
+  "lib/vendor-checklist-rows.ts",
   "components/whitepaper-form.tsx",
   "app/(ot)/reports/remote-access-belgium-netherlands/page.tsx",
   "app/(print)/reports/remote-access-belgium-netherlands/print/page.tsx",

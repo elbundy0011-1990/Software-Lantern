@@ -16,6 +16,7 @@
 
 import { incidentById } from "@/lib/incident-evidence";
 import { naceEntry, share50PlusPct } from "@/lib/eurostat-data";
+import { CHECKLIST_ROW_COUNT } from "@/lib/vendor-checklist-rows";
 
 export const REPORT_TITLE = "Remote Access Is a Governance Problem";
 export const REPORT_SUBTITLE = "Securing remote access to industrial machines in Belgium and the Netherlands";
@@ -54,7 +55,7 @@ export const REPORT_SECTIONS = [
   { id: "regulation", number: "6", title: "From regulation to action" },
   { id: "incidents", number: "7", title: "Two public incidents" },
   { id: "plan", number: "8", title: "A 90-day plan" },
-  { id: "matrix", number: "A", title: "The 25-point matrix, prioritised" },
+  { id: "matrix", number: "A", title: `The ${CHECKLIST_ROW_COUNT}-point matrix, prioritised` },
   { id: "register", number: "B", title: "Remote access register template" },
   { id: "context", number: "C", title: "Regional context" },
   { id: "method", number: "D", title: "Methodology and sources" },
@@ -620,18 +621,8 @@ export const PLAN_STEPS: PlanStep[] = [
 // Appendix A: matrix prioritisation (Interpretation)
 // ---------------------------------------------------------------------------
 
-export const MATRIX_GROUPS: { dimension: DimensionId | "fit"; title: string; rowIds: string[] }[] = [
-  { dimension: "identity", title: "Identity", rowIds: ["mfa-mandatory", "named-accounts", "sso-integration"] },
-  { dimension: "scope", title: "Scope", rowIds: ["access-scope", "multi-customer-isolation", "deployment-footprint"] },
-  { dimension: "lifecycle", title: "Lifecycle", rowIds: ["access-grant-revoke", "customer-revoke", "customer-visibility"] },
-  { dimension: "evidence", title: "Evidence", rowIds: ["log-content", "log-retention", "monitoring-export", "data-portability"] },
-  { dimension: "availability", title: "Availability", rowIds: ["session-start-stop", "session-timeout", "low-bandwidth"] },
-  {
-    dimension: "fit",
-    title: "Fit, not risk: important for choosing, lower priority for governance",
-    rowIds: ["deployment-location", "protocol-support", "legacy-support", "multi-customer-dashboard", "onboarding-effort", "onboarding-time", "support-regions", "pricing-basis", "pricing-extras"],
-  },
-];
+// The matrix rows and their groups come from lib/vendor-checklist-rows.ts, the
+// same source as the downloadable checklist and the /vendor-checklist page.
 
 export const UNACCEPTABLE_ANSWERS: { answer: string; dimension: string; evidence: EvidenceRef[] }[] = [
   { answer: "Multi-factor authentication is optional or absent.", dimension: "Identity", evidence: [L("nis2-art21-2-j-mfa"), L("cra-annex1-2d-unauthorised-access"), I("colonial-pipeline-2021")] },
@@ -644,9 +635,9 @@ export const UNACCEPTABLE_ANSWERS: { answer: string; dimension: string; evidence
 ];
 
 // ---------------------------------------------------------------------------
-// Appendix B: remote access register template (Interpretation). The same
-// columns and lists are in public/downloads/remote-access-register.xlsx,
-// built by scripts/build-register-xlsx.py; change both together.
+// Appendix B: remote access register template (Interpretation).
+// scripts/build-register-xlsx.ts generates public/downloads/remote-access-
+// register.xlsx from these same columns; rerun it after changing them.
 // ---------------------------------------------------------------------------
 
 export const REGISTER_XLSX_PATH = "/downloads/remote-access-register.xlsx";

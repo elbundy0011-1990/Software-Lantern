@@ -17,6 +17,7 @@ import {
 import { buildReviewSheet, reviewSheetToText, type ReviewSheetContent, type SectionKey } from "@/lib/review-sheet";
 import { CountryReportForm } from "@/components/country-report-form";
 import { ResultActions } from "@/components/result-actions";
+import { CHECKLIST_ROW_COUNT } from "@/lib/vendor-checklist-rows";
 
 type Screen = "connection" | "decision" | "credentials" | "logging" | "mfa" | "reach" | "questions" | "review_prompt" | "result";
 
@@ -221,7 +222,7 @@ function VendorRequirementsSection({ content }: { content: ReviewSheetContent })
       {open && <VendorRequirementsList vendorRequirements={content.vendorRequirements} />}
       <p className="mt-3 text-[13px]">
         <Link href="/vendor-checklist" className="underline font-semibold" style={{ color: "#7c2d12" }}>
-          See the full 25-criteria vendor comparison checklist
+          See the full {CHECKLIST_ROW_COUNT}-row vendor comparison checklist
         </Link>
       </p>
     </div>

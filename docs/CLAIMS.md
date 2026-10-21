@@ -38,8 +38,8 @@ the build if:
    excluded incident without importing from `lib/incident-evidence.ts`,
    or retypes one of its quotes.
 7. A regional report file (`lib/whitepaper-content.ts`, `lib/incident-
-   evidence.ts`, `components/whitepaper/*`, the report page and its print
-   source) retypes a ledger quote instead of rendering it from the
+   evidence.ts`, `lib/vendor-checklist-rows.ts`, `components/whitepaper/*`,
+   the report page and its print source) retypes a ledger quote instead of rendering it from the
    ledger, contains an em-dash, uses "independent", "neutral" or
    "unbiased", or reads as a regulation requiring a purchase.
 

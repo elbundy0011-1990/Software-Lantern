@@ -52,11 +52,10 @@ import {
   REGISTER_XLSX_PATH,
   SIZE_TEST_CAVEAT,
   CONTEXT_READING,
-  MATRIX_GROUPS,
   UNACCEPTABLE_ANSWERS,
   METHOD_POINTS,
 } from "@/lib/whitepaper-content";
-import { VENDOR_CHECKLIST_ROWS } from "@/lib/vendor-checklist-rows";
+import { CHECKLIST_GROUPS, CHECKLIST_ROW_COUNT, BUYER_TYPES, checklistRowsByGroup } from "@/lib/vendor-checklist-rows";
 import { SITE_URL } from "@/lib/site";
 import { SizeClassChart } from "@/components/whitepaper/size-class-chart";
 import { AccessSprawlModel } from "@/components/whitepaper/access-sprawl-model";
@@ -863,9 +862,9 @@ export function MatrixAppendix() {
       <SectionHeading id="matrix" />
       <p className={p}>
         <Tag kind="Interpretation" />
-        The 25 rows of this site&apos;s vendor comparison checklist, regrouped under the five dimensions
-        in {partLabel("assessment")}. Use it on your own setup or in a supplier questionnaire. It names no
-        product and scores no one.
+        The {CHECKLIST_ROW_COUNT} rows of this site&apos;s vendor comparison checklist, grouped under the five
+        dimensions in {partLabel("assessment")}, with a default priority for each buyer type. Use it on
+        your own setup or in a supplier questionnaire. It names no product and scores no one.
       </p>
       <div className="rounded border-l-4 bg-[#f6f5f1] p-3 mb-4" style={{ borderColor: ACCENT, breakInside: "avoid" }}>
         <p className="font-semibold text-[13.5px] text-[#1a1d22] mb-1.5">Unacceptable answers</p>
@@ -878,28 +877,30 @@ export function MatrixAppendix() {
           ))}
         </ul>
       </div>
-      {MATRIX_GROUPS.map((g) => (
-        <div key={g.title} className="mb-3" style={{ breakInside: "avoid" }}>
-          <p className="text-[12px] font-bold uppercase tracking-[0.06em] mb-1" style={{ color: g.dimension === "fit" ? "#6b7280" : ACCENT }}>
+      {CHECKLIST_GROUPS.map((g) => (
+        <div key={g.id} className="mb-3" style={{ breakInside: "avoid" }}>
+          <p className="text-[12px] font-bold uppercase tracking-[0.06em]" style={{ color: g.id === "fit" ? "#6b7280" : ACCENT }}>
             {g.title}
           </p>
+          <p className="text-[11px] text-[#6b7280] mb-1">{g.summary}</p>
           <table className="w-full text-left border-collapse text-[11.5px]">
             <tbody className="text-[#3f4b52]">
-              {g.rowIds.map((rid) => {
-                const row = VENDOR_CHECKLIST_ROWS.find((r) => r.id === rid)!;
-                return (
-                  <tr key={rid} className="border-b border-[#3f4b52]/[0.1] align-top">
-                    <td className="py-1 pr-3 font-semibold text-[#1a1d22] w-[44%]">{row.criterion}</td>
-                    <td className="py-1">{row.askTheVendor}</td>
-                  </tr>
-                );
-              })}
+              {checklistRowsByGroup(g.id).map((row) => (
+                <tr key={row.id} className="border-b border-[#3f4b52]/[0.1] align-top">
+                  <td className="py-1 pr-3 font-semibold text-[#1a1d22] w-[38%]">{row.criterion}</td>
+                  <td className="py-1 pr-3">{row.askTheVendor}</td>
+                  <td className="py-1 w-[118px] text-[10.5px] whitespace-nowrap">
+                    {BUYER_TYPES.map((b) => row.priority[b.id]).join(" / ")}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       ))}
       <p className={small}>
-        The editable spreadsheet version, with columns for your requirement and suppliers&apos; answers:{" "}
+        Priorities read {BUYER_TYPES.map((b) => b.label.toLowerCase()).join(" / ")}. The editable spreadsheet
+        version adds evidence to request, weak answers, a live demo script and a per-vendor evidence summary:{" "}
         <Link href="/vendor-checklist" className="underline" style={linkStyle}>
           vendor comparison checklist
         </Link>

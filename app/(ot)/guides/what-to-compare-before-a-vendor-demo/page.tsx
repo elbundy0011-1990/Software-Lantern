@@ -3,13 +3,13 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { GuideStructuredData } from "@/components/guide-structured-data";
+import { CHECKLIST_GROUPS, CHECKLIST_ROW_COUNT, DEMO_SCENARIOS, checklistRowsByGroup } from "@/lib/vendor-checklist-rows";
 
 const TITLE = "What to Compare Before a Vendor Demo";
-const DESCRIPTION =
-  "Fourteen things worth comparing before a remote-access vendor demo, from access scoping to pricing clarity, with a free comparison checklist.";
+const DESCRIPTION = `What to compare before a remote-access vendor demo: ${CHECKLIST_ROW_COUNT} questions under identity, scope, lifecycle, evidence, availability, and fit, with a free comparison checklist.`;
 const H1 = "What to compare before a vendor demo";
-const LAST_UPDATED_ISO = "2026-10-20";
-const LAST_UPDATED_DISPLAY = "October 20, 2026";
+const LAST_UPDATED_ISO = "2026-10-21";
+const LAST_UPDATED_DISPLAY = "October 21, 2026";
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -22,65 +22,6 @@ export const metadata: Metadata = pageMetadata({
 const h2 = "font-sans font-semibold text-[22px] leading-[1.2] tracking-[-0.02em] mt-10 mb-2 text-[#1a1d22]";
 const p = "text-[16px] leading-[1.7] text-[#3f4b52] mb-4";
 const link = "font-semibold underline text-[#9a3412]";
-
-const TOPICS: { name: string; body: string }[] = [
-  {
-    name: "Access model",
-    body: "What a single connection can actually reach once it's made, and how access is granted and revoked.",
-  },
-  {
-    name: "Identity and MFA",
-    body: "Whether connecting requires more than a password, and whether accounts are named to a person or shared between people.",
-  },
-  {
-    name: "Session control",
-    body: "Who can start and stop a session, including whether the customer can end one themselves, and whether an idle session closes on its own.",
-  },
-  {
-    name: "Logging and evidence",
-    body: "What a session log actually captures, how long it's kept, and whether the customer can export their own copy.",
-  },
-  {
-    name: "Deployment options",
-    body: "Whether it runs entirely on the customer's own network, requires a cloud component, or both, and what has to be installed on the machine itself.",
-  },
-  {
-    name: "Supported protocols and devices",
-    body: "Which industrial protocols and controller types are actually supported today, including whatever older equipment is already in the fleet.",
-  },
-  {
-    name: "Low-bandwidth and offline sites",
-    body: "How it behaves on a poor or intermittent connection, since many industrial sites don't have office-grade connectivity.",
-  },
-  {
-    name: "Multi-customer management",
-    body: "How access across different customers is kept separate, and whether it can all be managed from one place.",
-  },
-  {
-    name: "Customer control over access",
-    body: "Whether the customer can see who currently has access, and pause or revoke it themselves without contacting the vendor first.",
-  },
-  {
-    name: "Onboarding effort",
-    body: "What the customer actually has to do to get this running at a new site, and roughly how long that takes.",
-  },
-  {
-    name: "Integrations with identity and monitoring tools",
-    body: "Whether it connects to an existing identity provider and whether session data can feed into monitoring tools already in use.",
-  },
-  {
-    name: "Support and regions",
-    body: "What support hours are available, in what time zones, and in which countries data is stored and processed.",
-  },
-  {
-    name: "Pricing model clarity",
-    body: "Whether pricing is based on users, sites, or connections, stated plainly, and whether costs beyond the headline price exist.",
-  },
-  {
-    name: "Data portability",
-    body: "Whether logs and configuration can be exported if the relationship ends, or stay locked into the vendor's own system.",
-  },
-];
 
 export default function VendorDemoChecklistGuidePage() {
   return (
@@ -104,27 +45,49 @@ export default function VendorDemoChecklistGuidePage() {
           <p className="text-[13px] leading-[1.7] text-[#3f4b52] mb-6">Last updated: {LAST_UPDATED_DISPLAY}</p>
 
           <p className={p}>
-            A demo tends to show what a remote-access product does well. These fourteen areas are
+            A demo tends to show what a remote-access product does well. The questions below are
             what&apos;s worth asking about directly, so the comparison covers what a demo doesn&apos;t
-            always surface on its own. This page doesn&apos;t name or recommend any specific
-            product.
+            always surface on its own. They are grouped under five dimensions of remote access
+            governance (identity, scope, lifecycle, evidence and availability) plus fit and
+            commercial, the same grouping as the{" "}
+            <Link href="/reports/remote-access-belgium-netherlands" className={link}>
+              regional report
+            </Link>
+            . This page doesn&apos;t name or recommend any specific product.
           </p>
 
-          {TOPICS.map((t) => (
-            <div key={t.name}>
-              <h2 className={h2}>{t.name}</h2>
-              <p className={p}>{t.body}</p>
+          {CHECKLIST_GROUPS.map((g) => (
+            <div key={g.id}>
+              <h2 className={h2}>{g.title}</h2>
+              <p className={p}>{g.summary}</p>
+              <ul className="list-disc pl-5 space-y-1 mb-4 text-[16px] leading-[1.6] text-[#3f4b52]">
+                {checklistRowsByGroup(g.id).map((r) => (
+                  <li key={r.id}>{r.askTheVendor}</li>
+                ))}
+              </ul>
             </div>
           ))}
+
+          <h2 className={h2}>Ask to see it, not to hear about it</h2>
+          <p className={p}>
+            A claim in a meeting is not the same as seeing it work. Ask each vendor to run these live,
+            on a system you direct:
+          </p>
+          <ol className="list-decimal pl-5 space-y-1 mb-4 text-[16px] leading-[1.6] text-[#3f4b52]">
+            {DEMO_SCENARIOS.map((d) => (
+              <li key={d.id}>{d.title}</li>
+            ))}
+          </ol>
 
           <div className="mt-10 rounded border border-[#3f4b52]/[0.2] bg-[#f6f5f1] p-6 text-center">
             <p className="font-semibold text-[17px] mb-2 text-[#1a1d22]">
               Get the full comparison checklist
             </p>
             <p className="text-[14px] text-[#3f4b52] mb-4 max-w-[480px] mx-auto">
-              A spreadsheet covering all 25 criteria across the areas above: why each one matters,
-              what to ask, a blank column for your own requirement, and three blank columns for
-              each vendor&apos;s answer.
+              A spreadsheet with all {CHECKLIST_ROW_COUNT} rows above: why each one matters, what to
+              ask, the evidence to request, what a weak answer looks like and default priorities by
+              buyer type, plus three vendor columns with an evidence status, the demo script, and a
+              summary of the evidence per vendor.
             </p>
             <Link
               href="/vendor-checklist"

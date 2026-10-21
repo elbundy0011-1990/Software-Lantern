@@ -29,3 +29,26 @@ export const RESULTS_CONSENT_SENTENCE =
 
 export const RESULTS_CONSENT_CHECKBOX_LABEL =
   "I understand Software Lantern will use my details to email me my results and may contact me about them.";
+
+// Which wording a submission agreed to, and a version id for it. The id is a
+// short hash of the exact sentence and checkbox label, so it changes on its
+// own whenever the wording does; nothing to remember to bump. Recorded with
+// every ot_enquiries row (answers.consent) by app/api/ot-enquiries/route.ts.
+export type ConsentKind = "enquiry" | "file" | "results";
+
+export const CONSENT_WORDING: Record<ConsentKind, { sentence: string; checkbox: string }> = {
+  enquiry: { sentence: CONSENT_SENTENCE, checkbox: CONSENT_CHECKBOX_LABEL },
+  file: { sentence: PACK_CONSENT_SENTENCE, checkbox: PACK_CONSENT_CHECKBOX_LABEL },
+  results: { sentence: RESULTS_CONSENT_SENTENCE, checkbox: RESULTS_CONSENT_CHECKBOX_LABEL },
+};
+
+export function consentVersion(kind: ConsentKind): string {
+  const { sentence, checkbox } = CONSENT_WORDING[kind];
+  // FNV-1a, 32 bit: stable, dependency-free, and fine for telling wordings apart.
+  let hash = 0x811c9dc5;
+  for (const ch of `${sentence}\n${checkbox}`) {
+    hash ^= ch.codePointAt(0)!;
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+  return `${kind}-${hash.toString(16).padStart(8, "0")}`;
+}

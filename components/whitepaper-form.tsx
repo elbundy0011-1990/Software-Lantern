@@ -85,7 +85,7 @@ export function WhitepaperForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           country: null,
-          answers: { tool: "whitepaper", role: form.role || null, timing: form.timing || null },
+          answers: { tool: "whitepaper", source: "whitepaper", pagePath: window.location.pathname, role: form.role || null, timing: form.timing || null },
           contact: { name: form.name, company: form.company, email: form.email },
           role: form.role || undefined,
           timeline: form.timing || undefined,

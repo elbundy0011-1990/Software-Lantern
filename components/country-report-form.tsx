@@ -83,6 +83,8 @@ export function CountryReportForm({ remoteAccessAnswers }: { remoteAccessAnswers
           timeline: answers.timeline,
           answers: {
             tool: "country_report",
+            source: "country_report",
+            pagePath: window.location.pathname,
             country: answers.country,
             role: answers.role,
             timeline: answers.timeline,

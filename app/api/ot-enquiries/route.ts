@@ -16,6 +16,8 @@ import type { CheckerAnswers } from "@/lib/checker-session";
 import { isProductionDeploy } from "@/lib/environment";
 import { FREE_EMAIL_DOMAINS } from "@/lib/email-domains";
 import { issueDownloadToken } from "@/lib/download-token";
+import { consentVersion } from "@/lib/consent-text";
+import { SUBMISSION_KINDS, isSubmissionSource, type SubmissionSource } from "@/lib/submission-kind";
 
 interface OtEnquirySubmission {
   country: string | null;
@@ -52,7 +54,24 @@ interface OtEnquirySubmission {
   // whitepaper-form.tsx) — same download-token pattern as "pack"/"checklist"
   // (a signed, expiring claim, not an email attachment), serving the PDF from
   // private/reports/ via app/api/ot-enquiries/whitepaper/route.ts.
-  source?: "checker" | "direct" | "pack" | "calculator" | "checklist" | "country_report" | "checker_brief" | "review_sheet" | "whitepaper";
+  source?: SubmissionSource;
+}
+
+// The page the form sat on: the client's answers.pagePath when it is a plain
+// site path, else the Referer when it points at this site. Only ever a path,
+// so the stored value can't carry a foreign URL into the admin email.
+function pagePathOf(body: OtEnquirySubmission, request: Request): string | null {
+  const isSitePath = (v: unknown): v is string =>
+    typeof v === "string" && v.length <= 300 && /^\/(?!\/)[^\s]*$/.test(v);
+  const claimed = body.answers?.pagePath;
+  if (isSitePath(claimed)) return claimed;
+  try {
+    const referer = new URL(request.headers.get("referer") || "");
+    if (referer.host === new URL(request.url).host && isSitePath(referer.pathname)) return referer.pathname;
+  } catch {
+    // No or malformed Referer: leave it unknown.
+  }
+  return null;
 }
 
 export async function POST(request: Request) {
@@ -118,8 +137,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, dryRun: true, ...(downloadToken ? { downloadToken } : {}) });
   }
 
-  const answers =
-    body.source === "pack" ? { ...(body.answers || {}), source: "pack" } : body.answers || {};
+  // What was requested, where from, and which consent wording was agreed to,
+  // all kept in answers so the admin email and list can say it exactly.
+  const claimedSource = body.source ?? body.answers?.source;
+  const source: SubmissionSource = isSubmissionSource(claimedSource) ? claimedSource : "direct";
+  const kind = SUBMISSION_KINDS[source];
+  const consentAcceptedAt = new Date().toISOString();
+  const pagePath = pagePathOf(body, request);
+  const answers = {
+    ...(body.answers || {}),
+    source,
+    pagePath,
+    consent: { kind: kind.consent, version: consentVersion(kind.consent), acceptedAt: consentAcceptedAt },
+  };
 
   const supabase = createAdminClient();
   const { data: inserted, error } = await supabase
@@ -153,10 +183,13 @@ export async function POST(request: Request) {
       try {
         const { subject, html } = buildNewOtEnquiryAdminEmail({
           enquiryId,
+          answers,
           companyName: company,
           contactName: name,
           contactEmail: email,
           country: body.country || null,
+          role: body.role || null,
+          timeline: body.timeline || null,
         });
         await sendEmail({ to: adminEmail, subject, html });
       } catch (err) {

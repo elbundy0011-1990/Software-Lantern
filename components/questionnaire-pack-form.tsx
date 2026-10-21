@@ -111,7 +111,7 @@ export function QuestionnairePackForm({ product = "pack" }: { product?: "pack" |
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           country: null,
-          answers: { tool: config.source },
+          answers: { tool: config.source, source: config.source, pagePath: window.location.pathname },
           contact: { name: form.name, company: form.company, email: form.email },
           consentReviewGiven: consent,
           website,

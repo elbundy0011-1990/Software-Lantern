@@ -96,7 +96,7 @@ export function ResultActions({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           country: emailRequestBody.country ?? null,
-          answers: emailRequestBody.answers,
+          answers: { ...emailRequestBody.answers, source: emailRequestBody.source, pagePath: window.location.pathname },
           contact: { name: form.name, company: form.company, email: form.email },
           consentReviewGiven: consent,
           website,

@@ -139,7 +139,7 @@ function EmailResultForm({ mode, fields }: { mode: RoiMode; fields: FieldState }
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           country: null,
-          answers: { tool: "roi_calculator", roiMode: mode, roiInputs: fields },
+          answers: { tool: "roi_calculator", source: "calculator", pagePath: window.location.pathname, roiMode: mode, roiInputs: fields },
           contact: { name: form.name, company: form.company, email: form.email },
           consentReviewGiven: consent,
           website,

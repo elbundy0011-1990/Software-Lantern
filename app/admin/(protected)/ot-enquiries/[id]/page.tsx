@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import type { OtEnquiry } from "@/lib/types";
 import { OtStatusButtons } from "../status-buttons";
 import { ShareForm } from "./share-form";
+import { submissionKindOf } from "@/lib/submission-kind";
 
 function fieldRow(label: string, value: string) {
   return (
@@ -20,6 +21,8 @@ export default async function AdminOtEnquiryPage({ params }: { params: Promise<{
 
   if (!enquiry) notFound();
   const e = enquiry as OtEnquiry;
+  const kind = submissionKindOf(e.answers);
+  const pagePath = typeof e.answers?.pagePath === "string" ? e.answers.pagePath : null;
 
   return (
     <div className="grid gap-6 max-w-[760px]">
@@ -29,6 +32,9 @@ export default async function AdminOtEnquiryPage({ params }: { params: Promise<{
       </div>
 
       <div className="bg-white rounded-2xl border border-[#0d1117]/[0.08] p-6">
+        {fieldRow("Requested", kind.what)}
+        {fieldRow("Document or tool", kind.document)}
+        {fieldRow("Page", pagePath || "—")}
         {fieldRow("Submitted", new Date(e.created_at).toLocaleString())}
         {fieldRow("Contact", e.contact_name || "—")}
         {fieldRow("Email", e.contact_email || "—")}
@@ -44,7 +50,7 @@ export default async function AdminOtEnquiryPage({ params }: { params: Promise<{
       </div>
 
       <div className="bg-white rounded-2xl border border-[#0d1117]/[0.08] p-6">
-        <h3 className="font-sans font-semibold text-[17px] mb-3">Checker answers</h3>
+        <h3 className="font-sans font-semibold text-[17px] mb-3">Submitted answers</h3>
         <pre className="text-[13px] bg-[#f6f7fb] rounded-lg p-4 overflow-x-auto whitespace-pre-wrap">
           {JSON.stringify(e.answers, null, 2)}
         </pre>

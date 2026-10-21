@@ -92,6 +92,7 @@ export function OtEnquiryForm({
   const hasCheckerAnswer = hasAnyCheckerAnswer(effectiveAnswers);
   const hasRemoteAccessAnswer = hasAnyRemoteAccessAnswer(effectiveRemoteAccessAnswers);
   const sourceIsChecker = hasCheckerAnswer || hasRemoteAccessAnswer;
+  const enquirySource = sourceIsChecker ? "checker" : "direct";
 
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [consent, setConsent] = useState(false);
@@ -142,9 +143,12 @@ export function OtEnquiryForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           country: effectiveAnswers.country || null,
-          answers: hasRemoteAccessAnswer
-            ? { ...effectiveAnswers, remoteAccessCheck: effectiveRemoteAccessAnswers }
-            : effectiveAnswers,
+          answers: {
+            ...effectiveAnswers,
+            ...(hasRemoteAccessAnswer ? { remoteAccessCheck: effectiveRemoteAccessAnswers } : {}),
+            source: enquirySource,
+            pagePath: window.location.pathname,
+          },
           contact: { name: form.name, company: form.company, email: form.email },
           role: form.role,
           builderOrOperator: effectiveAnswers.audience ?? null,
@@ -152,6 +156,7 @@ export function OtEnquiryForm({
           consentReviewGiven: consent,
           website,
           turnstileToken: token,
+          source: enquirySource,
         }),
       });
       const data = await res.json();
@@ -162,7 +167,7 @@ export function OtEnquiryForm({
         return;
       }
       setStatus("done");
-      track("enquiry_submit", { source: sourceIsChecker ? "checker" : "direct" });
+      track("enquiry_submit", { source: enquirySource });
     } catch {
       setError("Something went wrong. Please try again.");
       setStatus("error");

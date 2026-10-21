@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import type { OtEnquiry, OtEnquiryStatus } from "@/lib/types";
 import { REVIEW_PROMPT_OPTIONS } from "@/lib/remote-access-session";
 import { OtStatusButtons } from "./status-buttons";
+import { submissionKindOf } from "@/lib/submission-kind";
 
 const TABS: { label: string; value: OtEnquiryStatus | "all" }[] = [
   { label: "New", value: "new" },
@@ -13,10 +14,9 @@ const TABS: { label: string; value: OtEnquiryStatus | "all" }[] = [
 
 type SortKey = "created_at" | "company_name" | "country" | "tool" | "timeline" | "review_prompt" | "role";
 
+// Same "what was requested" label as the admin notification subject.
 function toolOf(e: OtEnquiry): string {
-  const v = e.answers?.tool;
-  if (!v) return "checker";
-  return Array.isArray(v) ? v.join(", ") : v;
+  return submissionKindOf(e.answers).what;
 }
 
 // The remote-access situation check's eighth, optional question. Its answer
@@ -134,7 +134,7 @@ export default async function AdminOtEnquiriesPage({
               <thead className="bg-[#f6f7fb] text-[12px] font-bold uppercase tracking-[0.05em] text-[#79818f]">
                 <tr>
                   <SortableHeader label="Company" sortKey="company_name" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
-                  <SortableHeader label="Tool" sortKey="tool" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
+                  <SortableHeader label="Requested" sortKey="tool" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
                   <SortableHeader label="Country" sortKey="country" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
                   <th className="px-5 py-3">Builder/Operator</th>
                   <SortableHeader label="Role" sortKey="role" activeSort={activeSort} activeDir={activeDir} status={activeTab} />

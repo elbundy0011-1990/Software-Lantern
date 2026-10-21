@@ -15,6 +15,7 @@ import { getCountrySection, evidenceSummary, sourceLineText, REPORT_COUNTRIES, t
 import { buildCheckerBrief } from "@/lib/checker-brief";
 import type { CheckerAnswers } from "@/lib/checker-session";
 import { buildReviewSheet } from "@/lib/review-sheet";
+import { submissionKindOf } from "@/lib/submission-kind";
 
 function escapeHtml(input: string): string {
   return input
@@ -56,37 +57,58 @@ function fieldRow(label: string, value: string): string {
   return `<tr><td style="padding:6px 0;font-size:13px;font-weight:700;color:#79818f;width:130px;vertical-align:top;">${escapeHtml(label)}</td><td style="padding:6px 0;font-size:15px;color:#0d1117;">${escapeHtml(value)}</td></tr>`;
 }
 
-// TRIGGER: a new OT cybersecurity / NIS2 enquiry was submitted, sent only
-// to ADMIN_EMAIL. Points at /admin/ot-enquiries: this data lives in its
-// own table (public.ot_enquiries, see supabase/ot-cyber-schema.sql).
+// TRIGGER: a new OT submission of any kind, sent only to ADMIN_EMAIL. The
+// subject and first rows say exactly what was requested (lib/submission-
+// kind.ts, from the stored answers.source), so the inbox alone tells a
+// whitepaper download from an enquiry. Points at /admin/ot-enquiries: this
+// data lives in its own table (public.ot_enquiries, see supabase/ot-cyber-schema.sql).
 export function buildNewOtEnquiryAdminEmail(input: {
   enquiryId: string;
+  answers: Record<string, unknown>;
   companyName: string;
   contactName: string;
   contactEmail: string;
   country: string | null;
+  role: string | null;
+  timeline: string | null;
 }): { subject: string; html: string } {
+  const kind = submissionKindOf(input.answers);
+  const a = input.answers;
+  const countryAnswers = a.countryReportAnswers as Partial<CountryReportAnswers> | undefined;
+  const text = (v: unknown): string | null => (typeof v === "string" && v.trim() ? v.trim() : null);
+  const pagePath = text(a.pagePath);
+  const consent = (a.consent ?? {}) as { version?: string; acceptedAt?: string };
+  const sites = text(a.sites) ?? text(countryAnswers?.numSites);
+  const timeline = input.timeline ?? text(a.timing) ?? text(countryAnswers?.timeline);
+  const notGiven = "Not provided";
+
   const rows = [
+    fieldRow("Requested", kind.what),
+    fieldRow("Document or tool", kind.document),
+    fieldRow("Page", pagePath ? `${SITE_URL}${pagePath}` : "Unknown"),
     fieldRow("Company", input.companyName),
-    fieldRow("Contact", input.contactName),
-    fieldRow("Email", input.contactEmail),
-    fieldRow("Country", input.country || "Not specified"),
+    fieldRow("Role", input.role ?? text(a.role) ?? notGiven),
+    fieldRow("Country", input.country || notGiven),
+    fieldRow("Sites", sites ?? notGiven),
+    fieldRow("Timeline", timeline ?? notGiven),
+    fieldRow("Consent text", consent.version ?? "Unknown"),
+    fieldRow("Consent given", consent.acceptedAt ?? "Unknown"),
+    fieldRow("Name", input.contactName),
+    fieldRow("Work email", input.contactEmail),
   ];
 
   const bodyHtml = `
     <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">${rows.join("")}</table>
-    <p style="margin:0;font-size:14px;line-height:1.6;color:#79818f;">
-      This person has agreed that you may review their answers and contact them about them.
-    </p>
   `;
 
+  const who = input.companyName || input.contactEmail.split("@")[1] || "unknown";
   return {
-    subject: `New OT cybersecurity enquiry: ${input.companyName}`,
+    subject: `[${SITE_NAME}] ${kind.what} request: ${who}`,
     html: emailLayout({
-      heading: "A new OT cybersecurity enquiry was submitted",
+      heading: `New ${kind.what} request`,
       bodyHtml,
       ctaHref: `${SITE_URL}/admin/ot-enquiries/${input.enquiryId}`,
-      ctaLabel: "Review this enquiry",
+      ctaLabel: "Open in admin",
     }),
   };
 }

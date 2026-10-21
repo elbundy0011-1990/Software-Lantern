@@ -7,7 +7,7 @@ import { ExampleOutput } from "@/components/example-output";
 export const metadata: Metadata = pageMetadata({
   title: "Build Your Remote Access Review Sheet",
   description:
-    "Seven questions. Get a tailored sheet of questions to resolve, controls to verify, and evidence to prepare before your next customer review. No score. Free, no email.",
+    "Seven required questions, plus one optional one. Get a tailored sheet of questions to resolve, controls to verify, and evidence to prepare before your next customer review. No score. Free, no email.",
   path: "/remote-access-check",
   noindex: !OT_SITE_INDEXABLE,
   siteName: "Software Lantern",
@@ -22,9 +22,10 @@ export default function RemoteAccessCheckPage() {
             Build your remote access review sheet
           </h1>
           <p className="text-[17px] leading-[1.6] text-[#3f4b52] mb-8 max-w-[680px]">
-            Seven questions. You get a tailored sheet of questions to resolve, controls to verify
-            and evidence to prepare before your next customer review. No score. Nothing is sent
-            anywhere unless you choose.
+            Seven required questions, plus one optional question about what prompted the review.
+            You get a tailored sheet of questions to resolve, controls to verify and evidence to
+            prepare before your next customer review. No score. Nothing is sent anywhere unless
+            you choose.
           </p>
 
           <ExampleOutput>

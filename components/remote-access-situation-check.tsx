@@ -10,13 +10,15 @@ import {
   type YesNoUnsure,
   type Reach,
   type QuestionFrequency,
+  type ReviewPrompt,
   type RemoteAccessAnswers,
+  REVIEW_PROMPT_OPTIONS,
 } from "@/lib/remote-access-session";
-import { buildReviewSheet, reviewSheetToText, type ReviewSheetContent } from "@/lib/review-sheet";
+import { buildReviewSheet, reviewSheetToText, type ReviewSheetContent, type SectionKey } from "@/lib/review-sheet";
 import { CountryReportForm } from "@/components/country-report-form";
 import { ResultActions } from "@/components/result-actions";
 
-type Screen = "connection" | "decision" | "credentials" | "logging" | "mfa" | "reach" | "questions" | "result";
+type Screen = "connection" | "decision" | "credentials" | "logging" | "mfa" | "reach" | "questions" | "review_prompt" | "result";
 
 // Same palette as components/nis2-scope-checker.tsx, so this reads as
 // the same tool family rather than a new identity.
@@ -64,10 +66,10 @@ const QUESTIONS_OPTIONS: { value: QuestionFrequency; label: string }[] = [
 ];
 
 function totalSteps(): number {
-  return 7;
+  return 8;
 }
 function stepNumber(screen: Screen): number {
-  const order: Screen[] = ["connection", "decision", "credentials", "logging", "mfa", "reach", "questions"];
+  const order: Screen[] = ["connection", "decision", "credentials", "logging", "mfa", "reach", "questions", "review_prompt"];
   const idx = order.indexOf(screen);
   return idx === -1 ? 0 : idx + 1;
 }
@@ -123,22 +125,135 @@ function OptionCard({
 const backButtonClass =
   "rounded px-5 py-[10px] font-sans font-semibold text-[14px] text-[#3f4b52] border border-[#3f4b52]/[0.3] hover:bg-[#3f4b52]/[0.06]";
 
+const bullet = (text: string) => (
+  <li key={text} className="flex gap-2">
+    <span style={{ color: "#9a3412" }}>&#8226;</span>
+    <span>{text}</span>
+  </li>
+);
+
+function QuestionsToResolveSection({ content }: { content: ReviewSheetContent }) {
+  if (!content.questionsToResolve.length) return null;
+  return (
+    <div className="mb-6">
+      <p className="font-semibold mb-2 text-[#1a1d22]">Questions to resolve</p>
+      <ul className="grid gap-2 text-[14px] text-[#3f4b52]">{content.questionsToResolve.map((t) => bullet(t.text))}</ul>
+    </div>
+  );
+}
+
+function ControlsToVerifySection({ content }: { content: ReviewSheetContent }) {
+  return (
+    <div className="mb-6">
+      <p className="font-semibold mb-2 text-[#1a1d22]">Controls to verify</p>
+      <ul className="grid gap-2 text-[14px] text-[#3f4b52]">{content.controlsToVerify.map((t) => bullet(t.text))}</ul>
+    </div>
+  );
+}
+
+function EvidenceToPrepareSection({ content }: { content: ReviewSheetContent }) {
+  return (
+    <div className="mb-6">
+      <p className="font-semibold mb-2 text-[#1a1d22]">Evidence to prepare</p>
+      <ul className="grid gap-2 text-[14px] text-[#3f4b52]">{content.evidenceToPrepare.map((e) => bullet(e))}</ul>
+    </div>
+  );
+}
+
+function PackRowsSection({ content }: { content: ReviewSheetContent }) {
+  return (
+    <div className="rounded border border-[#3f4b52]/[0.2] bg-[#f6f5f1] p-5 mb-6">
+      <p className="font-semibold mb-3 text-[#1a1d22]">Relevant rows from the customer security questionnaire pack</p>
+      <ul className="grid gap-3 text-[14px]">
+        {content.packRows.map((row) => (
+          <li key={row.id} className="border-b border-[#3f4b52]/[0.12] pb-3">
+            <p className="text-[12px] font-bold uppercase tracking-[0.06em] text-[#3f4b52] mb-1">{row.category}</p>
+            <p className="font-semibold text-[#1a1d22] mb-1">{row.question}</p>
+            <p className="text-[13px] text-[#3f4b52]">{row.why}</p>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-[13px]">
+        <Link href="/questionnaire-pack" className="underline font-semibold" style={{ color: "#7c2d12" }}>
+          Get the full pack (about 30 questions across 8 topics)
+        </Link>
+      </p>
+    </div>
+  );
+}
+
+function VendorRequirementsList({ vendorRequirements }: { vendorRequirements: ReviewSheetContent["vendorRequirements"] }) {
+  return (
+    <ul className="grid gap-3 text-[14px]">
+      {vendorRequirements.map((v) => (
+        <li key={v.topic} className="border-b border-[#3f4b52]/[0.1] pb-2">
+          <p className="font-semibold text-[#1a1d22]">{v.topic}</p>
+          <p className="text-[13px] text-[#3f4b52]">{v.today}</p>
+          <p className="text-[13px] text-[#1a1d22]">{v.askTheVendor}</p>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// Expanded by default only when "Replacing or upgrading our remote access" was
+// the answer to the eighth, optional question; everyone else sees it behind a
+// plain link they can choose to open, never hidden entirely.
+function VendorRequirementsSection({ content }: { content: ReviewSheetContent }) {
+  const [open, setOpen] = useState(content.showVendorRequirementsExpanded);
+  return (
+    <div className="rounded border p-5 mb-6" style={{ borderColor: "#9a341233", background: "#9a34120d" }}>
+      <p className="font-semibold mb-2" style={{ color: "#7c2d12" }}>Vendor demo requirements</p>
+      {content.showVendorRequirementsExpanded ? (
+        <p className="text-[13px] text-[#3f4b52] mb-3">
+          Since you&apos;re replacing or upgrading your remote access, here&apos;s a starting list of
+          what to ask a vendor to confirm, pre-filled from your answers above.
+        </p>
+      ) : (
+        <p className="text-[13px] text-[#3f4b52] mb-3">
+          Evaluating or replacing your remote access?{" "}
+          <button onClick={() => setOpen((o) => !o)} className="underline font-semibold" style={{ color: "#7c2d12" }}>
+            {open ? "Hide" : "See"} a pre-filled vendor-demo requirements list based on your answers
+          </button>
+          .
+        </p>
+      )}
+      {open && <VendorRequirementsList vendorRequirements={content.vendorRequirements} />}
+      <p className="mt-3 text-[13px]">
+        <Link href="/vendor-checklist" className="underline font-semibold" style={{ color: "#7c2d12" }}>
+          See the full 25-criteria vendor comparison checklist
+        </Link>
+      </p>
+    </div>
+  );
+}
+
+const SECTION_COMPONENTS: Record<SectionKey, (props: { content: ReviewSheetContent }) => React.ReactElement | null> = {
+  questionsToResolve: QuestionsToResolveSection,
+  controlsToVerify: ControlsToVerifySection,
+  evidenceToPrepare: EvidenceToPrepareSection,
+  packRows: PackRowsSection,
+  vendorRequirements: VendorRequirementsSection,
+};
+
 // The review sheet: a neutral summary of the visitor's own answers, questions to
 // resolve, controls to verify, evidence to prepare, and the most relevant
 // questionnaire-pack rows (lib/review-sheet.ts chooses these deterministically from
-// the seven answers). No score, no pass/fail, no product category, and no claim
-// that any answer breaks a rule: every answer is restated the same way regardless
-// of what it was, and every task is phrased as a question or a thing to do.
+// the seven required answers). No score, no pass/fail, no product category, and no
+// claim that any answer breaks a rule: every answer is restated the same way
+// regardless of what it was, and every task is phrased as a question or a thing to
+// do. The optional eighth answer ("what prompted this review") only ever reorders
+// these same sections, or expands the vendor-demo list by default; it never adds
+// or removes content a visitor who skips it wouldn't otherwise see.
 function ReviewSheetView({ content }: { content: ReviewSheetContent }) {
-  const bullet = (text: string) => (
-    <li key={text} className="flex gap-2">
-      <span style={{ color: "#9a3412" }}>&#8226;</span>
-      <span>{text}</span>
-    </li>
-  );
   return (
     <div>
       <p className="font-semibold mb-3 text-[#1a1d22]">Your setup, as described</p>
+      {content.reviewPromptLabel && (
+        <p className="text-[14px] text-[#3f4b52] mb-3">
+          What prompted this review: <span className="font-semibold text-[#1a1d22]">{content.reviewPromptLabel}</span>
+        </p>
+      )}
       <ul className="grid gap-2 mb-6 text-[14px] text-[#3f4b52]">
         {content.answerRows.map((r) => (
           <li key={r.label} className="flex flex-wrap justify-between gap-x-3 border-b border-[#3f4b52]/[0.1] pb-2">
@@ -148,65 +263,10 @@ function ReviewSheetView({ content }: { content: ReviewSheetContent }) {
         ))}
       </ul>
 
-      {content.questionsToResolve.length > 0 && (
-        <div className="mb-6">
-          <p className="font-semibold mb-2 text-[#1a1d22]">Questions to resolve</p>
-          <ul className="grid gap-2 text-[14px] text-[#3f4b52]">{content.questionsToResolve.map((t) => bullet(t.text))}</ul>
-        </div>
-      )}
-
-      <div className="mb-6">
-        <p className="font-semibold mb-2 text-[#1a1d22]">Controls to verify</p>
-        <ul className="grid gap-2 text-[14px] text-[#3f4b52]">{content.controlsToVerify.map((t) => bullet(t.text))}</ul>
-      </div>
-
-      <div className="mb-6">
-        <p className="font-semibold mb-2 text-[#1a1d22]">Evidence to prepare</p>
-        <ul className="grid gap-2 text-[14px] text-[#3f4b52]">{content.evidenceToPrepare.map((e) => bullet(e))}</ul>
-      </div>
-
-      <div className="rounded border border-[#3f4b52]/[0.2] bg-[#f6f5f1] p-5 mb-6">
-        <p className="font-semibold mb-3 text-[#1a1d22]">Relevant rows from the customer security questionnaire pack</p>
-        <ul className="grid gap-3 text-[14px]">
-          {content.packRows.map((row) => (
-            <li key={row.id} className="border-b border-[#3f4b52]/[0.12] pb-3">
-              <p className="text-[12px] font-bold uppercase tracking-[0.06em] text-[#3f4b52] mb-1">{row.category}</p>
-              <p className="font-semibold text-[#1a1d22] mb-1">{row.question}</p>
-              <p className="text-[13px] text-[#3f4b52]">{row.why}</p>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-3 text-[13px]">
-          <Link href="/questionnaire-pack" className="underline font-semibold" style={{ color: "#7c2d12" }}>
-            Get the full pack (about 30 questions across 8 topics)
-          </Link>
-        </p>
-      </div>
-
-      {content.showVendorRequirements && (
-        <div className="rounded border p-5 mb-6" style={{ borderColor: "#9a341233", background: "#9a34120d" }}>
-          <p className="font-semibold mb-2" style={{ color: "#7c2d12" }}>Vendor demo requirements</p>
-          <p className="text-[13px] text-[#3f4b52] mb-3">
-            Since you noted a vendor-supplied modem or gateway, here&apos;s a starting list of what to
-            ask a vendor to confirm, whether that&apos;s the one you have today or one you&apos;re
-            comparing it against.
-          </p>
-          <ul className="grid gap-3 text-[14px]">
-            {content.vendorRequirements.map((v) => (
-              <li key={v.topic} className="border-b border-[#3f4b52]/[0.1] pb-2">
-                <p className="font-semibold text-[#1a1d22]">{v.topic}</p>
-                <p className="text-[13px] text-[#3f4b52]">{v.today}</p>
-                <p className="text-[13px] text-[#1a1d22]">{v.askTheVendor}</p>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-3 text-[13px]">
-            <Link href="/vendor-checklist" className="underline font-semibold" style={{ color: "#7c2d12" }}>
-              See the full 25-criteria vendor comparison checklist
-            </Link>
-          </p>
-        </div>
-      )}
+      {content.sectionOrder.map((key) => {
+        const Section = SECTION_COMPONENTS[key];
+        return <Section key={key} content={content} />;
+      })}
 
       <p className="text-[14px] text-[#3f4b52]">
         This is not a pass or fail, and it doesn&apos;t name or favor any product. A customer&apos;s
@@ -237,6 +297,7 @@ export function RemoteAccessSituationCheck({
   const [mfa, setMfa] = useState<YesNoUnsure | null>(null);
   const [reach, setReach] = useState<Reach | null>(null);
   const [customerQuestions, setCustomerQuestions] = useState<QuestionFrequency | null>(null);
+  const [reviewPrompt, setReviewPrompt] = useState<ReviewPrompt | null>(null);
   const [started, setStarted] = useState(false);
 
   const emit = (next: Partial<RemoteAccessAnswers>) => {
@@ -248,6 +309,7 @@ export function RemoteAccessSituationCheck({
       mfa: next.mfa ?? mfa,
       reach: next.reach ?? reach,
       customerQuestions: next.customerQuestions ?? customerQuestions,
+      reviewPrompt: next.reviewPrompt ?? reviewPrompt,
     });
   };
 
@@ -288,14 +350,31 @@ export function RemoteAccessSituationCheck({
     },
     questions: (v: QuestionFrequency) => {
       setCustomerQuestions(v);
-      setScreen("result");
+      setScreen("review_prompt");
       emit({ customerQuestions: v });
-      // No answer value here, by design: the privacy policy promises every
-      // answer to this check stays in the browser unless the visitor chooses
-      // to email or submit it, so analytics only ever sees that the flow
-      // was completed, never what was answered.
-      track("remote_access_check_complete", {});
     },
+    reviewPrompt: (v: ReviewPrompt) => {
+      setReviewPrompt(v);
+      setScreen("result");
+      emit({ reviewPrompt: v });
+      completeCheck(v);
+    },
+  };
+
+  // Shared by both the eighth question's picker and its "skip" link, so
+  // completion fires exactly once either way, with the same analytics shape.
+  const completeCheck = (prompt: ReviewPrompt | null) => {
+    // No answer value here beyond "reviewPrompt", by design: the privacy
+    // policy promises every other answer to this check stays in the browser
+    // unless the visitor chooses to email or submit it. reviewPrompt is the
+    // one exception, sent only as its category (never free text), per the
+    // 2026-10-21 instruction to include it in analytics.
+    track("remote_access_check_complete", { reviewPrompt: prompt ?? "not_answered" });
+  };
+
+  const skipReviewPrompt = () => {
+    setScreen("result");
+    completeCheck(null);
   };
 
   const restart = () => {
@@ -307,6 +386,7 @@ export function RemoteAccessSituationCheck({
     setMfa(null);
     setReach(null);
     setCustomerQuestions(null);
+    setReviewPrompt(null);
   };
 
   const answers: RemoteAccessAnswers = {
@@ -317,12 +397,13 @@ export function RemoteAccessSituationCheck({
     mfa,
     reach,
     customerQuestions,
+    reviewPrompt,
   };
 
   // No score and no verdict, so "outcome" here is only a flow category for
   // analytics (which branch of the review sheet rendered), never a judgment on
   // the setup described.
-  const outcome = connectionMethod === "vendor_modem" ? "vendor_evaluation" : "standard";
+  const outcome = reviewPrompt ?? "not_answered";
   const reviewSheet: ReviewSheetContent | null = screen === "result" ? buildReviewSheet(answers) : null;
 
   useEffect(() => {
@@ -337,10 +418,10 @@ export function RemoteAccessSituationCheck({
           Your remote access, today
         </h2>
         <p className="text-[17px] leading-[1.6] text-[#3f4b52] mb-6">
-          Seven questions about how you actually connect to machines today. This does not check
-          whether you meet NIS2, the Cyber Resilience Act, or any other rule, and it does not
-          score or grade your setup. It just lists what&apos;s worth being ready to describe if a
-          customer asks.
+          Seven required questions about how you actually connect to machines today, plus one
+          optional question about what prompted this review. This does not check whether you
+          meet NIS2, the Cyber Resilience Act, or any other rule, and it does not score or grade
+          your setup. It just lists what&apos;s worth being ready to describe if a customer asks.
         </p>
 
         <div className="bg-[#f6f5f1] border border-[#3f4b52]/[0.15] rounded p-6 sm:p-10 overflow-hidden">
@@ -441,6 +522,26 @@ export function RemoteAccessSituationCheck({
                 ))}
               </div>
               <button onClick={() => setScreen("reach")} className={backButtonClass}>← Back</button>
+            </div>
+          )}
+
+          {screen === "review_prompt" && (
+            <div key="review_prompt">
+              <h3 className="font-sans font-semibold text-[21px] mb-2 text-[#1a1d22]">What prompted this review?</h3>
+              <p className="text-[14px] text-[#3f4b52] mb-5">
+                Optional. Used only to show the most relevant part of your review sheet first.
+              </p>
+              <div className="grid gap-3 mb-7">
+                {REVIEW_PROMPT_OPTIONS.map((opt) => (
+                  <OptionCard key={opt.value} label={opt.label} selected={reviewPrompt === opt.value} onClick={() => pick.reviewPrompt(opt.value)} />
+                ))}
+              </div>
+              <div className="flex flex-wrap items-center gap-4">
+                <button onClick={() => setScreen("questions")} className={backButtonClass}>← Back</button>
+                <button onClick={skipReviewPrompt} className="text-[14px] font-semibold text-[#3f4b52] underline underline-offset-2">
+                  Skip this question
+                </button>
+              </div>
             </div>
           )}
 

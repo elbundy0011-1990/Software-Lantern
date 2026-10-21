@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { OtEnquiry, OtEnquiryStatus } from "@/lib/types";
+import { REVIEW_PROMPT_OPTIONS } from "@/lib/remote-access-session";
 import { OtStatusButtons } from "./status-buttons";
 
 const TABS: { label: string; value: OtEnquiryStatus | "all" }[] = [
@@ -10,7 +11,7 @@ const TABS: { label: string; value: OtEnquiryStatus | "all" }[] = [
   { label: "All", value: "all" },
 ];
 
-type SortKey = "created_at" | "company_name" | "country" | "tool" | "timeline";
+type SortKey = "created_at" | "company_name" | "country" | "tool" | "timeline" | "review_prompt";
 
 function toolOf(e: OtEnquiry): string {
   const v = e.answers?.tool;
@@ -18,11 +19,28 @@ function toolOf(e: OtEnquiry): string {
   return Array.isArray(v) ? v.join(", ") : v;
 }
 
+// The remote-access situation check's eighth, optional question. Its answer
+// lands in the answers jsonb blob under one of two keys depending on how it
+// was submitted: "remoteAccessCheck" (the full enquiry form, components/ot-
+// enquiry-form.tsx) or "remoteAccessAnswers" ("email me a copy"/country
+// report, components/result-actions.tsx and components/country-report-
+// form.tsx) — both are checked since either path can carry it.
+function reviewPromptOf(e: OtEnquiry): string {
+  const answers = e.answers as unknown as Record<string, unknown> | null;
+  const nested =
+    (answers?.remoteAccessCheck as { reviewPrompt?: string } | undefined) ??
+    (answers?.remoteAccessAnswers as { reviewPrompt?: string } | undefined);
+  const value = nested?.reviewPrompt;
+  if (!value) return "";
+  return REVIEW_PROMPT_OPTIONS.find((o) => o.value === value)?.label ?? value;
+}
+
 function sortValue(e: OtEnquiry, key: SortKey): string {
   if (key === "tool") return toolOf(e);
   if (key === "country") return e.country || "";
   if (key === "company_name") return e.company_name || "";
   if (key === "timeline") return e.timeline || "";
+  if (key === "review_prompt") return reviewPromptOf(e);
   return e.created_at;
 }
 
@@ -61,9 +79,9 @@ export default async function AdminOtEnquiriesPage({
 }) {
   const { status, sort, dir } = await searchParams;
   const activeTab = (status as OtEnquiryStatus | "all") || "new";
-  const activeSort: SortKey = (["created_at", "company_name", "country", "tool", "timeline"].includes(sort || "")
-    ? sort
-    : "created_at") as SortKey;
+  const activeSort: SortKey = (
+    ["created_at", "company_name", "country", "tool", "timeline", "review_prompt"].includes(sort || "") ? sort : "created_at"
+  ) as SortKey;
   const activeDir: "asc" | "desc" = dir === "asc" ? "asc" : "desc";
 
   const supabase = createAdminClient();
@@ -118,6 +136,7 @@ export default async function AdminOtEnquiriesPage({
                   <SortableHeader label="Country" sortKey="country" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
                   <th className="px-5 py-3">Builder/Operator</th>
                   <SortableHeader label="Timeline" sortKey="timeline" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
+                  <SortableHeader label="Prompted by" sortKey="review_prompt" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
                   <SortableHeader label="Submitted" sortKey="created_at" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
                   <th className="px-5 py-3">Shared?</th>
                   <th className="px-5 py-3">Status</th>
@@ -136,6 +155,7 @@ export default async function AdminOtEnquiriesPage({
                     <td className="px-5 py-3">{e.country || "—"}</td>
                     <td className="px-5 py-3">{e.builder_or_operator || "—"}</td>
                     <td className="px-5 py-3">{e.timeline || "—"}</td>
+                    <td className="px-5 py-3">{reviewPromptOf(e) || "—"}</td>
                     <td className="px-5 py-3">{new Date(e.created_at).toLocaleDateString()}</td>
                     <td className="px-5 py-3">{e.shared_with ? `Yes — ${e.shared_with}` : "No"}</td>
                     <td className="px-5 py-3">

@@ -341,16 +341,9 @@ export interface VendorRequirement {
   askTheVendor: string;
 }
 
-// Shown only when the connection method answer names a vendor-supplied tool
-// (a "vendor-supplied modem or gateway" is, by definition, a vendor solution
-// already in place), which is the one answer among the seven that plainly
-// indicates a vendor relationship worth evaluating or replacing. Every other
-// answer describes a way of working, not a specific product, so none of them
-// support this inference the way "vendor_modem" does.
-export function showsVendorEvaluation(a: RemoteAccessAnswers): boolean {
-  return a.connectionMethod === "vendor_modem";
-}
-
+// Pre-filled from the six security-posture answers regardless of what prompted
+// the review (lib/review-sheet.ts decides whether to show this expanded, by
+// default, or as an optional link, based on the eighth, optional question).
 export function vendorDemoRequirements(a: RemoteAccessAnswers): VendorRequirement[] {
   const na = "Not asked in this check";
   return [

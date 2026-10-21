@@ -455,55 +455,79 @@ export function buildCheckerBriefEmail(answers: CheckerAnswers): { subject: stri
 
 // TRIGGER: "Email me a copy" on the /remote-access-check result (components/
 // result-actions.tsx, source "review_sheet"). Recomputes the review sheet server-
-// side from the visitor's own seven answers through the exact same lib/review-
-// sheet.ts functions the on-screen result uses. No score, no verdict, no vendor
-// name; the vendor-demo-requirements section only appears when the same
-// deterministic condition (lib/questionnaire-pack-rows.ts's showsVendorEvaluation)
-// that shows it on screen is true.
+// side from the visitor's own answers through the exact same lib/review-sheet.ts
+// functions the on-screen result uses. No score, no verdict, no vendor name; the
+// vendor-demo-requirements section always renders, titled as optional unless the
+// eighth, optional question's answer was "replacing or upgrading," matching the
+// on-screen expanded/collapsed state exactly (lib/review-sheet.ts's
+// showVendorRequirementsExpanded).
+const EMAIL_SECTION_TITLES: Record<string, string> = {
+  questionsToResolve: "Questions to resolve",
+  controlsToVerify: "Controls to verify",
+  evidenceToPrepare: "Evidence to prepare",
+  packRows: "Relevant questionnaire pack rows",
+  vendorRequirements: "Vendor demo requirements",
+};
+
 export function buildReviewSheetEmail(answers: RemoteAccessAnswers): { subject: string; html: string } {
   const sheet = buildReviewSheet(answers);
+  const sectionHeading = (title: string) =>
+    `<p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">${escapeHtml(title)}</p>`;
+
+  const renderSection = (key: string): string => {
+    if (key === "questionsToResolve") {
+      if (!sheet.questionsToResolve.length) return "";
+      const html = sheet.questionsToResolve
+        .map((t) => `<li style="margin:0 0 8px;font-size:14px;color:#0d1117;">${escapeHtml(t.text)}</li>`)
+        .join("");
+      return `${sectionHeading(EMAIL_SECTION_TITLES[key])}<ul style="margin:0 0 20px;padding-left:18px;">${html}</ul>`;
+    }
+    if (key === "controlsToVerify") {
+      const html = sheet.controlsToVerify
+        .map((t) => `<li style="margin:0 0 8px;font-size:14px;color:#0d1117;">${escapeHtml(t.text)}</li>`)
+        .join("");
+      return `${sectionHeading(EMAIL_SECTION_TITLES[key])}<ul style="margin:0 0 20px;padding-left:18px;">${html}</ul>`;
+    }
+    if (key === "evidenceToPrepare") {
+      const html = sheet.evidenceToPrepare.map((e) => `<li style="margin:0 0 8px;font-size:14px;color:#0d1117;">${escapeHtml(e)}</li>`).join("");
+      return `${sectionHeading(EMAIL_SECTION_TITLES[key])}<ul style="margin:0 0 20px;padding-left:18px;">${html}</ul>`;
+    }
+    if (key === "packRows") {
+      const html = sheet.packRows
+        .map((r) => `<li style="margin:0 0 10px;font-size:14px;color:#0d1117;"><strong>[${escapeHtml(r.category)}]</strong> ${escapeHtml(r.question)}</li>`)
+        .join("");
+      return `${sectionHeading(EMAIL_SECTION_TITLES[key])}<ul style="margin:0 0 20px;padding-left:18px;">${html}</ul>`;
+    }
+    if (key === "vendorRequirements") {
+      const title = sheet.showVendorRequirementsExpanded
+        ? EMAIL_SECTION_TITLES[key]
+        : `${EMAIL_SECTION_TITLES[key]} (optional, pre-filled from your answers above)`;
+      const html = sheet.vendorRequirements
+        .map(
+          (v) =>
+            `<li style="margin:0 0 10px;font-size:14px;color:#0d1117;"><strong>${escapeHtml(v.topic)}</strong> (${escapeHtml(v.today)}): ${escapeHtml(v.askTheVendor)}</li>`,
+        )
+        .join("");
+      return `${sectionHeading(title)}<ul style="margin:0 0 20px;padding-left:18px;">${html}</ul>`;
+    }
+    return "";
+  };
 
   const answerRowsHtml = sheet.answerRows.map((r) => fieldRow(r.label, r.value)).join("");
-  const questionsToResolveHtml = sheet.questionsToResolve
-    .map((t) => `<li style="margin:0 0 8px;font-size:14px;color:#0d1117;">${escapeHtml(t.text)}</li>`)
-    .join("");
-  const controlsHtml = sheet.controlsToVerify
-    .map((t) => `<li style="margin:0 0 8px;font-size:14px;color:#0d1117;">${escapeHtml(t.text)}</li>`)
-    .join("");
-  const evidenceHtml = sheet.evidenceToPrepare
-    .map((e) => `<li style="margin:0 0 8px;font-size:14px;color:#0d1117;">${escapeHtml(e)}</li>`)
-    .join("");
-  const packRowsHtml = sheet.packRows
-    .map((r) => `<li style="margin:0 0 10px;font-size:14px;color:#0d1117;"><strong>[${escapeHtml(r.category)}]</strong> ${escapeHtml(r.question)}</li>`)
-    .join("");
-  const vendorHtml = sheet.showVendorRequirements
-    ? `<p style="margin:20px 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Vendor demo requirements</p>
-       <ul style="margin:0;padding-left:18px;">${sheet.vendorRequirements
-         .map(
-           (v) =>
-             `<li style="margin:0 0 10px;font-size:14px;color:#0d1117;"><strong>${escapeHtml(v.topic)}</strong> (${escapeHtml(v.today)}): ${escapeHtml(v.askTheVendor)}</li>`,
-         )
-         .join("")}</ul>`
-    : "";
+  const sectionsHtml = sheet.sectionOrder.map(renderSection).join("");
 
   const bodyHtml = `
     <p style="margin:0 0 20px;font-size:14px;line-height:1.6;color:#3d4653;">
       This is not a pass or fail, and it doesn&#39;t name or favor any product.
     </p>
-    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Your answers</p>
-    <table style="width:100%;border-collapse:collapse;margin:0 0 20px;">${answerRowsHtml}</table>
     ${
-      sheet.questionsToResolve.length
-        ? `<p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Questions to resolve</p><ul style="margin:0 0 20px;padding-left:18px;">${questionsToResolveHtml}</ul>`
+      sheet.reviewPromptLabel
+        ? `<p style="margin:0 0 20px;font-size:14px;color:#3d4653;">What prompted this review: <strong style="color:#0d1117;">${escapeHtml(sheet.reviewPromptLabel)}</strong></p>`
         : ""
     }
-    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Controls to verify</p>
-    <ul style="margin:0 0 20px;padding-left:18px;">${controlsHtml}</ul>
-    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Evidence to prepare</p>
-    <ul style="margin:0 0 20px;padding-left:18px;">${evidenceHtml}</ul>
-    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Relevant questionnaire pack rows</p>
-    <ul style="margin:0 0 20px;padding-left:18px;">${packRowsHtml}</ul>
-    ${vendorHtml}
+    <p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#79818f;">Your answers</p>
+    <table style="width:100%;border-collapse:collapse;margin:0 0 20px;">${answerRowsHtml}</table>
+    ${sectionsHtml}
   `;
 
   return {

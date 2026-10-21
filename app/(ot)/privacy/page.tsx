@@ -77,7 +77,10 @@ export default function PrivacyPolicyPage() {
               Your answers to the remote access situation check if you used it: how you connect to
               machines today, who decides when access is on, whether accounts are named or shared,
               whether sessions are logged, whether multi-factor authentication is used, what a
-              connection can reach, and how often customers ask about this
+              connection can reach, how often customers ask about this, and, if you choose to
+              answer it, the optional eighth question of what prompted the review (for example, a
+              customer questionnaire, an internal initiative, an incident, replacing or upgrading
+              your remote access, or just learning)
             </li>
             <li>
               If you request the country report: your country, role, sector, number of sites or
@@ -220,12 +223,16 @@ export default function PrivacyPolicyPage() {
             <li><strong>Vercel</strong> (website hosting)</li>
             <li>
               <strong>Vercel Web Analytics</strong> (usage analytics): measures page views and a
-              small number of named events (for example, that the scope checker was started or
-              completed, that someone clicked through to send a result for review, or that an
-              enquiry was started or sent), without cookies. These events carry only the name of
-              the step and a broad result category (for example, that a check was completed),
-              never your name, email or typed answers. It never receives anything you type into a
-              form, such as your name, email, or free-text answers.
+              small number of named events (for example, that the scope checker or remote access
+              situation check was started, viewed its result, downloaded or copied it, requested
+              an emailed copy, or clicked through to talk it through; or that an enquiry was
+              started or sent), without cookies. These events carry only the name of the step and
+              a broad result category, never your name, email, or typed answers, with one
+              exception: if you answer the remote access situation check&apos;s optional eighth
+              question (what prompted the review), that category alone (for example,
+              &ldquo;incident&rdquo;) is included, never any of the other seven answers. It never
+              receives anything you type into a form, such as your name, email, or free-text
+              answers.
             </li>
             <li><strong>Cloudflare</strong> (domain, DNS, bot-verification/Turnstile, and email routing)</li>
             <li><strong>Resend</strong> (sending internal notification emails to us about new submissions)</li>

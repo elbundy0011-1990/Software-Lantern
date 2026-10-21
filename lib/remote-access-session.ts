@@ -15,6 +15,11 @@ export type Credentials = "named" | "shared" | "not_sure";
 export type YesNoUnsure = "yes" | "no" | "not_sure";
 export type Reach = "one_machine" | "whole_network" | "not_sure";
 export type QuestionFrequency = "often" | "sometimes" | "never" | "not_sure";
+// The eighth question, added after the original seven: optional (a visitor can
+// skip it), so it stays null unless they actively pick one. Used only to tailor
+// which section of the review sheet is shown first, and reordered within a list
+// (lib/review-sheet.ts) — never to gate or hide content outright.
+export type ReviewPrompt = "customer_questionnaire" | "internal_initiative" | "incident" | "replacing_upgrading" | "just_learning";
 
 export interface RemoteAccessAnswers {
   connectionMethod: ConnectionMethod | null;
@@ -24,6 +29,7 @@ export interface RemoteAccessAnswers {
   mfa: YesNoUnsure | null;
   reach: Reach | null;
   customerQuestions: QuestionFrequency | null;
+  reviewPrompt: ReviewPrompt | null;
 }
 
 export const EMPTY_REMOTE_ACCESS_ANSWERS: RemoteAccessAnswers = {
@@ -34,14 +40,38 @@ export const EMPTY_REMOTE_ACCESS_ANSWERS: RemoteAccessAnswers = {
   mfa: null,
   reach: null,
   customerQuestions: null,
+  reviewPrompt: null,
 };
+
+export const REVIEW_PROMPT_OPTIONS: { value: ReviewPrompt; label: string }[] = [
+  { value: "customer_questionnaire", label: "A customer security questionnaire" },
+  { value: "internal_initiative", label: "An internal security initiative" },
+  { value: "incident", label: "An incident" },
+  { value: "replacing_upgrading", label: "Replacing or upgrading our remote access" },
+  { value: "just_learning", label: "Just learning" },
+];
+
+export function reviewPromptLabel(a: RemoteAccessAnswers): string | null {
+  if (!a.reviewPrompt) return null;
+  return REVIEW_PROMPT_OPTIONS.find((o) => o.value === a.reviewPrompt)?.label ?? null;
+}
 
 export function hasAnyRemoteAccessAnswer(a: RemoteAccessAnswers): boolean {
   return Boolean(
-    a.connectionMethod || a.accessDecision || a.credentials || a.sessionLogging || a.mfa || a.reach || a.customerQuestions,
+    a.connectionMethod ||
+      a.accessDecision ||
+      a.credentials ||
+      a.sessionLogging ||
+      a.mfa ||
+      a.reach ||
+      a.customerQuestions ||
+      a.reviewPrompt,
   );
 }
 
+// Unchanged in meaning: still only the original seven required questions. The
+// eighth question (reviewPrompt) is optional by design and never gates
+// completion of the check.
 export function isRemoteAccessCheckComplete(a: RemoteAccessAnswers): boolean {
   return Boolean(
     a.connectionMethod && a.accessDecision && a.credentials && a.sessionLogging && a.mfa && a.reach && a.customerQuestions,

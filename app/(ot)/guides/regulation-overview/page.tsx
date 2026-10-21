@@ -60,7 +60,12 @@ export default function RegulationOverviewPage() {
           <p className={p}>
             Four different frameworks, binding different things for different reasons. This page
             is a hub: a short table, then one short link out to each fuller guide. It restates no
-            date or quote already covered there, it just points to them.
+            date or quote already covered there, it just points to them. For a fuller regional
+            treatment specific to Belgium and the Netherlands, see{" "}
+            <Link href="/reports/remote-access-belgium-netherlands" className={link}>
+              the regional report
+            </Link>
+            .
           </p>
 
           <div className="overflow-x-auto mb-4 -mx-1">

@@ -295,6 +295,7 @@ export function nextSteps(): NextStep[] {
     { text: "Build your remote access review sheet (7 questions, free, no email)", href: "/remote-access-check" },
     { text: "Get the customer security questionnaire pack", href: "/questionnaire-pack" },
     { text: "See what remote access could cost or save you", href: "/roi-calculator" },
+    { text: "Read the regional report for Belgium and the Netherlands", href: "/reports/remote-access-belgium-netherlands" },
     { text: "Talk it through with us", href: "/checker#ot-enquiry-form" },
   ];
 }

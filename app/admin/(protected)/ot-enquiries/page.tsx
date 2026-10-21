@@ -11,7 +11,7 @@ const TABS: { label: string; value: OtEnquiryStatus | "all" }[] = [
   { label: "All", value: "all" },
 ];
 
-type SortKey = "created_at" | "company_name" | "country" | "tool" | "timeline" | "review_prompt";
+type SortKey = "created_at" | "company_name" | "country" | "tool" | "timeline" | "review_prompt" | "role";
 
 function toolOf(e: OtEnquiry): string {
   const v = e.answers?.tool;
@@ -41,6 +41,7 @@ function sortValue(e: OtEnquiry, key: SortKey): string {
   if (key === "company_name") return e.company_name || "";
   if (key === "timeline") return e.timeline || "";
   if (key === "review_prompt") return reviewPromptOf(e);
+  if (key === "role") return e.role || "";
   return e.created_at;
 }
 
@@ -80,7 +81,9 @@ export default async function AdminOtEnquiriesPage({
   const { status, sort, dir } = await searchParams;
   const activeTab = (status as OtEnquiryStatus | "all") || "new";
   const activeSort: SortKey = (
-    ["created_at", "company_name", "country", "tool", "timeline", "review_prompt"].includes(sort || "") ? sort : "created_at"
+    ["created_at", "company_name", "country", "tool", "timeline", "review_prompt", "role"].includes(sort || "")
+      ? sort
+      : "created_at"
   ) as SortKey;
   const activeDir: "asc" | "desc" = dir === "asc" ? "asc" : "desc";
 
@@ -135,6 +138,7 @@ export default async function AdminOtEnquiriesPage({
                   <SortableHeader label="Tool" sortKey="tool" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
                   <SortableHeader label="Country" sortKey="country" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
                   <th className="px-5 py-3">Builder/Operator</th>
+                  <SortableHeader label="Role" sortKey="role" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
                   <SortableHeader label="Timeline" sortKey="timeline" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
                   <SortableHeader label="Prompted by" sortKey="review_prompt" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
                   <SortableHeader label="Submitted" sortKey="created_at" activeSort={activeSort} activeDir={activeDir} status={activeTab} />
@@ -154,6 +158,7 @@ export default async function AdminOtEnquiriesPage({
                     <td className="px-5 py-3">{toolOf(e)}</td>
                     <td className="px-5 py-3">{e.country || "—"}</td>
                     <td className="px-5 py-3">{e.builder_or_operator || "—"}</td>
+                    <td className="px-5 py-3">{e.role || "—"}</td>
                     <td className="px-5 py-3">{e.timeline || "—"}</td>
                     <td className="px-5 py-3">{reviewPromptOf(e) || "—"}</td>
                     <td className="px-5 py-3">{new Date(e.created_at).toLocaleDateString()}</td>

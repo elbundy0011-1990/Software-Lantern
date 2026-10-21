@@ -62,12 +62,21 @@ const OT_FILES = [
   "lib/questionnaire-pack-rows.ts",
   "components/result-actions.tsx",
   "components/countdown.tsx",
+  "lib/eurostat-data.ts",
+  "lib/vendor-checklist-rows.ts",
+  "lib/whitepaper-content.ts",
+  "components/whitepaper/size-class-chart.tsx",
+  "components/whitepaper/regulatory-timeline.tsx",
+  "components/whitepaper/report-sections.tsx",
+  "components/whitepaper-form.tsx",
+  "app/api/ot-enquiries/whitepaper/route.ts",
+  "app/(print)/reports/remote-access-belgium-netherlands/print/page.tsx",
 ];
 
 // Files where a literal date is expected and allowed: the ledger itself
 // (the one place dates are allowed to be typed out), and the privacy
 // policy's own "Last updated" line.
-const DATE_ALLOWLIST = new Set(["lib/compliance-ledger.ts", "app/(ot)/privacy/page.tsx"]);
+const DATE_ALLOWLIST = new Set(["lib/compliance-ledger.ts", "lib/eurostat-data.ts", "app/(ot)/privacy/page.tsx"]);
 
 function walk(dir, out) {
   for (const name of readdirSync(dir)) {

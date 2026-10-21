@@ -13,6 +13,11 @@ export const metadata: Metadata = pageMetadata({
 
 const GUIDES = [
   {
+    href: "/reports/remote-access-belgium-netherlands",
+    title: "Regional report: securing remote access in Belgium and the Netherlands",
+    body: "A regulatory and buyer's guide with an original size-class analysis, free full PDF.",
+  },
+  {
     href: "/guides/remote-access-approaches",
     title: "Remote access approaches for machines, compared",
     body: "Six approaches, how each works, trade-offs, and what to ask, no names.",

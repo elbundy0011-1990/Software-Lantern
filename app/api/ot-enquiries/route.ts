@@ -50,7 +50,11 @@ interface OtEnquirySubmission {
   // "review_sheet": "Email me a copy" on the /remote-access-check result
   // — sends buildReviewSheetEmail(), recomputed server-side from
   // answers.remoteAccessAnswers, same reasoning.
-  source?: "checker" | "direct" | "pack" | "calculator" | "checklist" | "country_report" | "checker_brief" | "review_sheet";
+  // "whitepaper": the regional report's "Get the full PDF" form (components/
+  // whitepaper-form.tsx) — same download-token pattern as "pack"/"checklist"
+  // (a signed, expiring claim, not an email attachment), serving the PDF from
+  // private/reports/ via app/api/ot-enquiries/whitepaper/route.ts.
+  source?: "checker" | "direct" | "pack" | "calculator" | "checklist" | "country_report" | "checker_brief" | "review_sheet" | "whitepaper";
 }
 
 export async function POST(request: Request) {
@@ -111,7 +115,7 @@ export async function POST(request: Request) {
   // database row, and the file it unlocks isn't sensitive — it's the
   // same file served to anyone who completes the form.
   const downloadToken =
-    body.source === "pack" || body.source === "checklist" ? issueDownloadToken() : undefined;
+    body.source === "pack" || body.source === "checklist" || body.source === "whitepaper" ? issueDownloadToken() : undefined;
 
   if (!isProductionDeploy()) {
     return NextResponse.json({ ok: true, dryRun: true, ...(downloadToken ? { downloadToken } : {}) });

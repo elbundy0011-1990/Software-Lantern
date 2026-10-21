@@ -99,9 +99,10 @@ export default function PrivacyPolicyPage() {
               checker or remote-access answers listed above
             </li>
           </ul>
-          <p className={p}><strong>b) If you request the customer security questionnaire pack or the vendor comparison checklist:</strong></p>
+          <p className={p}><strong>b) If you request the customer security questionnaire pack, the vendor comparison checklist, or the regional report (Belgium and the Netherlands) PDF:</strong></p>
           <ul className={ul}>
-            <li>Name, work email address, and company name only</li>
+            <li>Name, work email address, and company name</li>
+            <li>For the regional report only: your role and project timing, both optional, if you tell us</li>
           </ul>
           <p className={p}><strong>c) If you submit a legacy marketplace requirements form (buyer):</strong></p>
           <ul className={ul}>
@@ -142,11 +143,11 @@ export default function PrivacyPolicyPage() {
                 </tr>
                 <tr className="border-b border-[#3f4b52]/[0.15] align-top">
                   <td className="py-2.5 px-1">
-                    Sending you the questionnaire pack or vendor comparison checklist you
-                    requested, and, only if you separately agree, sharing your enquiry with a
-                    specific named company
+                    Sending you the questionnaire pack, vendor comparison checklist, or regional
+                    report PDF you requested, and, only if you separately agree, sharing your
+                    enquiry with a specific named company
                   </td>
-                  <td className="py-2.5 px-1">Name, work email, company name</td>
+                  <td className="py-2.5 px-1">Name, work email, company name, and, for the regional report, your role and timing if given</td>
                   <td className="py-2.5 px-1">Consent (given when you submit the form)</td>
                 </tr>
                 <tr className="border-b border-[#3f4b52]/[0.15] align-top">
@@ -225,8 +226,9 @@ export default function PrivacyPolicyPage() {
               <strong>Vercel Web Analytics</strong> (usage analytics): measures page views and a
               small number of named events (for example, that the scope checker or remote access
               situation check was started, viewed its result, downloaded or copied it, requested
-              an emailed copy, or clicked through to talk it through; or that an enquiry was
-              started or sent), without cookies. These events carry only the name of the step and
+              an emailed copy, or clicked through to talk it through; that an enquiry was started
+              or sent; or that the regional report page was viewed or its PDF requested), without
+              cookies. These events carry only the name of the step and
               a broad result category, never your name, email, or typed answers, with one
               exception: if you answer the remote access situation check&apos;s optional eighth
               question (what prompted the review), that category alone (for example,

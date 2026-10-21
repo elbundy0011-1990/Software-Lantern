@@ -47,6 +47,7 @@ const OT_ROUTES: { path: string; lastModified: string }[] = [
   { path: "/guides/nis2-small-and-micro-manufacturers", lastModified: "2026-10-20" },
   { path: "/guides/nis2-proportionate-measures", lastModified: "2026-10-20" },
   { path: "/guides/regulation-overview", lastModified: "2026-10-20" },
+  { path: "/reports/remote-access-belgium-netherlands", lastModified: "2026-10-21" },
   { path: "/privacy", lastModified: "2026-10-20" },
 ];
 

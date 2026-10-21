@@ -19,14 +19,25 @@ const SIZE_CLASSES: { key: "enterprises0_9" | "enterprises10_19" | "enterprises2
   { key: "enterprisesGe250", label: "250+" },
 ];
 
+function niceStep(rough: number): number {
+  const power = 10 ** Math.floor(Math.log10(rough));
+  const unit = rough / power;
+  const factor = unit <= 1 ? 1 : unit <= 2 ? 2 : unit <= 2.5 ? 2.5 : unit <= 5 ? 5 : 10;
+  return factor * power;
+}
+
 // SVG, generated directly from lib/eurostat-data.ts, site palette and type. Enterprise
 // counts for NACE C28 (machinery and equipment), by size class, Belgium vs. the
 // Netherlands, 2024. Rendered identically in the open web page and the print/PDF
 // edition, since both read the same component and the same data module.
 export function SizeClassChart() {
-  const maxValue = Math.max(
+  const dataMax = Math.max(
     ...C28_CHART_DATA.flatMap(({ entry }) => SIZE_CLASSES.map((sc) => (entry[sc.key] as number) ?? 0)),
   );
+  // Round ticks: the step is 1, 2, 2.5 or 5 times a power of ten, and the axis
+  // ends on the first tick at or above the largest bar.
+  const step = niceStep(dataMax / 4);
+  const maxValue = Math.ceil(dataMax / step) * step;
   const plotWidth = WIDTH - PAD_LEFT - PAD_RIGHT;
   const plotHeight = HEIGHT - PAD_TOP - PAD_BOTTOM;
   const groupWidth = (plotWidth - GROUP_GAP * (SIZE_CLASSES.length - 1)) / SIZE_CLASSES.length;
@@ -35,7 +46,7 @@ export function SizeClassChart() {
   const yFor = (value: number) => PAD_TOP + plotHeight - (value / maxValue) * plotHeight;
   const barHeight = (value: number) => (value / maxValue) * plotHeight;
 
-  const gridLines = [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(maxValue * f));
+  const gridLines = Array.from({ length: Math.round(maxValue / step) + 1 }, (_, i) => i * step);
 
   return (
     <figure>
@@ -45,7 +56,7 @@ export function SizeClassChart() {
           <g key={v}>
             <line x1={PAD_LEFT} x2={WIDTH - PAD_RIGHT} y1={yFor(v)} y2={yFor(v)} stroke="#3f4b52" strokeOpacity={0.12} />
             <text x={PAD_LEFT - 8} y={yFor(v)} textAnchor="end" dominantBaseline="middle" fontSize={11} fill="#3f4b52">
-              {v}
+              {v.toLocaleString("en-US")}
             </text>
           </g>
         ))}

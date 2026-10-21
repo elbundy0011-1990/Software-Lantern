@@ -11,13 +11,20 @@
 //   npm run dev &
 //   node scripts/render-whitepaper-pdf.mjs
 //
+// Two passes, joined with pdfunite (poppler-utils): the cover ([data-cover] on
+// the print page) is printed full bleed with no margins and no footer; the rest
+// is printed with margins and the page-numbered footer. In the second pass the
+// cover is shrunk to an empty first page and skipped with pageRanges, so the
+// footer's page numbers match the physical pages of the joined file.
+//
 // The title/edition/date strings below must match lib/whitepaper-content.ts and
 // lib/eurostat-data.ts's EUROSTAT_SOURCE: this script runs standalone via plain
 // Node, not through Next's TypeScript pipeline, so it can't import those .ts
 // files directly. Update both places together if either changes.
 
 import { chromium } from "playwright";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, rmSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -51,18 +58,42 @@ async function main() {
     </div>
   `;
 
+  const coverFile = join(OUT_DIR, ".cover.pdf");
+  const bodyFile = join(OUT_DIR, ".body.pdf");
+
+  // Printed at 0.8 so the 880px print column fits A4 with each part on one
+  // page; type stays at a readable 10 to 11pt equivalent.
   await page.pdf({
-    path: OUT_FILE,
+    path: coverFile,
     format: "A4",
     printBackground: true,
-    // Printed at 0.8 so the 880px print column fits A4 with each part on one
-    // page; type stays at a readable 10 to 11pt equivalent.
     scale: 0.8,
+    pageRanges: "1",
+    margin: { top: "0mm", bottom: "0mm", left: "0mm", right: "0mm" },
+  });
+
+  await page.evaluate(() => {
+    const cover = document.querySelector("[data-cover]");
+    if (!cover) throw new Error("Print page has no [data-cover] element");
+    cover.replaceChildren();
+    cover.setAttribute("style", "height: 200px; background: #ffffff");
+  });
+
+  await page.pdf({
+    path: bodyFile,
+    format: "A4",
+    printBackground: true,
+    scale: 0.8,
+    pageRanges: "2-",
     displayHeaderFooter: true,
     headerTemplate: "<span></span>",
     footerTemplate,
     margin: { top: "16mm", bottom: "18mm", left: "0mm", right: "0mm" },
   });
+
+  execFileSync("pdfunite", [coverFile, bodyFile, OUT_FILE]);
+  rmSync(coverFile);
+  rmSync(bodyFile);
 
   await browser.close();
 

@@ -43,6 +43,13 @@ import {
   INCIDENT_INTRO,
   INCIDENT_READINGS,
   PLAN_STEPS,
+  FRAMEWORKS_INTRO,
+  IEC_62443_NOTE,
+  FRAMEWORK_ROWS,
+  REGISTER_INTRO,
+  REGISTER_COLUMNS,
+  REGISTER_RULES,
+  REGISTER_XLSX_PATH,
   SIZE_TEST_CAVEAT,
   CONTEXT_READING,
   MATRIX_GROUPS,
@@ -50,6 +57,7 @@ import {
   METHOD_POINTS,
 } from "@/lib/whitepaper-content";
 import { VENDOR_CHECKLIST_ROWS } from "@/lib/vendor-checklist-rows";
+import { SITE_URL } from "@/lib/site";
 import { SizeClassChart } from "@/components/whitepaper/size-class-chart";
 import { AccessSprawlModel } from "@/components/whitepaper/access-sprawl-model";
 
@@ -130,7 +138,8 @@ function shortCite(r: EvidenceRef): { text: string; url: string } {
 }
 
 // Compact, linked citations in the body. The full source line for each (check
-// date, Official Journal reference, URL) is listed once in Appendix B.
+// date, Official Journal reference, URL) is listed once in the methodology
+// appendix.
 function EvidenceList({ refs }: { refs: EvidenceRef[] }) {
   return (
     <p className={`${small} mt-0.5`}>
@@ -171,6 +180,11 @@ function LedgerQuotes({ id }: { id: string }) {
       </p>
     </div>
   );
+}
+
+// Several quotes from one place in a document share a label; list it once.
+function uniqueByLabel(entries: AnyLedger[]): AnyLedger[] {
+  return entries.filter((e, i) => entries.findIndex((x) => x.citationLabel === e.citationLabel) === i);
 }
 
 function groupByUrl(entries: AnyLedger[]): [string, AnyLedger[]][] {
@@ -246,9 +260,9 @@ export function BriefingSection() {
         Four findings. Each states what the evidence says (Data), then what it means for the plant&apos;s
         security lead and for the machine builder (Interpretation).
       </p>
-      <ol className="space-y-4">
+      <ol className="space-y-3">
         {FINDINGS.map((f, i) => (
-          <li key={f.id} className="rounded border border-[#3f4b52]/[0.18] bg-white p-4" style={{ breakInside: "avoid" }}>
+          <li key={f.id} className="rounded border border-[#3f4b52]/[0.18] bg-white px-4 py-3" style={{ breakInside: "avoid" }}>
             <p className="font-semibold text-[15px] text-[#1a1d22] mb-1.5">
               {i + 1}. {f.headline}
             </p>
@@ -257,14 +271,15 @@ export function BriefingSection() {
               {f.body}
             </p>
             <EvidenceList refs={f.evidence} />
-            <p className="text-[13px] leading-[1.6] text-[#3f4b52] mt-2">
-              <Tag kind="Interpretation" />
-              <strong className="text-[#1a1d22]">For the plant:</strong> {f.forOperator}
-            </p>
-            <p className="text-[13px] leading-[1.6] text-[#3f4b52] mt-1">
-              <Tag kind="Interpretation" />
-              <strong className="text-[#1a1d22]">For the builder:</strong> {f.forBuilder}
-            </p>
+            <div className="mt-2 border-l-2 border-[#3f4b52]/[0.18] pl-2.5">
+              <p className="text-[13px] leading-[1.6] text-[#3f4b52]">
+                <Tag kind="Interpretation" />
+                <strong className="text-[#1a1d22]">For the plant:</strong> {f.forOperator}
+              </p>
+              <p className="text-[13px] leading-[1.6] text-[#3f4b52] mt-1">
+                <strong className="text-[#1a1d22]">For the builder:</strong> {f.forBuilder}
+              </p>
+            </div>
           </li>
         ))}
       </ol>
@@ -303,10 +318,7 @@ export function SprawlSection({ interactive }: { interactive: boolean }) {
           <li key={a}>{a}</li>
         ))}
       </ul>
-      <p className="text-[12.5px] font-semibold text-[#1a1d22] mt-4 mb-1">
-        <Tag kind="Interpretation" />
-        Where sprawl hides
-      </p>
+      <p className="text-[12.5px] font-semibold text-[#1a1d22] mt-3 mb-1">Where sprawl hides</p>
       <ul className="space-y-1 text-[12.5px] leading-[1.55] text-[#3f4b52]">
         {SPRAWL_HIDING_PLACES.map((h) => (
           <li key={h.name}>
@@ -327,15 +339,16 @@ export function FailuresSection() {
     <div>
       <SectionHeading id="failures" />
       <p className={p}>
+        <Tag kind="Interpretation" />
         Five ways governance of remote access fails. Each shows what it looks like, which rule or
-        public record it maps to, and what fixed looks like.
+        public record it maps to, and what fixed looks like. The descriptions and fixes are our
+        reading; the evidence line under each is marked Data.
       </p>
       <div className="space-y-3">
         {FAILURE_PATTERNS.map((f) => (
           <div key={f.id} className="rounded border border-[#3f4b52]/[0.18] bg-white p-3.5" style={{ breakInside: "avoid" }}>
             <p className="font-semibold text-[14px] text-[#1a1d22] mb-1">{f.name}</p>
             <p className="text-[12.5px] leading-[1.55] text-[#3f4b52] mb-1">
-              <Tag kind="Interpretation" />
               <strong className="text-[#1a1d22]">What it looks like:</strong> {f.looksLike}
             </p>
             <p className="text-[12.5px] leading-[1.55] text-[#3f4b52]">
@@ -344,7 +357,6 @@ export function FailuresSection() {
             </p>
             <EvidenceList refs={f.evidence} />
             <p className="text-[12.5px] leading-[1.55] text-[#3f4b52] mt-1.5">
-              <Tag kind="Interpretation" />
               <strong className="text-[#1a1d22]">What fixed looks like:</strong> {f.fixed}
             </p>
           </div>
@@ -453,36 +465,138 @@ export function ArchitecturesSection() {
 // Part 5
 // ---------------------------------------------------------------------------
 
+// One quoted item in a framework cell: the ledger text, with its place in
+// the document. Full source lines for both documents follow the table.
+function GuidanceQuote({ id }: { id: string }) {
+  const e = ledgerEntry(id);
+  if (e.evidence.kind !== "quote") return null;
+  return (
+    <>
+      {e.evidence.quotes.map((q) => (
+        <p key={q.article} className="mb-1.5">
+          &ldquo;{q.text}&rdquo;
+          <span className="block text-[9.5px] text-[#6b7280]">{q.article}</span>
+        </p>
+      ))}
+    </>
+  );
+}
+
+export function FrameworksSection() {
+  const sources = groupByUrl(
+    [...new Set(FRAMEWORK_ROWS.flatMap((r) => [...r.nist, ...r.cisa]))].map(ledgerEntry),
+  );
+  return (
+    <div>
+      <SectionHeading id="frameworks" />
+      <p className={p}>{FRAMEWORKS_INTRO}</p>
+      <table className="w-full text-left border-collapse text-[11px] leading-[1.4]">
+        <thead>
+          <tr className="border-b-2 border-[#3f4b52]/[0.25] align-bottom">
+            <th className="py-1.5 pr-2 font-semibold text-[#1a1d22] w-[82px]">Dimension</th>
+            <th className="py-1.5 pr-3 font-semibold text-[#1a1d22] w-[32%]">
+              <Tag kind="Data" />
+              NIST SP 800-82 Rev. 3
+            </th>
+            <th className="py-1.5 pr-3 font-semibold text-[#1a1d22] w-[27%]">
+              <Tag kind="Data" />
+              CISA joint fact sheet
+            </th>
+            <th className="py-1.5 font-semibold text-[#1a1d22]">
+              <Tag kind="Interpretation" />
+              Reading
+            </th>
+          </tr>
+        </thead>
+        <tbody className="text-[#3f4b52]">
+          {FRAMEWORK_ROWS.map((r) => {
+            const d = DIMENSIONS.find((x) => x.id === r.dimension)!;
+            return (
+              <tr key={r.dimension} className="border-b border-[#3f4b52]/[0.12] align-top" style={{ breakInside: "avoid" }}>
+                <td className="py-2 pr-2 font-semibold text-[#1a1d22]">{d.name}</td>
+                <td className="py-2 pr-3 text-[#1a1d22]">
+                  {r.nist.map((id) => (
+                    <GuidanceQuote key={id} id={id} />
+                  ))}
+                </td>
+                <td className="py-2 pr-3 text-[#1a1d22]">
+                  {r.cisa.map((id) => (
+                    <GuidanceQuote key={id} id={id} />
+                  ))}
+                  {r.cisaGap && <p className="text-[#6b7280] italic mb-1.5">{r.cisaGap}</p>}
+                  {r.cisaAlso && (
+                    <div className="text-[#3f4b52]">
+                      <p>{r.cisaAlso.text}</p>
+                      <EvidenceList refs={r.cisaAlso.evidence} />
+                    </div>
+                  )}
+                </td>
+                <td className="py-2">{r.reading}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <ul className={`${small} mt-2 space-y-0.5`}>
+        {sources.map(([url, entries]) => (
+          <li key={url}>
+            <a href={url} target="_blank" rel="noopener noreferrer" className="underline break-all" style={linkStyle}>
+              Source: {entries[0].citationLabel.replace(/, (Section|Appendix|p\.).*$/, "")}, checked {entries[0].lastVerifiedDisplay}. {url}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p className="text-[12px] leading-[1.55] text-[#3f4b52] mt-3 rounded border border-dashed border-[#3f4b52]/[0.4] p-2.5">
+        {IEC_62443_NOTE}
+      </p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Part 6
+// ---------------------------------------------------------------------------
+
 export function RegulationIntro() {
   return (
     <div>
       <SectionHeading id="regulation" />
       <p className={p}>
-        Three EU acts, three different things regulated. For each: who is in scope, the provisions that
-        touch remote access (quoted, Data), what they mean for remote access and what evidence to keep
-        (Interpretation). Only provisions verified against the official text are quoted.
+        Three EU acts, three different things regulated. For each act, one page says who is in scope,
+        what the act means for remote access and what evidence to keep. The provisions themselves follow
+        each summary, quoted from the official text as reference. Only provisions verified against the
+        official text are quoted.
       </p>
-      <div className="rounded border-l-4 bg-[#f6f5f1] p-3 mb-2" style={{ borderColor: ACCENT }}>
+      <div className="rounded border-l-4 bg-[#f6f5f1] p-3 mb-4" style={{ borderColor: ACCENT }}>
         <p className="text-[13px] leading-[1.6] text-[#1a1d22]">{NO_PRODUCT_MANDATE}</p>
       </div>
     </div>
   );
 }
 
-export function RegulationBlockSection({ id }: { id: string }) {
-  const b = REGULATION_BLOCKS.find((x) => x.id === id)!;
+function regulationBlock(id: string) {
+  return REGULATION_BLOCKS.find((x) => x.id === id)!;
+}
+
+// The act's quoted provisions, as short linked citations, for the summary page.
+function provisionRefs(id: string): EvidenceRef[] {
+  const b = regulationBlock(id);
+  const ids = b.id === "cra" ? [...b.quotes, "cra-annex3-class1-iam-vpn"] : b.quotes;
+  return ids.map((q) => ({ kind: "ledger", id: q }));
+}
+
+export function RegulationSummary({ id }: { id: string }) {
+  const b = regulationBlock(id);
   return (
     <div>
-      <h3 className="font-sans font-semibold text-[18px] mb-1 text-[#1a1d22]">{b.name}</h3>
+      <h3 className="font-sans font-semibold text-[19px] mb-1 text-[#1a1d22]">{b.name}</h3>
+      <p className="text-[12px] font-bold uppercase tracking-[0.06em] mb-2" style={{ color: ACCENT }}>
+        What it means for remote access
+      </p>
       <p className="text-[13px] text-[#3f4b52] mb-2">
         <strong className="text-[#1a1d22]">Regulates:</strong> {b.regulates}
       </p>
-      <p className="text-[12.5px] leading-[1.55] text-[#3f4b52]">
-        <Tag kind="Interpretation" />
-        <strong className="text-[#1a1d22]">Scope:</strong> {b.scopeNote}
-      </p>
-      <EvidenceList refs={b.scope} />
-      <ul className={`${small} mt-1 mb-3 space-y-0.5`}>
+      <ul className={`${small} mb-1 space-y-0.5`}>
         {b.datesLedgerIds.map((lid) => {
           const e = COMPLIANCE_LEDGER.find((x) => x.id === lid && x.verified)!;
           return (
@@ -496,46 +610,51 @@ export function RegulationBlockSection({ id }: { id: string }) {
           );
         })}
       </ul>
-      <p className="text-[12px] font-bold uppercase tracking-[0.06em] text-[#3f4b52] mb-1.5">
+      <EvidenceList refs={b.scope} />
+      <div className="mt-3 rounded border border-[#3f4b52]/[0.18] bg-white p-3.5" style={{ breakInside: "avoid" }}>
+        <Tag kind="Interpretation" />
+        <p className="text-[12.5px] leading-[1.55] text-[#3f4b52] mt-1.5 mb-3">
+          <strong className="text-[#1a1d22]">Scope:</strong> {b.scopeNote}
+        </p>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <p className="text-[12.5px] font-semibold text-[#1a1d22] mb-1">For remote access</p>
+            <ul className="list-disc pl-4 space-y-1 text-[12px] leading-[1.5] text-[#3f4b52]">
+              {b.remoteAccessMeaning.map((m) => (
+                <li key={m}>{m}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="text-[12.5px] font-semibold text-[#1a1d22] mb-1">Evidence to keep</p>
+            <ul className="list-disc pl-4 space-y-1 text-[12px] leading-[1.5] text-[#3f4b52]">
+              {b.evidenceToKeep.map((m) => (
+                <li key={m}>{m}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        {b.id === "cra" && <p className="text-[12px] leading-[1.5] text-[#3f4b52] mt-3">{ANNEX_III_NOTE}</p>}
+      </div>
+      <p className={`${small} mt-3`}>Quoted in full after this summary, as reference:</p>
+      <EvidenceList refs={provisionRefs(id)} />
+    </div>
+  );
+}
+
+export function RegulationQuotes({ id }: { id: string }) {
+  const b = regulationBlock(id);
+  return (
+    <div>
+      <p className="text-[12px] font-bold uppercase tracking-[0.06em] text-[#3f4b52] mb-1">
         <Tag kind="Data" />
-        The provisions
+        Reference: the provisions, verbatim
       </p>
+      <h3 className="font-sans font-semibold text-[16px] mb-2.5 text-[#1a1d22]">{b.name}</h3>
       {b.quotes.map((q) => (
         <LedgerQuotes key={q} id={q} />
       ))}
-      <div className="grid grid-cols-2 gap-3 mt-2" style={{ breakInside: "avoid" }}>
-        <div>
-          <p className="text-[12.5px] font-semibold text-[#1a1d22] mb-1">
-            <Tag kind="Interpretation" />
-            What it means for remote access
-          </p>
-          <ul className="list-disc pl-4 space-y-1 text-[12px] leading-[1.5] text-[#3f4b52]">
-            {b.remoteAccessMeaning.map((m) => (
-              <li key={m}>{m}</li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <p className="text-[12.5px] font-semibold text-[#1a1d22] mb-1">
-            <Tag kind="Interpretation" />
-            Evidence to keep
-          </p>
-          <ul className="list-disc pl-4 space-y-1 text-[12px] leading-[1.5] text-[#3f4b52]">
-            {b.evidenceToKeep.map((m) => (
-              <li key={m}>{m}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      {b.id === "cra" && (
-        <div className="mt-3">
-          <p className="text-[12.5px] leading-[1.55] text-[#3f4b52] mb-1">
-            <Tag kind="Interpretation" />
-            {ANNEX_III_NOTE}
-          </p>
-          <LedgerQuotes id="cra-annex3-class1-iam-vpn" />
-        </div>
-      )}
+      {b.id === "cra" && <LedgerQuotes id="cra-annex3-class1-iam-vpn" />}
     </div>
   );
 }
@@ -604,7 +723,7 @@ export function BeneluxAndExcluded() {
 }
 
 // ---------------------------------------------------------------------------
-// Part 6
+// Part 7
 // ---------------------------------------------------------------------------
 
 export function IncidentsSection() {
@@ -635,14 +754,15 @@ export function IncidentsSection() {
                   {incidentSourceLine(i)}
                 </a>
               </p>
-              <p className="text-[12.5px] leading-[1.55] text-[#3f4b52] mt-2">
-                <Tag kind="Interpretation" />
-                <strong className="text-[#1a1d22]">What it shows:</strong> {r.shows}
-              </p>
-              <p className="text-[12.5px] leading-[1.55] text-[#3f4b52] mt-1">
-                <Tag kind="Interpretation" />
-                <strong className="text-[#1a1d22]">What it does not show:</strong> {r.doesNotShow}
-              </p>
+              <div className="mt-2 border-l-2 border-[#3f4b52]/[0.18] pl-2.5">
+                <p className="text-[12.5px] leading-[1.55] text-[#3f4b52]">
+                  <Tag kind="Interpretation" />
+                  <strong className="text-[#1a1d22]">What it shows:</strong> {r.shows}
+                </p>
+                <p className="text-[12.5px] leading-[1.55] text-[#3f4b52] mt-1">
+                  <strong className="text-[#1a1d22]">What it does not show:</strong> {r.doesNotShow}
+                </p>
+              </div>
             </div>
           );
         })}
@@ -657,7 +777,7 @@ export function IncidentsSection() {
 }
 
 // ---------------------------------------------------------------------------
-// Part 7
+// Part 8
 // ---------------------------------------------------------------------------
 
 export function PlanSection() {
@@ -702,7 +822,7 @@ export function PlanSection() {
 }
 
 // ---------------------------------------------------------------------------
-// Part 8
+// Appendix C
 // ---------------------------------------------------------------------------
 
 export function ContextSection() {
@@ -789,6 +909,69 @@ export function MatrixAppendix() {
   );
 }
 
+export function RegisterAppendix() {
+  const url = `${SITE_URL}${REGISTER_XLSX_PATH}`;
+  return (
+    <div>
+      <SectionHeading id="register" />
+      <p className={p}>
+        <Tag kind="Interpretation" />
+        {REGISTER_INTRO}
+      </p>
+      <table className="w-full text-left border-collapse text-[11.5px] leading-[1.4] mb-3">
+        <thead>
+          <tr className="border-b-2 border-[#3f4b52]/[0.25]">
+            <th className="py-1 pr-2 font-semibold text-[#1a1d22] w-[150px]">Column</th>
+            <th className="py-1 pr-2 font-semibold text-[#1a1d22]">What to record</th>
+            <th className="py-1 font-semibold text-[#1a1d22] w-[250px]">Allowed values</th>
+          </tr>
+        </thead>
+        <tbody className="text-[#3f4b52]">
+          {REGISTER_COLUMNS.map((c) => (
+            <tr key={c.name} className="border-b border-[#3f4b52]/[0.1] align-top">
+              <td className="py-1 pr-2 font-semibold text-[#1a1d22]">{c.name}</td>
+              <td className="py-1 pr-2">{c.record}</td>
+              <td className="py-1">{c.values ? c.values.join(", ") : <span className="text-[#6b7280]">{c.date ? "A date" : "Free text"}</span>}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <ul className="list-disc pl-5 space-y-0.5 text-[12px] leading-[1.5] text-[#3f4b52] mb-3">
+        {REGISTER_RULES.map((r) => (
+          <li key={r}>{r}</li>
+        ))}
+      </ul>
+      <table className="w-full border-collapse text-[9px] leading-[1.2] table-fixed" style={{ breakInside: "avoid" }}>
+        <thead>
+          <tr>
+            {REGISTER_COLUMNS.map((c) => (
+              <th key={c.name} className="border border-[#3f4b52]/[0.35] bg-[#f6f5f1] px-1 py-1 text-left align-bottom font-semibold text-[#1a1d22]">
+                {c.name}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {Array.from({ length: 6 }, (_, i) => (
+            <tr key={i}>
+              {REGISTER_COLUMNS.map((c) => (
+                <td key={c.name} className="border border-[#3f4b52]/[0.25] h-[30px]" />
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className={`${small} mt-2`}>
+        Spreadsheet version, with dropdowns for method, account type, second factor and scope, and date
+        checks on the two date columns:{" "}
+        <a href={url} className="underline break-all" style={linkStyle}>
+          {url}
+        </a>
+      </p>
+    </div>
+  );
+}
+
 export function MethodAppendix() {
   const ledgerIds = new Set<string>();
   const incidentIds = new Set<string>();
@@ -806,6 +989,8 @@ export function MethodAppendix() {
     b.datesLedgerIds.forEach((q) => ledgerIds.add(q));
   });
   ledgerIds.add("cra-annex3-class1-iam-vpn");
+  FRAMEWORK_ROWS.forEach((r) => [...r.nist, ...r.cisa].forEach((id) => ledgerIds.add(id)));
+  FRAMEWORK_ROWS.forEach((r) => r.cisaAlso && collect(r.cisaAlso.evidence));
   for (const c of ["BE", "NL", "LU"] as const) {
     const s = getCountrySection(c)!;
     [s.inForce.id, s.authority.id, s.registration.id, s.incident.id].forEach((id) => ledgerIds.add(id));
@@ -815,16 +1000,16 @@ export function MethodAppendix() {
   return (
     <div>
       <SectionHeading id="method" />
-      <ul className="list-disc pl-5 space-y-1.5 text-[12.5px] leading-[1.55] text-[#3f4b52] mb-4">
+      <ul className="list-disc pl-5 space-y-1 text-[12px] leading-[1.5] text-[#3f4b52] mb-3">
         {METHOD_POINTS.map((m) => (
           <li key={m}>{m}</li>
         ))}
       </ul>
-      <p className="text-[13px] font-semibold text-[#1a1d22] mb-1">Legal sources ({ledgerIds.size} ledger entries, grouped by official URL)</p>
-      <ul className="space-y-1 text-[10.5px] leading-[1.45] text-[#3f4b52] mb-3">
+      <p className="text-[13px] font-semibold text-[#1a1d22] mb-1">Legal and guidance sources ({ledgerIds.size} ledger entries, grouped by URL)</p>
+      <ul className="space-y-0.5 text-[10px] leading-[1.4] text-[#3f4b52] mb-2.5">
         {groupByUrl([...ledgerIds].map(ledgerEntry)).map(([url, entries]) => (
           <li key={url}>
-            {entries.map((e, i) => (
+            {uniqueByLabel(entries).map((e, i) => (
               <span key={e.id}>
                 {i > 0 && "; "}
                 {e.citationLabel} (checked {e.lastVerifiedDisplay}
@@ -839,7 +1024,7 @@ export function MethodAppendix() {
         ))}
       </ul>
       <p className="text-[13px] font-semibold text-[#1a1d22] mb-1">Incident records</p>
-      <ul className="space-y-0.5 text-[10.5px] leading-[1.45] text-[#3f4b52] mb-3">
+      <ul className="space-y-0.5 text-[10px] leading-[1.4] text-[#3f4b52] mb-2.5">
         {[...incidentIds].map((id) => {
           const i = incidentById(id);
           return (
@@ -850,7 +1035,7 @@ export function MethodAppendix() {
         })}
       </ul>
       <p className="text-[13px] font-semibold text-[#1a1d22] mb-1">Data</p>
-      <ul className="space-y-0.5 text-[10.5px] leading-[1.45] text-[#3f4b52] mb-3">
+      <ul className="space-y-0.5 text-[10px] leading-[1.4] text-[#3f4b52] mb-2.5">
         <li>
           {eurostatSourceLine()} ({EUROSTAT_SOURCE.datasetLabel}). <span className="text-[#6b7280] break-all">{EUROSTAT_SOURCE.queryUrl}</span>
         </li>

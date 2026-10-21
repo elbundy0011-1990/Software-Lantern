@@ -18,6 +18,7 @@ import {
   REPORT_PATH,
   REPORT_SECTIONS,
   partLabel,
+  REGISTER_XLSX_PATH,
   DISCLAIMER,
 } from "@/lib/whitepaper-content";
 import { EUROSTAT_SOURCE } from "@/lib/eurostat-data";
@@ -104,6 +105,13 @@ export default function RemoteAccessBelgiumNetherlandsReportPage() {
                 </li>
               ))}
             </ul>
+            <p className="text-[14px] text-[#3f4b52] mt-4">
+              {partLabel("register")} is also a spreadsheet, free to use without the form:{" "}
+              <a href={REGISTER_XLSX_PATH} download className="underline font-semibold text-[#7c2d12]">
+                download the remote access register template (.xlsx)
+              </a>
+              .
+            </p>
           </div>
           <WhitepaperForm />
         </div>

@@ -50,12 +50,14 @@ export const REPORT_SECTIONS = [
   { id: "sprawl", number: "2", title: "How remote access spreads" },
   { id: "failures", number: "3", title: "How governance fails" },
   { id: "assessment", number: "4", title: "A five-dimension assessment" },
-  { id: "regulation", number: "5", title: "From regulation to action" },
-  { id: "incidents", number: "6", title: "Two public incidents" },
-  { id: "plan", number: "7", title: "A 90-day plan" },
-  { id: "context", number: "8", title: "Regional context" },
+  { id: "frameworks", number: "5", title: "The five dimensions in NIST and CISA guidance" },
+  { id: "regulation", number: "6", title: "From regulation to action" },
+  { id: "incidents", number: "7", title: "Two public incidents" },
+  { id: "plan", number: "8", title: "A 90-day plan" },
   { id: "matrix", number: "A", title: "The 25-point matrix, prioritised" },
-  { id: "method", number: "B", title: "Methodology and sources" },
+  { id: "register", number: "B", title: "Remote access register template" },
+  { id: "context", number: "C", title: "Regional context" },
+  { id: "method", number: "D", title: "Methodology and sources" },
 ] as const;
 
 export type SectionId = (typeof REPORT_SECTIONS)[number]["id"];
@@ -102,7 +104,7 @@ export const FINDINGS: Finding[] = [
   {
     id: "valid-access",
     headline: "Both verified incidents turned on valid access, not on broken connectivity.",
-    body: `In the ${colonial.name} case the chief executive testified that the attacker used a legacy VPN profile that was no longer meant to be in use, protected by a single factor. In the ${ukraine.year} attack on ${ukraine.name}, the agency alert records that the attackers held legitimate credentials and operated breakers over existing remote administration tools and VPN connections. ${partLabel("incidents")} quotes both records.`,
+    body: `In the ${colonial.name} case the chief executive testified that the attacker used a legacy VPN profile that was no longer meant to be in use, protected by a single factor. That VPN led into the company's IT network, where the attack was detected; the hearing record does not describe industrial remote access. In the ${ukraine.year} attack on ${ukraine.name}, the agency alert records that the attackers held legitimate credentials and operated breakers over existing remote administration tools and VPN connections. ${partLabel("incidents")} quotes both records.`,
     evidence: [I(colonial.id), I(ukraine.id)],
     forOperator: "The control that mattered was who held a working credential and whether it should still have existed, not the strength of the tunnel.",
     forBuilder: "Every service account you leave behind at a customer site is part of the customer's attack surface, whether or not anyone uses it.",
@@ -413,7 +415,67 @@ export const ARCHITECTURE_NOTE =
   "Each architecture constrains some things by design and leaves others to configuration. None settles all five dimensions on its own, and the same architecture can be governed well or badly. There is no score and no ranking here: read across a row to see what you would still have to configure and evidence yourself.";
 
 // ---------------------------------------------------------------------------
-// Part 5: regulation to action (Data from the ledger + Interpretation)
+// Part 5: the five dimensions in NIST SP 800-82 Rev. 3 and CISA guidance
+// (Data from the ledger + Interpretation). Every quote is a ledger entry; a
+// cell with nothing to quote says so rather than stretching a sentence.
+// ---------------------------------------------------------------------------
+
+export interface FrameworkRow {
+  dimension: DimensionId;
+  nist: string[]; // ledger ids
+  cisa: string[]; // ledger ids
+  cisaGap?: string; // shown when the CISA fact sheet has nothing on this dimension
+  // Another CISA record on the same point, cited rather than quoted here.
+  cisaAlso?: { text: string; evidence: EvidenceRef[] };
+  reading: string; // Interpretation
+}
+
+export const FRAMEWORKS_INTRO =
+  "Two public guidance documents say what good industrial remote access looks like: NIST Special Publication 800-82 Revision 3, the US guide to operational technology security, and the joint fact sheet on primary OT mitigations published by CISA with the FBI, EPA and DOE. Both are guidance, not law, and neither binds a company in Belgium or the Netherlands. They are useful because they say in plain terms what the five dimensions ask for, and because supplier questionnaires often borrow from them.";
+
+export const IEC_62443_NOTE =
+  "IEC 62443, the international series of standards for industrial automation and control system security, is not quoted: the standard is not freely available.";
+
+export const FRAMEWORK_ROWS: FrameworkRow[] = [
+  {
+    dimension: "identity",
+    nist: ["nist-80082r3-unique-users", "nist-80082r3-mfa", "nist-80082r3-ia2-5"],
+    cisa: ["cisa-ot-mitigations-mfa"],
+    reading: "Both documents put the second factor on the person, not on the network. NIST accepts shared accounts only behind an individual login that is itself logged.",
+  },
+  {
+    dimension: "scope",
+    nist: ["nist-80082r3-justified"],
+    cisa: ["cisa-ot-mitigations-least-privilege"],
+    reading: "Least privilege is set per asset and per role or job, which is narrower than per network segment.",
+  },
+  {
+    dimension: "lifecycle",
+    nist: ["nist-80082r3-process", "nist-80082r3-removal"],
+    cisa: ["cisa-ot-mitigations-least-privilege"],
+    reading: "A written way to request access and a confirmed way to remove it, with dormant accounts switched off. That is the register plus a revocation test.",
+  },
+  {
+    dimension: "evidence",
+    nist: ["nist-80082r3-monitoring", "nist-80082r3-ia2-5"],
+    cisa: [],
+    cisaGap: "The fact sheet does not address session records.",
+    reading: "NIST asks for remote activity to be monitored and individual access logged. What is kept, and for how long, is left to you, which is why the plan sets a logging standard.",
+  },
+  {
+    dimension: "availability",
+    nist: ["nist-80082r3-initiate", "nist-80082r3-label-disconnect", "nist-80082r3-ac17-9"],
+    cisa: ["cisa-ot-mitigations-tradeoffs"],
+    cisaAlso: {
+      text: `CISA's alert on the ${ukraine.year} Ukrainian attack recommends that remote access be operator controlled and time limited (${partLabel("incidents")}).`,
+      evidence: [I("ukraine-grid-2015")],
+    },
+    reading: "Both treat standing access as a decision to revisit. The plant should be able to start a session from its side and to cut it quickly.",
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Part 6: regulation to action (Data from the ledger + Interpretation)
 // ---------------------------------------------------------------------------
 
 export interface RegulationBlock {
@@ -502,7 +564,7 @@ export const REGULATION_EXCLUDED: { item: string; reason: string }[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Part 6: incidents (Data + Interpretation)
+// Part 7: incidents (Data + Interpretation)
 // ---------------------------------------------------------------------------
 
 export interface IncidentReading {
@@ -531,7 +593,7 @@ export const INCIDENT_INTRO =
   "Two cases, chosen because their primary records are public and uncontested and because each speaks to remote access. Each is shown as the record states it, then read against the five dimensions. They illustrate failure patterns; they are not a measure of how common those patterns are.";
 
 // ---------------------------------------------------------------------------
-// Part 7: 90-day plan (Interpretation)
+// Part 8: 90-day plan (Interpretation)
 // ---------------------------------------------------------------------------
 
 export interface PlanStep {
@@ -553,18 +615,6 @@ export const PLAN_STEPS: PlanStep[] = [
   { block: "Days 61 to 90", step: `Score the current setup against the matrix in ${partLabel("matrix")} and mark unacceptable answers.`, owner: "OT security lead", deliverable: "Completed matrix", verification: "Each unacceptable answer has an owner and a date." },
   { block: "Days 61 to 90", step: "Put the measures to management for approval (NIS2 Article 20, where in scope).", owner: "Management body", deliverable: "Signed approval", verification: "Minutes or sign-off on file." },
 ];
-
-// ---------------------------------------------------------------------------
-// Part 8: regional context (Data)
-// ---------------------------------------------------------------------------
-
-// Headcount is one of three alternative NIS2 size tests, and the test counts
-// linked and partner enterprises together; the figures here are a proxy for
-// context, never a scope determination for any company.
-export const SIZE_TEST_CAVEAT =
-  "NIS2's size test is headcount, or annual turnover, or annual balance sheet total, and it counts linked and partner enterprises together. The counts here use headcount (persons employed) as a public, comparable proxy. They size the regional picture; they do not determine whether any specific company is in scope.";
-
-export const CONTEXT_READING = `Most machinery manufacturers in both countries are small by headcount. For them, the rules in ${partLabel("regulation")} arrive mainly through the product rules and through in-scope customers' supplier questions, which is why the matrix in ${partLabel("matrix")} is written to be answerable by a small builder.`;
 
 // ---------------------------------------------------------------------------
 // Appendix A: matrix prioritisation (Interpretation)
@@ -594,11 +644,63 @@ export const UNACCEPTABLE_ANSWERS: { answer: string; dimension: string; evidence
 ];
 
 // ---------------------------------------------------------------------------
-// Appendix B: methodology
+// Appendix B: remote access register template (Interpretation). The same
+// columns and lists are in public/downloads/remote-access-register.xlsx,
+// built by scripts/build-register-xlsx.py; change both together.
+// ---------------------------------------------------------------------------
+
+export const REGISTER_XLSX_PATH = "/downloads/remote-access-register.xlsx";
+
+export const REGISTER_INTRO =
+  "One row per remote access path: one supplier reaching one site by one method. It is the deliverable of the first step of the 90-day plan, and the first thing to hand over when a customer, an auditor or management asks how remote access is governed.";
+
+export interface RegisterColumn {
+  name: string;
+  record: string;
+  values?: string[]; // fixed list, a dropdown in the spreadsheet
+  date?: true; // a date check in the spreadsheet
+}
+
+export const REGISTER_COLUMNS: RegisterColumn[] = [
+  { name: "Path ID", record: "Your own reference, unique per row." },
+  { name: "Supplier", record: "The company whose people connect. Write in a dealer or subcontractor as its own row." },
+  { name: "Site", record: "The plant or location reached." },
+  { name: "Method", record: "How the connection is made.", values: ["VPN", "Remote support tool", "Jump host", "Cloud broker", "OT gateway", "Modem", "Other"] },
+  { name: "Account type", record: "Whether each person has their own login.", values: ["Named", "Shared"] },
+  { name: "Second factor", record: "Whether a second factor is enforced on this path.", values: ["Y", "N"] },
+  { name: "Scope", record: "What a session can reach.", values: ["Single machine", "Cell or line", "Network segment", "Whole site", "Unknown"] },
+  { name: "Plant-side owner", record: "The named person at the plant responsible for this path." },
+  { name: "Supplier-side owner", record: "The named person at the supplier responsible for this path." },
+  { name: "Expiry or end date", record: "When access ends unless renewed. A date, never blank.", date: true },
+  { name: "Last reviewed", record: "When someone last confirmed the row is still true.", date: true },
+  { name: "Evidence location", record: "Where the proof is: configuration export, account list, log store." },
+];
+
+export const REGISTER_RULES: string[] = [
+  "A row without two named owners, or without an end date, is the first thing to fix.",
+  "A shared account or a missing second factor needs a dated exception with a reason.",
+  "Review every row at least as often as you review supplier access in general, and record the date.",
+];
+
+// ---------------------------------------------------------------------------
+// Appendix C: regional context (Data)
+// ---------------------------------------------------------------------------
+
+// Headcount is one of three alternative NIS2 size tests, and the test counts
+// linked and partner enterprises together; the figures here are a proxy for
+// context, never a scope determination for any company.
+export const SIZE_TEST_CAVEAT =
+  "NIS2's size test is headcount, or annual turnover, or annual balance sheet total, and it counts linked and partner enterprises together. The counts here use headcount (persons employed) as a public, comparable proxy. They size the regional picture; they do not determine whether any specific company is in scope.";
+
+export const CONTEXT_READING = `Most machinery manufacturers in both countries are small by headcount. For them, the rules in ${partLabel("regulation")} arrive mainly through the product rules and through in-scope customers' supplier questions, which is why the matrix in ${partLabel("matrix")} is written to be answerable by a small builder.`;
+
+// ---------------------------------------------------------------------------
+// Appendix D: methodology
 // ---------------------------------------------------------------------------
 
 export const METHOD_POINTS: string[] = [
   "Every regulatory quote, date and country fact comes from the compliance ledger kept for this site. Each entry holds the verbatim text, the official URL, the Official Journal reference for EU acts, and the date it was checked.",
+  "NIST SP 800-82 Rev. 3 and the joint CISA, FBI, EPA and DOE fact sheet on OT mitigations are guidance, quoted verbatim from the published documents and held in the same ledger. The fact sheet was read from the copy published by the FBI's IC3, one of its authoring agencies, because the CISA site refuses automated reads. IEC 62443 is named but not quoted, because the standard is not freely available.",
   "EU legal texts were read from the EU Publications Office repository, which serves the Official Journal text, because the EUR-Lex site blocks automated reads. Citations link to the EUR-Lex page for each act so readers can open it in a browser.",
   "Incidents are cited only from primary records: an official hearing record and a government agency alert, each quoted verbatim with its identifier. Contested cases are excluded.",
   "Every enterprise figure comes from Eurostat's dissemination API. The Netherlands figure is cross-checked against a CBS business-register table. Belgian figures rest on Eurostat alone; no Statbel cross-check was made for this edition.",

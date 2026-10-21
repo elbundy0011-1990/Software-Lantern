@@ -804,4 +804,157 @@ export const SUPPLEMENTARY_EVIDENCE: SupplementaryQuote[] = [
     },
     lastVerifiedDisplay: "21 October 2026",
   },
+
+  // --- Regional report: guidance mapped to the five dimensions (2026-10-21).
+  // Guidance, not law. NIST SP 800-82 Rev. 3 (September 2023) was read from
+  // the NIST PDF linked below (DOI 10.6028/NIST.SP.800-82r3); page numbers are
+  // the printed ones. The CISA, FBI, EPA and DOE joint fact sheet (as of 6 May
+  // 2025, TLP:CLEAR) was read from the copy published by the FBI's IC3, one of
+  // its authoring agencies, because cisa.gov refuses automated reads. Each
+  // quote is a single sentence or list item, so the report can place it under
+  // one dimension. IEC 62443 is deliberately absent: the standard is not freely
+  // available, so it is named in the report and never quoted.
+  {
+    id: "nist-80082r3-process",
+    citationLabel: "NIST SP 800-82 Rev. 3, Section 6.2.10, pp. 122 to 123",
+    citationUrl: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r3.pdf",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Section 6.2.10, OT-specific recommendations", text: "A process should be developed and communicated to the organization for requesting and enabling remote access." }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "nist-80082r3-justified",
+    citationLabel: "NIST SP 800-82 Rev. 3, Section 6.2.10, pp. 122 to 123",
+    citationUrl: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r3.pdf",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Section 6.2.10, OT-specific recommendations", text: "Remote access should be provided only if justified and limited to what is required for the business need." }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "nist-80082r3-mfa",
+    citationLabel: "NIST SP 800-82 Rev. 3, Section 6.2.10, pp. 122 to 123",
+    citationUrl: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r3.pdf",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Section 6.2.10, OT-specific recommendations", text: "Multi-factor authentication should be considered for remote access to the OT system." }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "nist-80082r3-unique-users",
+    citationLabel: "NIST SP 800-82 Rev. 3, Section 6.2.10, p. 123",
+    citationUrl: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r3.pdf",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Section 6.2.10, temporary remote access, to consider", text: "Implementing unique usernames and complex passwords" }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "nist-80082r3-removal",
+    citationLabel: "NIST SP 800-82 Rev. 3, Section 6.2.10, p. 123",
+    citationUrl: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r3.pdf",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Section 6.2.10, temporary remote access, to consider", text: "Removing access when no longer required. Consider implementing automatic timers for removing access or managing change processes to manually confirm the removal of access." }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "nist-80082r3-monitoring",
+    citationLabel: "NIST SP 800-82 Rev. 3, Section 6.2.10, p. 123",
+    citationUrl: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r3.pdf",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Section 6.2.10, temporary remote access, to consider", text: "Monitoring remote activities" }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "nist-80082r3-initiate",
+    citationLabel: "NIST SP 800-82 Rev. 3, Section 6.2.10, p. 123",
+    citationUrl: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r3.pdf",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Section 6.2.10, temporary remote access, to consider", text: "Initiating the connection from the OT environment" }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "nist-80082r3-label-disconnect",
+    citationLabel: "NIST SP 800-82 Rev. 3, Section 6.2.10, p. 123",
+    citationUrl: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r3.pdf",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Section 6.2.10, temporary remote access, to consider", text: "Labeling remote connection devices so that operations may disconnect quickly in the case of unauthorized use" }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "nist-80082r3-ac17-9",
+    citationLabel: "NIST SP 800-82 Rev. 3, Appendix F, AC-17, p. 233",
+    citationUrl: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r3.pdf",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Appendix F, AC-17, rationale for AC-17 (9)", text: "As more OT systems become accessible remotely, the capability to disconnect or disable remote access is critical to managing risk and may be required to provide stable and safe operations." }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "nist-80082r3-ia2-5",
+    citationLabel: "NIST SP 800-82 Rev. 3, Appendix F, IA-2, pp. 252 to 253",
+    citationUrl: "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-82r3.pdf",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Appendix F, IA-2, control enhancement (5), OT discussion", text: "For remote access, the remote access authentication mechanism will be used to identify, permit, and log individual access before permitting the use of shared accounts." }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "cisa-ot-mitigations-tradeoffs",
+    citationLabel: "CISA, FBI, EPA and DOE, Primary Mitigations to Reduce Cyber Threats to Operational Technology, p. 2",
+    citationUrl: "https://www.ic3.gov/CSA/2025/250506.pdf",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Secure remote access to OT networks", text: "Many critical infrastructure entities, or contractors working on their behalf, make risk-based tradeoffs when implementing remote access to OT assets. These tradeoffs deserve careful reevaluation." }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "cisa-ot-mitigations-mfa",
+    citationLabel: "CISA, FBI, EPA and DOE, Primary Mitigations to Reduce Cyber Threats to Operational Technology, p. 2",
+    citationUrl: "https://www.ic3.gov/CSA/2025/250506.pdf",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Secure remote access to OT networks", text: "If remote access is essential, upgrade to a private IP network connection to remove these OT assets from the public internet and use virtual private network (VPN) functionality with a strong password and phishing-resistant multifactor authentication (MFA) for user remote access." }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
+  {
+    id: "cisa-ot-mitigations-least-privilege",
+    citationLabel: "CISA, FBI, EPA and DOE, Primary Mitigations to Reduce Cyber Threats to Operational Technology, p. 2",
+    citationUrl: "https://www.ic3.gov/CSA/2025/250506.pdf",
+    evidence: {
+      kind: "quote",
+      tier: "primary",
+      quotes: [{ article: "Secure remote access to OT networks", text: "Document and configure remote access solutions to apply principles of least privilege for the specific asset and user role or scope of work [CPG 2.H]. Further, disable dormant accounts." }],
+    },
+    lastVerifiedDisplay: "21 October 2026",
+  },
 ];

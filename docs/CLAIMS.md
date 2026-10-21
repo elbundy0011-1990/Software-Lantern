@@ -54,6 +54,21 @@ Official Journal text) counts as a **primary** read. The entry still
 links the EUR-Lex ELI URL as `citationUrl`, and records the act's
 `ojReference`.
 
+## Guidance documents
+
+Guidance is not law, but a quote from it follows the same rule: a
+`SUPPLEMENTARY_EVIDENCE` entry with the verbatim text, the URL it was
+read from, and a check date. The regional report quotes NIST SP 800-82
+Rev. 3 (read from the NIST PDF) and the joint CISA, FBI, EPA and DOE
+fact sheet on primary OT mitigations. cisa.gov refuses automated reads,
+so that fact sheet was read from the copy published by the FBI's IC3,
+one of its authoring agencies, and `citationUrl` is that copy. A copy
+published by an authoring agency counts as a **primary** read.
+
+Paywalled standards (IEC 62443) are never quoted or paraphrased as if
+quoted. The report names them and says they are not quoted because the
+standard is not freely available.
+
 ## Incident evidence
 
 Real incidents follow the same discipline as regulatory claims, in

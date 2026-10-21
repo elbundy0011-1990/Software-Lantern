@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { RemoteAccessCheckInteractive } from "@/components/remote-access-check-interactive";
-import { ExampleOutput } from "@/components/example-output";
 
 export const metadata: Metadata = pageMetadata({
   title: "Build Your Remote Access Review Sheet",
@@ -27,27 +26,6 @@ export default function RemoteAccessCheckPage() {
             prepare before your next customer review. No score. Nothing is sent anywhere unless
             you choose.
           </p>
-
-          <ExampleOutput>
-            <p className="font-semibold text-[#1a1d22] mb-1 mt-4">Your setup, as described</p>
-            <p className="mb-4">A neutral restatement of your seven answers, with no scoring and no pass or fail.</p>
-            <p className="font-semibold text-[#1a1d22] mb-1">Questions to resolve</p>
-            <ul className="grid gap-1 mb-4">
-              <li>Confirm whether remote sessions are logged, and where that log is kept.</li>
-            </ul>
-            <p className="font-semibold text-[#1a1d22] mb-1">Controls to verify</p>
-            <ul className="grid gap-1 mb-4">
-              <li>Verify multi-factor authentication is required for every account that can connect, not just some.</li>
-            </ul>
-            <p className="font-semibold text-[#1a1d22] mb-1">Evidence to prepare</p>
-            <ul className="grid gap-1 mb-4">
-              <li>Your log retention period.</li>
-            </ul>
-            <p className="font-semibold text-[#1a1d22] mb-1">Relevant questionnaire pack rows</p>
-            <ul className="grid gap-1">
-              <li>[Access control] Who has remote access to our systems, and how is that list kept up to date?</li>
-            </ul>
-          </ExampleOutput>
         </div>
       </section>
       <RemoteAccessCheckInteractive />

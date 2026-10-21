@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 import { OtCyberInteractive } from "@/components/ot-cyber-interactive";
-import { ExampleOutput } from "@/components/example-output";
 
 export const metadata: Metadata = pageMetadata({
   title: "Your Brief: Which EU Rules Apply to You",
@@ -26,26 +25,6 @@ export default function CheckerPage() {
             that matter, your national authority and what customers may ask you. Free, no email
             needed. Your answers stay in your browser.
           </p>
-
-          <ExampleOutput>
-            <p className="font-semibold text-[#1a1d22] mb-1 mt-4">Which rules likely apply</p>
-            <ul className="grid gap-1 mb-4">
-              <li>NIS2: Likely applies. A medium or large machine builder generally sits in NIS2&apos;s manufacturing category.</li>
-              <li>Cyber Resilience Act: Likely applies. A connected product placed on the market is in scope regardless of company size.</li>
-              <li>Machinery Regulation: Likely applies. Covers safety requirements for machinery placed on the market.</li>
-            </ul>
-            <p className="font-semibold text-[#1a1d22] mb-1">Dates that matter</p>
-            <p className="mb-4">A short list of upcoming dates relevant to your answers, each with a live countdown and its source.</p>
-            <p className="font-semibold text-[#1a1d22] mb-1">Your country</p>
-            <p className="mb-4">Supervisory authority, registration step, and incident-reporting duty, each cited.</p>
-            <p className="font-semibold text-[#1a1d22] mb-1">Questions customers may ask</p>
-            <ul className="grid gap-1 mb-4">
-              <li>Who has remote access to our systems, and how is that list kept up to date?</li>
-              <li>Is multi-factor authentication required for remote access?</li>
-            </ul>
-            <p className="font-semibold text-[#1a1d22] mb-1">Next steps</p>
-            <p>Five concrete steps, including the official government tool and a link to build a remote access review sheet.</p>
-          </ExampleOutput>
         </div>
       </section>
       <OtCyberInteractive />

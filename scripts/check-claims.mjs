@@ -62,7 +62,6 @@ const OT_FILES = [
   "lib/questionnaire-pack-rows.ts",
   "components/result-actions.tsx",
   "components/countdown.tsx",
-  "components/example-output.tsx",
 ];
 
 // Files where a literal date is expected and allowed: the ledger itself

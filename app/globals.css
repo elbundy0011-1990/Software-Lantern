@@ -26,3 +26,29 @@
 .step-in {
   animation: step-in 0.28s ease-out;
 }
+
+/* "Download" on the /checker brief and /remote-access-check review sheet
+   (components/result-actions.tsx) calls window.print() instead of generating a
+   PDF client-side with an extra library: this scopes the print output to just the
+   result content, wherever a result wraps itself in .print-area, so the header,
+   nav, question screens, and action buttons never end up on the printed page. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    padding: 24px;
+  }
+  /* Interactive controls (the download/copy/email/talk bar, "Start over") stay
+     out of the printed/PDF output even though they live inside .print-area. */
+  [data-no-print] {
+    display: none !important;
+  }
+}

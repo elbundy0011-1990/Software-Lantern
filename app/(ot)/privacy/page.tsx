@@ -27,7 +27,7 @@ export default function PrivacyPolicyPage() {
           <h1 className="font-sans font-semibold text-[clamp(32px,4.4vw,44px)] leading-[1.1] tracking-[-0.03em] mb-3 text-[#1a1d22]">
             Privacy Policy
           </h1>
-          <p className="text-[15px] text-[#3f4b52] mb-14">Last updated: 20 October 2026</p>
+          <p className="text-[15px] text-[#3f4b52] mb-14">Last updated: 21 October 2026</p>
 
           <h2 className={`${h2} mt-0`}>1. Who we are</h2>
           <p className={p}>
@@ -89,6 +89,12 @@ export default function PrivacyPolicyPage() {
               If you use the ROI calculator and choose to email yourself the result: the euro
               figures and estimates you entered into the calculator
             </li>
+            <li>
+              If you use the scope checker or the remote access situation check and choose
+              &ldquo;email me a copy&rdquo; of your brief or review sheet, instead of (or as well
+              as) sending a full enquiry: name, work email address, company name, and the same
+              checker or remote-access answers listed above
+            </li>
           </ul>
           <p className={p}><strong>b) If you request the customer security questionnaire pack or the vendor comparison checklist:</strong></p>
           <ul className={ul}>
@@ -146,6 +152,14 @@ export default function PrivacyPolicyPage() {
                     you separately agree, sharing your enquiry with a specific named company
                   </td>
                   <td className="py-2.5 px-1">Name, work email, company name, and the figures or answers you entered</td>
+                  <td className="py-2.5 px-1">Consent (given when you submit the form)</td>
+                </tr>
+                <tr className="border-b border-[#3f4b52]/[0.15] align-top">
+                  <td className="py-2.5 px-1">
+                    Emailing you a copy of the scope-checker brief or remote-access review sheet
+                    you generated
+                  </td>
+                  <td className="py-2.5 px-1">Name, work email, company name, and the checker or remote-access answers you entered</td>
                   <td className="py-2.5 px-1">Consent (given when you submit the form)</td>
                 </tr>
                 <tr className="border-b border-[#3f4b52]/[0.15] align-top">
@@ -273,10 +287,13 @@ export default function PrivacyPolicyPage() {
             <li>Authentication session cookies (via Supabase) if you have a legacy marketplace partner account</li>
             <li>Bot-verification tokens (via Cloudflare Turnstile) when submitting a form</li>
             <li>
-              Your scope-checker answers, held in your browser&apos;s session storage so they can be
-              shown back to you on the enquiry form. This never leaves your browser as a cookie,
-              URL parameter, or analytics event, and clears itself when you close the tab. If you
-              send an enquiry, your checker answers are sent with it, as described above
+              Your scope-checker and remote-access situation check answers, each held separately
+              in your browser&apos;s session storage so they can be shown back to you on the
+              enquiry form, and so the free brief or review sheet can be rebuilt if you leave and
+              come back in the same browser session. This never leaves your browser as a cookie,
+              URL parameter, or analytics event, and clears itself when you close the tab. It only
+              leaves your browser if you choose to send an enquiry, request &ldquo;email me a
+              copy,&rdquo; or request the country report, as described above
             </li>
           </ul>
           <p className={p}>

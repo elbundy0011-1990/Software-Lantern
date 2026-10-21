@@ -204,7 +204,11 @@ export function OtEnquiryForm({
         )
       )}
 
-      <h3 className="font-sans font-semibold text-[22px] mb-2 text-[#1a1d22]">Tell us about your situation</h3>
+      {sourceIsChecker && (
+        <p className="text-[15px] font-semibold text-[#1a1d22] mb-2">
+          A short conversation about your result. We will contact you by email to arrange it.
+        </p>
+      )}
       <p className="text-[14px] text-[#3f4b52] mb-5"><ConsentText /></p>
 
       <div className="grid gap-3 mb-4">

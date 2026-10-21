@@ -4,7 +4,7 @@ import { useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { TurnstileWidget, type TurnstileWidgetHandle } from "@/components/turnstile-widget";
-import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
+import { FREE_EMAIL_DOMAINS } from "@/lib/email-domains";
 import { CONSENT_SENTENCE, CONSENT_CHECKBOX_LABEL } from "@/lib/consent-text";
 import {
   EMPTY_CHECKER_ANSWERS,
@@ -28,12 +28,9 @@ import { describeCheckerAnswers } from "@/components/nis2-scope-checker";
 const ACCENT = "#9a3412";
 
 // CONSENT WORDING — final, per the 2026-10-19 instruction, shared with
-// the result-screen CTA blocks (components/nis2-scope-checker.tsx) and
-// the confirmation email (lib/email-templates.ts) via lib/consent-text.ts
-// so it can't drift between the three. "Privacy policy" links to the
-// OT-specific section of the policy (app/(ot)/privacy/page.tsx's
-// #ot-service anchor), not the page root, since that page also describes
-// the unrelated legacy marketplace.
+// the result-screen CTA blocks (components/nis2-scope-checker.tsx) via
+// lib/consent-text.ts so it can't drift between them. "Privacy policy"
+// links to the policy's #ot-service anchor (app/(ot)/privacy/page.tsx).
 function ConsentText() {
   return (
     <>

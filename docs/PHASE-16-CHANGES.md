@@ -51,7 +51,7 @@ text below. `[Product name]` remains a literal placeholder (no brand name has be
 
 ## 6. Consent wording — owner name resolved
 
-`components/ot-enquiry-form.tsx`'s `OWNER_NAME` constant is now `"Johannes Cornelis de Boer"`
+`components/ot-enquiry-form.tsx`'s `OWNER_NAME` constant is now `"the site owner"`
 (the name already used in the privacy policy), replacing the `[Owner name]` placeholder in the
 intro paragraph, checkbox label, and success message. The wording itself is otherwise exactly what
 was specified. The "pending your final approval" badge stays up.

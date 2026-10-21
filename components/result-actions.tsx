@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { TurnstileWidget, type TurnstileWidgetHandle } from "@/components/turnstile-widget";
-import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
+import { FREE_EMAIL_DOMAINS } from "@/lib/email-domains";
 import { RESULTS_CONSENT_CHECKBOX_LABEL } from "@/lib/consent-text";
 
 const ACCENT = "#9a3412";
@@ -159,8 +159,7 @@ export function ResultActions({
         <div className="rounded border border-[#3f4b52]/[0.2] bg-white p-6 max-w-[480px] mx-auto mt-4">
           <p className="text-[13px] text-[#3f4b52] mb-4">
             We will send your answers, so we can build the email, to the work email address below.
-            Your details won&apos;t be shared with any other company without asking you first. See
-            our <Link href="/privacy#ot-service" className="underline font-semibold">privacy policy</Link>.
+            See our <Link href="/privacy#ot-service" className="underline font-semibold">privacy policy</Link>.
           </p>
           <div className="grid gap-3 mb-4">
             <input

@@ -212,7 +212,7 @@ claim. No other section was genuinely tabular enough to justify a table either, 
 new tables, a deliberate judgment call, not an oversight.
 
 **`/resources/regulations/eudr` changes**:
-- Byline added under the H1: "Written by Johannes Cornelis de Boer, founder of Software Lantern" —
+- Byline added under the H1: "Written by the site owner, founder of Software Lantern" —
   the name already published and verifiable on `/privacy`, no invented persona.
 - "Who does EUDR apply to?" — the Operator/Trader list became 2 icon cards (document icon for
   Operator, exchange-arrows icon for Trader).
@@ -281,7 +281,7 @@ Applied icon-card treatment to every discrete factor/benefit list sitewide:
   multi-brand/multinational), previously plain `<h3>` headers, converted to the same `BuildingIcon`/
   `BoxIcon` icon-card treatment already used on the EUDR blog article, for parity.
 - **Bylines added** (per explicit confirmation) to the Fashion PLM blog article and the Battery
-  Passport regulation article: "Written by Johannes Cornelis de Boer, founder of Software Lantern",
+  Passport regulation article: "Written by the site owner, founder of Software Lantern",
   same text and placement as the two EUDR pages, matching the founder name already published on
   `/privacy`.
 

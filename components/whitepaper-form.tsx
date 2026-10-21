@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { TurnstileWidget, type TurnstileWidgetHandle } from "@/components/turnstile-widget";
-import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
+import { FREE_EMAIL_DOMAINS } from "@/lib/email-domains";
 import { PACK_CONSENT_SENTENCE, PACK_CONSENT_CHECKBOX_LABEL } from "@/lib/consent-text";
 
 const ACCENT = "#9a3412";

@@ -61,7 +61,7 @@ rather than silently rewrite privacy-policy content not explicitly requested.
 Scanned every saved page's HTML with a Unicode-aware script (not plain `grep`, which gave false
 positives/negatives on multi-byte characters — see method note below).
 
-- **Personal name**: "Johannes Cornelis de Boer" appears exactly 3 times in the real rendered DOM,
+- **Personal name**: "the site owner" appears exactly 3 times in the real rendered DOM,
   all inside `app/(ot)/privacy/page.tsx`: twice in §1 "Who we are" (the controller statement) and
   once in §13 "Contact us," both adjacent to `info@softwarelantern.com`. Zero occurrences on any
   other page. (A raw byte-level scan of the HTML shows 6 hits per page because Next.js embeds a

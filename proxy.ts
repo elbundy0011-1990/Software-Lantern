@@ -1,7 +1,36 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+// Legacy EUDR / Fashion PLM / Battery Passport marketplace, removed
+// 2026-10-21. Every URL under these prefixes answers 410 Gone (not 404) so
+// search engines drop them quickly instead of retrying.
+const GONE_PREFIXES = [
+  "/eudr",
+  "/plm",
+  "/battery-passport",
+  "/providers",
+  "/finder",
+  "/resources",
+  "/portal",
+  "/api/leads",
+  "/api/stripe",
+  "/api/unlocks",
+];
+
+function isGone(pathname: string): boolean {
+  return GONE_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+}
+
+const GONE_HTML = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>Page removed</title></head><body style="font-family:sans-serif;max-width:560px;margin:80px auto;padding:0 20px;color:#1a1d22"><h1>This page has been removed</h1><p>It is no longer part of this site.</p><p><a href="/">Go to the homepage</a></p></body></html>`;
+
 export async function proxy(request: NextRequest) {
+  if (isGone(request.nextUrl.pathname)) {
+    return new NextResponse(GONE_HTML, {
+      status: 410,
+      headers: { "content-type": "text/html; charset=utf-8", "x-robots-tag": "noindex" },
+    });
+  }
+
   let response = NextResponse.next({ request });
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -10,7 +39,7 @@ export async function proxy(request: NextRequest) {
   // This runs on nearly every request (see matcher below) — a missing env
   // var here must not take down the entire site. Log loudly and let the
   // request through unauthenticated rather than 500ing every route;
-  // requireAdmin()/requirePartner() still redirect correctly since they'll
+  // requireAdmin() still redirects correctly since they'll
   // see no session, and routes that actually need Supabase will fail with
   // a clear error scoped to just that route instead of the whole app.
   if (!url || !anonKey) {

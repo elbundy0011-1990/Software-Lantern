@@ -2,17 +2,14 @@
 
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-
-type Role = "admin" | "partner";
 
 function ResetPasswordConfirmForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const role: Role = searchParams.get("role") === "admin" ? "admin" : "partner";
-  const loginHref = role === "admin" ? "/admin/login" : "/portal/login";
-  const requestHref = `/reset-password/request?role=${role}`;
+  // Admin-only since the legacy partner portal was removed (2026-10-21).
+  const loginHref = "/admin/login";
+  const requestHref = "/reset-password/request?role=admin";
 
   const [checking, setChecking] = useState(true);
   const [hasSession, setHasSession] = useState(false);
@@ -66,7 +63,7 @@ function ResetPasswordConfirmForm() {
     <main className="min-h-screen bg-[#f6f7fb] flex items-center justify-center px-5">
       <div className="w-full max-w-[380px] bg-white border border-[#0d1117]/[0.08] rounded-2xl p-8 shadow-[0_2px_6px_rgba(13,17,23,0.04)]">
         <p className="mb-1 text-[12px] font-bold tracking-[0.09em] uppercase text-[#4f46e5]">
-          {role === "admin" ? "Admin" : "Provider portal"}
+          Admin
         </p>
         <h1 className="font-sans font-semibold text-[26px] mb-6">Set a new password</h1>
 

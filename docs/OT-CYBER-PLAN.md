@@ -160,7 +160,7 @@ All of the following need a direct primary-source read (not just secondary corro
 - Three live lead categories: `"EUDR Software"`, `"Product Lifecycle Management (PLM)"`, `"Digital Battery Passport (DBP)"` (`lib/finder-config.ts`).
 - Data model: `leads` (buyer submissions), `partners` (software vendors, with `status`: pending/approved/rejected, and `categories` they cover), `unlocks` (paid reveals, with `amount_paid` captured from the real Stripe amount since the column was added, and `outcome` self-reporting won/lost/unknown), `lead_exclusions` (admin-set, deliberately invisible to partners).
 - Revenue mechanism: a partner pays per-lead-unlock via Stripe Checkout; `amount_paid` on each `unlocks` row is the authoritative historical record (not `leads.price_per_unlock`, which can drift after the fact).
-- The privacy policy (`/privacy`) names Johannes Cornelis de Boer personally (not a registered company) as data controller, based in Copenhagen, Denmark, and describes the matchmaking model in detail (§5.4 below covers exactly what becomes inaccurate under which architecture option).
+- The privacy policy (`/privacy`) names the site owner personally (not a registered company) as data controller, based in Copenhagen, Denmark, and describes the matchmaking model in detail (§5.4 below covers exactly what becomes inaccurate under which architecture option).
 
 ### 5.2 What I could not retrieve, and why
 
@@ -397,7 +397,7 @@ All four of your listed options, explained once, then applied per page:
 
 The current page (`app/(marketing)/privacy/page.tsx`) describes one service: the matchmaking marketplace. The moment the homepage changes, every new visitor to softwarelantern.com who clicks "Privacy Policy" reads a policy that doesn't describe what they just used. This needs fixing at the same time the homepage changes, not afterward.
 
-**Approach: restructure into two clearly-labeled parts under one policy, not two separate pages.** One controller (still Johannes Cornelis de Boer), two products, each section says which product it's about. Below is the diff against the live file, section by section. `[Product name]` is a literal placeholder, same convention as Part A's `[Owner name]` — no brand name has been chosen for the OT line yet (open question, carried into §B.2.3).
+**Approach: restructure into two clearly-labeled parts under one policy, not two separate pages.** One controller (still the site owner), two products, each section says which product it's about. Below is the diff against the live file, section by section. `[Product name]` is a literal placeholder, same convention as Part A's `[Owner name]` — no brand name has been chosen for the OT line yet (open question, carried into §B.2.3).
 
 **§1 "Who we are" — add a sentence, keep the rest:**
 > *(unchanged, then append:)* This site currently operates two separate services under the same controller: the OT cybersecurity enquiry resource described below, and a software-matchmaking marketplace for EUDR, Fashion PLM, and Battery Passport software, kept live for existing partners and in-progress enquiries. Sections 2 to 9 below describe the OT cybersecurity service specifically; Section 10 describes the marketplace, kept for as long as that data and those partner relationships exist.
@@ -636,7 +636,7 @@ Not designed, not built, per the instruction. Noting it exists as a future idea 
 2. **Done, not struck:** `/finder` now shows a short notice. `/admin`, `/portal`, `/api/stripe/*`, and the auth routes are untouched and still work.
 3. **Done:** `lib/compliance-ledger.ts` is the one file every ledger entry comes from, each with a citation URL, a `lastVerified` date, and a `verified` flag driving an inline `[VERIFY]`.
 4. **Done:** the homepage hero leads directly into the ledger; IEC 62443 is stated as voluntary on the checker, the homepage's "three rules" section, and its own guide; no page claims a rule requires a product category.
-5. **Done:** `[Owner name]` is now "Johannes Cornelis de Boer" everywhere in the consent text. The finalized privacy-policy diff was applied (not left unapplied this time, since the blocking placeholder was resolved) — see `app/(ot)/privacy/page.tsx` and §PHASE-16 item 5.
+5. **Done:** `[Owner name]` is now "the site owner" everywhere in the consent text. The finalized privacy-policy diff was applied (not left unapplied this time, since the blocking placeholder was resolved) — see `app/(ot)/privacy/page.tsx` and §PHASE-16 item 5.
 6. Dutch not started. Nothing pushed, nothing merged.
 
 **Verified this pass, upgrading §B.1.4/§B.1.5's earlier "can't check" status:** network access worked in this session (it hadn't earlier), so every external citation URL used in the ledger and guides was actually fetched: all resolve (HTTP 200) except `atwork.safeonweb.be/nis2` (Belgium's official tool), which returns a 403 to automated requests with a tiny generic response body, consistent with the same domain's behavior throughout this research (ccb.belgium.be also blocked this session's tools). This reads as bot/geo protection, not a dead link, but a manual browser click-test before go-live is the honest way to be certain, not an assumption this document should make for you.

@@ -6,22 +6,18 @@ import { createClient } from "@/lib/supabase/server";
 // points here with ?code=..., and this exchanges that PKCE code for a real
 // session (setting the auth cookies) before sending the user on.
 //
-// `role` ("admin" | "partner" | absent) says which surface initiated the
-// flow, so both the failure fallback and the success redirect can send the
-// person back to the right place — partner-signup confirmation (the only
-// flow that existed before password reset) never passes `role`, so it's
-// null there and everything below falls through to the exact same
-// behavior it already had: no regression for that flow.
+// Only the admin password-reset flow uses this since the legacy partner
+// portal was removed (2026-10-21); `role` is passed through to the next page.
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const role = searchParams.get("role");
-  const rawNext = searchParams.get("next") || "/portal";
+  const rawNext = searchParams.get("next") || "/admin";
   // Only allow same-site relative paths — "next" comes from a query param,
   // so without this a crafted callback link could redirect an authenticated
   // user off-site (e.g. ?next=https://evil.example).
-  const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/portal";
-  const failureLoginPath = role === "admin" ? "/admin/login" : "/portal/login";
+  const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/admin";
+  const failureLoginPath = "/admin/login";
 
   if (code) {
     const supabase = await createClient();

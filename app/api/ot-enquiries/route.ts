@@ -4,7 +4,6 @@ import { verifyTurnstile } from "@/lib/turnstile";
 import { sendEmail } from "@/lib/resend";
 import {
   buildNewOtEnquiryAdminEmail,
-  buildOtEnquiryConfirmationEmail,
   buildRoiCalculatorEmail,
   buildCountryReportEmail,
   buildCheckerBriefEmail,
@@ -15,7 +14,7 @@ import type { ReportCountry, CountryReportAnswers } from "@/lib/country-report";
 import type { RemoteAccessAnswers } from "@/lib/remote-access-session";
 import type { CheckerAnswers } from "@/lib/checker-session";
 import { isProductionDeploy } from "@/lib/environment";
-import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
+import { FREE_EMAIL_DOMAINS } from "@/lib/email-domains";
 import { issueDownloadToken } from "@/lib/download-token";
 
 interface OtEnquirySubmission {
@@ -34,8 +33,7 @@ interface OtEnquirySubmission {
   // existing answers jsonb rather than a new column, and the only
   // source that gets a signed download token back.
   // "calculator": the ROI calculator's "email me this calculation" —
-  // sends buildRoiCalculatorEmail() instead of the generic confirmation
-  // below, recomputed server-side from answers.roiMode/roiInputs rather
+  // sends buildRoiCalculatorEmail(), recomputed server-side from answers.roiMode/roiInputs rather
   // than trusting a client-submitted total.
   // "checklist": the vendor-demo comparison checklist request form —
   // same shape as "pack" (download token, no email attachment), just a
@@ -147,10 +145,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Could not save your submission." }, { status: 500 });
   }
 
-  // Admin notification: ADMIN_EMAIL only, never any other address. Its own
-  // try/catch, independent of the confirmation email below — the row is
-  // already committed above, so neither of these two sends can undo that,
-  // and neither send's failure affects the other.
+  // Admin notification: ADMIN_EMAIL only, never any other address. The
+  // row is already committed above, so a failed send can't undo that.
   if (process.env.ADMIN_EMAIL) {
     const adminEmail = process.env.ADMIN_EMAIL;
     const enquiryId = inserted.id;
@@ -170,35 +166,48 @@ export async function POST(request: Request) {
     });
   }
 
-  // Confirmation to the person who submitted. Production-only by the same
-  // isProductionDeploy() guard above this code can't even be reached
-  // without, so there's no separate check needed here — this line simply
-  // never runs outside production, same as the admin email. Independent
-  // try/catch: if this fails, the already-stored row and the admin email
-  // above are both unaffected.
-  after(async () => {
-    try {
-      const { subject, html } =
-        body.source === "calculator" && body.answers?.roiMode && body.answers?.roiInputs
-          ? buildRoiCalculatorEmail(body.answers.roiMode as RoiMode, body.answers.roiInputs as RoiFieldState)
-          : body.source === "country_report" &&
-              body.answers?.countryReportAnswers &&
-              (body.answers.countryReportAnswers as CountryReportAnswers).country
-            ? buildCountryReportEmail(
-                (body.answers.countryReportAnswers as CountryReportAnswers).country as ReportCountry,
-                (body.answers.remoteAccessAnswers as RemoteAccessAnswers) ?? null,
-                body.answers.countryReportAnswers as CountryReportAnswers,
-              )
-            : body.source === "checker_brief" && body.answers?.checkerAnswers
-              ? buildCheckerBriefEmail(body.answers.checkerAnswers as CheckerAnswers)
-              : body.source === "review_sheet" && body.answers?.remoteAccessAnswers
-                ? buildReviewSheetEmail(body.answers.remoteAccessAnswers as RemoteAccessAnswers)
-                : buildOtEnquiryConfirmationEmail();
-      await sendEmail({ to: email, subject, html });
-    } catch (err) {
-      console.error("Failed to send OT enquiry confirmation", err);
-    }
-  });
+  // An email to the submitter goes out only when they explicitly asked for
+  // one: "email me this calculation", "email me the full report", or
+  // "email me a copy" of a brief or review sheet. A plain enquiry, and the
+  // pack/checklist/whitepaper requests (delivered on screen via the
+  // download token), get no email; the on-screen thank-you is the
+  // acknowledgement. Independent try/catch, same as the admin email.
+  const requested = buildRequestedVisitorEmail(body);
+  if (requested) {
+    after(async () => {
+      try {
+        await sendEmail({ to: email, ...requested() });
+      } catch (err) {
+        console.error("Failed to send requested OT email", err);
+      }
+    });
+  }
 
   return NextResponse.json({ ok: true, ...(downloadToken ? { downloadToken } : {}) });
+}
+
+// Returns a builder for the email the visitor explicitly requested, or null
+// when the submission didn't ask for one. Every email is recomputed
+// server-side from the submitted answers, never from client-rendered output.
+function buildRequestedVisitorEmail(body: OtEnquirySubmission): (() => { subject: string; html: string }) | null {
+  const answers = body.answers || {};
+  if (body.source === "calculator" && answers.roiMode && answers.roiInputs) {
+    return () => buildRoiCalculatorEmail(answers.roiMode as RoiMode, answers.roiInputs as RoiFieldState);
+  }
+  if (body.source === "country_report" && answers.countryReportAnswers && (answers.countryReportAnswers as CountryReportAnswers).country) {
+    const countryAnswers = answers.countryReportAnswers as CountryReportAnswers;
+    return () =>
+      buildCountryReportEmail(
+        countryAnswers.country as ReportCountry,
+        (answers.remoteAccessAnswers as RemoteAccessAnswers) ?? null,
+        countryAnswers,
+      );
+  }
+  if (body.source === "checker_brief" && answers.checkerAnswers) {
+    return () => buildCheckerBriefEmail(answers.checkerAnswers as CheckerAnswers);
+  }
+  if (body.source === "review_sheet" && answers.remoteAccessAnswers) {
+    return () => buildReviewSheetEmail(answers.remoteAccessAnswers as RemoteAccessAnswers);
+  }
+  return null;
 }

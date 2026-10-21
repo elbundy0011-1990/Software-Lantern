@@ -27,10 +27,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 
-// Only the OT cybersecurity resource is in scope. The legacy EUDR/Fashion
-// PLM/Battery Passport marketplace has its own, separate sourcing
-// discipline (lib/eudr-dates.ts, lib/battery-passport-dates.ts, docs/
-// ICP.md) and is deliberately not touched by this guard.
+// Only the OT cybersecurity resource is in scope.
 const OT_DIRS = ["app/(ot)"];
 const OT_FILES = [
   "app/api/ot-enquiries/route.ts",

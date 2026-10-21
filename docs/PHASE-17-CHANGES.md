@@ -15,7 +15,7 @@ Searched the whole repo for `[Product name]`, `[Owner name]`, `[Disclosure text`
 
 ## 2. Personal name scoped to the privacy policy only
 
-`Johannes Cornelis de Boer` previously appeared in `app/(ot)/who-runs-this/page.tsx` and
+`the site owner` previously appeared in `app/(ot)/who-runs-this/page.tsx` and
 `components/ot-enquiry-form.tsx` (the `OWNER_NAME` constant driving the consent text). Both now say
 `Software Lantern` instead. The privacy page (`app/(ot)/privacy/page.tsx`) already scoped the name
 correctly to only its §1 "Who we are" (controller statement) and §13 "Contact us" sections, each
@@ -76,8 +76,8 @@ the new headline on warm paper, confirmed in a local dev-server fetch, not just 
 
 - `npx tsc --noEmit`, `npm run lint`, `npm run build`: all clean, 55 routes, including the new
   route-segment-scoped `icon`/`apple-icon`/`opengraph-image` alongside the untouched root ones.
-- Static scan: zero remaining `[Product name]`/`[Owner name]` placeholders; `Johannes Cornelis de
-  Boer` appears only in the privacy page; zero em-dashes in rendered OT-site copy (checked
+- Static scan: zero remaining `[Product name]`/`[Owner name]` placeholders; the owner's
+  personal name appears only in the privacy page; zero em-dashes in rendered OT-site copy (checked
   excluding code comments); disclosure box confirmed absent from rendered homepage HTML.
 - Dev-server smoke test: homepage, checker, who-runs-this, privacy, and enquiry pages all return
   200; the consent paragraph's privacy-policy link resolves to `/privacy#ot-service`; the header

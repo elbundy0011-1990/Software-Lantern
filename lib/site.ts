@@ -12,6 +12,6 @@ export const SITE_NAME = "Software Lantern";
 // doesn't set its own) and the homepage's own explicit metadata can't drift
 // apart. Title measured at 534.3px in 20px Arial (Google's desktop SERP
 // title font approximation, ~600px truncation threshold), comfortably under.
-export const SITE_TITLE = "EUDR, PLM & Battery Passport Software | Software Lantern";
+export const SITE_TITLE = "Secure Remote Access: NIS2, CRA & Machinery Regulation";
 export const SITE_DESCRIPTION =
-  "Looking for EUDR, Fashion PLM, or Battery Passport software? Tell us what you need and we'll connect you with up to 3 providers that believe they can help.";
+  "What NIS2, the Cyber Resilience Act, and the Machinery Regulation mean for machine builders, operators, and integrators in the Benelux, cited throughout.";

@@ -1,12 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { after } from "next/server";
 import { requireAdmin } from "@/lib/admin-auth";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { categoryShortCode, partnerNotificationClassification } from "@/lib/finder-config";
-import { sendEmail } from "@/lib/resend";
-import { buildLeadPublishedPartnerEmail } from "@/lib/email-templates";
 import type { LeadStatus, PartnerStatus, UnlockOutcome } from "@/lib/types";
 
 // Approve or reject a pending provider application (or flip either back to
@@ -47,81 +43,10 @@ export async function setUnlockOutcome(unlockId: string, partnerId: string, outc
 export async function setLeadStatus(id: string, status: LeadStatus) {
   await requireAdmin();
   const supabase = createAdminClient();
-
-  // Read the current status before updating so we can detect a genuine
-  // new/discarded -> published transition, not every subsequent edit to an
-  // already-published lead. Pull everything the notification needs in the
-  // same query since this is already a round trip.
-  const { data: before } = await supabase
-    .from("leads")
-    .select("status, category, software_need, timeline, answers")
-    .eq("id", id)
-    .maybeSingle();
-  const wasPublished = before?.status === "published";
-
   const { error } = await supabase.from("leads").update({ status }).eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath("/admin");
   revalidatePath(`/admin/leads/${id}`);
-
-  if (status === "published" && !wasPublished) {
-    const category = before?.category ?? null;
-    const softwareNeed = before?.software_need ?? null;
-    const timeline = before?.timeline ?? null;
-    const answers = (before?.answers as Record<string, string | string[] | undefined>) ?? {};
-    // Scheduled via after() rather than awaited or fire-and-forget: this is a
-    // server action invoked from a serverless function, which can freeze
-    // once the action returns, and a bare un-awaited promise risks never
-    // completing. after() (Vercel-safe, waitUntil under the hood) keeps the
-    // admin UI from waiting on partner-count-many email sends while still
-    // guaranteeing they run to completion.
-    after(() =>
-      notifyPartnersOfPublishedLead(id, category, softwareNeed, timeline, answers).catch((err) =>
-        console.error("Failed to notify partners of published lead", id, err),
-      ),
-    );
-  }
-}
-
-// TRIGGER 2. Matching logic mirrors
-// portal-dashboard.tsx's defaultFilter soft-default exactly (categoryShortCode
-// shared from lib/finder-config.ts): a partner sees this if their categories
-// include this lead's category, or they haven't set any categories at all.
-// Excluded partners (lead_exclusions) are dropped before sending, so an
-// excluded partner never gets the "new lead in your category" email in the
-// normal case (exclusions set before publish, which the publish-time fuzzy
-// match confirm in publish-confirm.tsx is designed to encourage).
-async function notifyPartnersOfPublishedLead(
-  leadId: string,
-  category: string | null,
-  softwareNeed: string | null,
-  timeline: string | null,
-  answers: Record<string, string | string[] | undefined>,
-) {
-  const supabase = createAdminClient();
-
-  const [{ data: partners }, { data: exclusions }] = await Promise.all([
-    supabase.from("partners").select("id, contact_email, categories"),
-    supabase.from("lead_exclusions").select("partner_id").eq("lead_id", leadId),
-  ]);
-
-  const excludedIds = new Set((exclusions || []).map((e) => e.partner_id));
-  const shortCode = categoryShortCode(category);
-  const matching = (partners || []).filter((p) => {
-    if (excludedIds.has(p.id)) return false;
-    const categories = (p.categories as string[] | null) || [];
-    return categories.length === 0 || categories.includes(shortCode);
-  });
-
-  if (matching.length === 0) return;
-
-  const { subject, html } = buildLeadPublishedPartnerEmail({
-    category,
-    softwareNeed: softwareNeed || "",
-    timeline,
-    classification: partnerNotificationClassification(category, answers),
-  });
-  await Promise.allSettled(matching.map((p) => sendEmail({ to: p.contact_email, subject, html })));
 }
 
 export async function addLeadExclusion(leadId: string, partnerId: string) {

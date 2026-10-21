@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { TurnstileWidget, type TurnstileWidgetHandle } from "@/components/turnstile-widget";
-import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
+import { FREE_EMAIL_DOMAINS } from "@/lib/email-domains";
 import { RESULTS_CONSENT_SENTENCE, RESULTS_CONSENT_CHECKBOX_LABEL } from "@/lib/consent-text";
 import type { RemoteAccessAnswers } from "@/lib/remote-access-session";
 import {
@@ -221,7 +221,7 @@ export function CountryReportForm({ remoteAccessAnswers }: { remoteAccessAnswers
 
       {!complete && (
         <p className="text-[13px] text-[#3f4b52] mb-4">
-          Fill in every field above to unlock the full report email.
+          Fill in every field above to get the full report by email.
         </p>
       )}
 

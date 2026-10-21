@@ -10,12 +10,7 @@ import { OT_SITE_INDEXABLE } from "@/lib/site-config";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-// 2026-10-19 site replacement: the legacy marketplace routes (/eudr, /plm,
-// /battery-passport, /providers, /resources/*, /finder) are deliberately
-// left out of this sitemap per docs/OT-CYBER-PLAN.md Part B §B.1.5 (keep
-// live, noindex, unlinked, out of sitemap) — they still work for anyone
-// with an existing link, they just aren't advertised for (re)crawling.
-// /enquiry is also left out: it's a lead-capture form page, hardcoded
+// /enquiry is left out: it's a lead-capture form page, hardcoded
 // noindex regardless of OT_SITE_INDEXABLE (app/(ot)/enquiry/page.tsx).
 //
 // lastModified per route is a real date this specific page's content

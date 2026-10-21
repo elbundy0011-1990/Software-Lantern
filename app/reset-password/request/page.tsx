@@ -2,16 +2,12 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { SITE_URL } from "@/lib/site";
 
-type Role = "admin" | "partner";
-
 function ResetPasswordRequestForm() {
-  const searchParams = useSearchParams();
-  const role: Role = searchParams.get("role") === "admin" ? "admin" : "partner";
-  const loginHref = role === "admin" ? "/admin/login" : "/portal/login";
+  // Admin-only since the legacy partner portal was removed (2026-10-21).
+  const loginHref = "/admin/login";
 
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -25,7 +21,7 @@ function ResetPasswordRequestForm() {
     try {
       const supabase = createClient();
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${SITE_URL}/auth/callback?next=/reset-password/confirm&role=${role}`,
+        redirectTo: `${SITE_URL}/auth/callback?next=/reset-password/confirm&role=admin`,
       });
       // Supabase itself never reveals whether the email matched an account,
       // so the same message shows regardless, this only branches on a
@@ -46,7 +42,7 @@ function ResetPasswordRequestForm() {
     <main className="min-h-screen bg-[#f6f7fb] flex items-center justify-center px-5">
       <div className="w-full max-w-[380px] bg-white border border-[#0d1117]/[0.08] rounded-2xl p-8 shadow-[0_2px_6px_rgba(13,17,23,0.04)]">
         <p className="mb-1 text-[12px] font-bold tracking-[0.09em] uppercase text-[#4f46e5]">
-          {role === "admin" ? "Admin" : "Provider portal"}
+          Admin
         </p>
         <h1 className="font-sans font-semibold text-[26px] mb-6">Reset your password</h1>
 

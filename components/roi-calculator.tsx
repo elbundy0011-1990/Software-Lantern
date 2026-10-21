@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { track } from "@vercel/analytics";
 import { TurnstileWidget, type TurnstileWidgetHandle } from "@/components/turnstile-widget";
-import { FREE_EMAIL_DOMAINS } from "@/lib/finder-config";
+import { FREE_EMAIL_DOMAINS } from "@/lib/email-domains";
 import { RESULTS_CONSENT_SENTENCE, RESULTS_CONSENT_CHECKBOX_LABEL } from "@/lib/consent-text";
 import {
   calculateMachineBuilderRoi,
